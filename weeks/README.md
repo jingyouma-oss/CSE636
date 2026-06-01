@@ -39,10 +39,10 @@ Each week is split into **two files** so the teaching material and the hands-on 
 ```
 weeks/
   README.md
-  week-01-notes.md   week-01-lab.md
-  week-02-notes.md   week-02-lab.md
+  week-01/   week-01-notes.md   week-01-lab.md
+  week-02/   week-02-notes.md   week-02-lab.md
   …
-  week-07-notes.md   week-07-lab.md
+  week-07/   week-07-notes.md   week-07-lab.md
 ```
 
 **`week-NN-notes.md` — the lecture notes** (what you teach from):

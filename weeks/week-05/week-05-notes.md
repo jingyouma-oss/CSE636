@@ -5,9 +5,9 @@
 
 **Theme:** See everything — including the AI agents themselves.
 
-**Arc placement:** Week 5 sits at the heart of the course. You have now built pipelines (Weeks 1–3) and taught the system to *predict* the future (Week 4). This week you give the system *eyes*: the ability to watch what is happening right now, detect when something looks wrong, pinpoint the root cause, and — critically — observe the AI agents that are doing all the watching. [Week 6](week-06-notes.md) will take the next step and let agents *act* on what they see.
+**Arc placement:** Week 5 sits at the heart of the course. You have now built pipelines (Weeks 1–3) and taught the system to *predict* the future (Week 4). This week you give the system *eyes*: the ability to watch what is happening right now, detect when something looks wrong, pinpoint the root cause, and — critically — observe the AI agents that are doing all the watching. [Week 6](../week-06/week-06-notes.md) will take the next step and let agents *act* on what they see.
 
-**Builds on:** [Week 4](week-04-notes.md) (time-series data, forecasting, Kubernetes autoscaling) and the agent fundamentals introduced in Weeks 1–2.
+**Builds on:** [Week 4](../week-04/week-04-notes.md) (time-series data, forecasting, Kubernetes autoscaling) and the agent fundamentals introduced in Weeks 1–2.
 
 ---
 
@@ -992,7 +992,7 @@ You gave the system eyes: observability into services, ML-based anomaly detectio
 
 ### Looking Ahead — Week 6
 
-[Week 6](week-06-notes.md) takes the next step: from *seeing* problems to *fixing* them autonomously. You will:
+[Week 6](../week-06/week-06-notes.md) takes the next step: from *seeing* problems to *fixing* them autonomously. You will:
 
 - Build **self-healing systems** that respond to the anomalies detected this week.
 - Design **agentic SRE workflows** that run runbooks and open remediation PRs.
@@ -1007,8 +1007,8 @@ Think of Week 5 as the sensing layer and Week 6 as the actuation layer. Together
 
 ### Course Materials (this repository)
 
-- Syllabus (Week 5 section): [`../syllabus/CSE636_Syllabus_v2.md`](../syllabus/CSE636_Syllabus_v2.md)
-- DevOps overview (monitoring tools section): [`../slides/DevOps.md`](../slides/DevOps.md)
+- Syllabus (Week 5 section): [`../../syllabus/CSE636_Syllabus_v2.md`](../../syllabus/CSE636_Syllabus_v2.md)
+- DevOps overview (monitoring tools section): [`../../slides/DevOps.md`](../../slides/DevOps.md)
 
 ### External References
 
@@ -1028,4 +1028,4 @@ Think of Week 5 as the sensing layer and Week 6 as the actuation layer. Together
 
 ---
 
-*End of Week 5 notes. Next: [Week 6 — Autonomous Incident Response & Agentic SRE](week-06-notes.md)*
+*End of Week 5 notes. Next: [Week 6 — Autonomous Incident Response & Agentic SRE](../week-06/week-06-notes.md)*

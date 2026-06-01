@@ -5,13 +5,13 @@
 
 **Theme:** From detecting problems to *fixing* them — building self-healing systems, agentic on-call helpers, and the guardrails that keep autonomous action safe.
 
-**Arc placement:** This is the climax of the "agents in operations" arc. Over the past five weeks you have learned to build CI/CD pipelines ([Week 3](week-03-notes.md)), predict failures ([Week 4](week-04-notes.md)), and detect anomalies and perform root-cause analysis ([Week 5](week-05-notes.md)). This week, the agent stops *reporting* and starts *acting*. That shift — from passive observer to active remediator — is where autonomy pays off most, and where the stakes are highest.
+**Arc placement:** This is the climax of the "agents in operations" arc. Over the past five weeks you have learned to build CI/CD pipelines ([Week 3](../week-03/week-03-notes.md)), predict failures ([Week 4](../week-04/week-04-notes.md)), and detect anomalies and perform root-cause analysis ([Week 5](../week-05/week-05-notes.md)). This week, the agent stops *reporting* and starts *acting*. That shift — from passive observer to active remediator — is where autonomy pays off most, and where the stakes are highest.
 
 **Builds on:**
-- [Week 5](week-05-notes.md): Anomaly detection, AI-driven RCA, and alert grouping feed directly into the triage logic here.
-- [Week 2](week-02-notes.md): MCP (Model Context Protocol), tool permissions, and least-privilege agent design are the safety layer around every action this week.
+- [Week 5](../week-05/week-05-notes.md): Anomaly detection, AI-driven RCA, and alert grouping feed directly into the triage logic here.
+- [Week 2](../week-02/week-02-notes.md): MCP (Model Context Protocol), tool permissions, and least-privilege agent design are the safety layer around every action this week.
 
-**Prepares for:** [Week 7](week-07-notes.md) — Agentic IaC, platform engineering, security governance, and the capstone project, which asks you to wire together everything from Weeks 1–6 end-to-end.
+**Prepares for:** [Week 7](../week-07/week-07-notes.md) — Agentic IaC, platform engineering, security governance, and the capstone project, which asks you to wire together everything from Weeks 1–6 end-to-end.
 
 ---
 
@@ -41,7 +41,7 @@ The key insight for this course: almost everything in the incident lifecycle —
 
 ### Kubernetes Operators: The Controller Pattern
 
-In [Week 4](week-04-notes.md) and [Week 5](week-05-notes.md) you deployed workloads to Kubernetes. This week we extend that with **Operators**, a Kubernetes pattern that lets you encode operational knowledge as code.
+In [Week 4](../week-04/week-04-notes.md) and [Week 5](../week-05/week-05-notes.md) you deployed workloads to Kubernetes. This week we extend that with **Operators**, a Kubernetes pattern that lets you encode operational knowledge as code.
 
 The core idea of Kubernetes is the **control loop**: Kubernetes constantly compares *desired state* (what you said you want in YAML) to *actual state* (what is actually running), and takes action to close any gap. For example, if you say "I want 3 replicas of my web server" and one crashes, Kubernetes starts a new one automatically.
 
@@ -121,7 +121,7 @@ To handle these, you need a system that can *reason* about what is happening, no
 
 Picture a highly experienced on-call engineer who has memorized every runbook and can read logs faster than you can scroll. The "virtual SRE" agent plays this role:
 
-1. **Perceives** alerts, logs, metrics, and traces — assembled by the observability stack from [Week 5](week-05-notes.md).
+1. **Perceives** alerts, logs, metrics, and traces — assembled by the observability stack from [Week 5](../week-05/week-05-notes.md).
 2. **Reasons** about what is likely happening and what the runbook says to do.
 3. **Acts** using tools (restart a Pod, scale a deployment, roll back a release, open a ticket).
 4. **Observes** whether the action helped.
@@ -232,7 +232,7 @@ THEN auto-rollback
 ELSE page the human on-call
 ```
 
-This is sometimes called a **policy-as-code** approach — you encode the conditions under which automation is allowed to act, just like you would encode security policies in OPA (Open Policy Agent, which you will use in [Week 7](week-07-notes.md)).
+This is sometimes called a **policy-as-code** approach — you encode the conditions under which automation is allowed to act, just like you would encode security policies in OPA (Open Policy Agent, which you will use in [Week 7](../week-07/week-07-notes.md)).
 
 #### Autonomous Failover
 
@@ -257,7 +257,7 @@ In the Week 6 lab you will implement a simple soft-approval gate using a command
 
 #### The Five Levels (Applied to Incident Response)
 
-The course introduced levels of autonomy in [Week 1](week-01-notes.md). Here is how they map specifically to incident response:
+The course introduced levels of autonomy in [Week 1](../week-01/week-01-notes.md). Here is how they map specifically to incident response:
 
 | Level | Name | What the agent does | Human role |
 |---|---|---|---|
@@ -539,7 +539,7 @@ In this situation, all 150 alerts share a single root cause. The correct respons
 
 **Alert suppression** means silencing redundant alerts that are clearly caused by a known ongoing incident. If you already have an open incident for "database-primary is down," you suppress all downstream service alerts that have a causal dependency on that database.
 
-**Alert correlation** is the step before suppression: grouping alerts that are likely symptoms of the same root cause into a single incident. You learned the graph-based and ML approaches to correlation in [Week 5](week-05-notes.md). This week we focus on *acting* on the correlated result.
+**Alert correlation** is the step before suppression: grouping alerts that are likely symptoms of the same root cause into a single incident. You learned the graph-based and ML approaches to correlation in [Week 5](../week-05/week-05-notes.md). This week we focus on *acting* on the correlated result.
 
 #### How an Agent Handles Correlation
 
@@ -1014,7 +1014,7 @@ Key themes reinforced this week:
 
 ### Looking Ahead: Week 7
 
-[Week 7](week-07-notes.md) is the final week and the capstone of the course. You will apply everything you have learned to:
+[Week 7](../week-07/week-07-notes.md) is the final week and the capstone of the course. You will apply everything you have learned to:
 
 1. **Agentic Infrastructure-as-Code (IaC):** Using agents to generate, review, and apply Terraform/CloudFormation configurations — with Policy-as-Code (OPA) as a guardrail, similar to the approval gates you built this week.
 2. **Internal Developer Platforms:** How organizations expose golden-path tooling through platforms like Backstage, and how agents integrate with them.
@@ -1029,9 +1029,9 @@ The self-healing agent you built this week will be a component of that end-to-en
 
 ### Course Materials
 
-- Syllabus: [`../syllabus/CSE636_Syllabus_v2.md`](../syllabus/CSE636_Syllabus_v2.md) — Week 6 section
-- Kubernetes slides: [`../slides/Kubernetes.md`](../slides/Kubernetes.md) — controller pattern, Pods, architecture
-- Automation overview: [`../slides/AI_Automation.md`](../slides/AI_Automation.md) — workflow automation, AI agent patterns
+- Syllabus: [`../../syllabus/CSE636_Syllabus_v2.md`](../../syllabus/CSE636_Syllabus_v2.md) — Week 6 section
+- Kubernetes slides: [`../../slides/Kubernetes.md`](../../slides/Kubernetes.md) — controller pattern, Pods, architecture
+- Automation overview: [`../../slides/AI_Automation.md`](../../slides/AI_Automation.md) — workflow automation, AI agent patterns
 
 ### External References
 

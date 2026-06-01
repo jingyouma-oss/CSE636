@@ -5,11 +5,11 @@
 
 **Course arc position:** Week 2 of 7 — *Tooling & Protocols*
 
-This week you move from understanding *what* an AI agent is to understanding *which tools exist* and *how agents connect to the outside world*. [Week 1](week-01-notes.md) established the agent anatomy (perceive → plan → act → observe), the levels of autonomy, and LLM tool-calling. Now we populate the toolbox: real coding agents, AIOps platforms with agentic features, the Model Context Protocol (MCP) that lets agents plug into DevOps systems safely, orchestration frameworks, and the permissions model that keeps agents from causing havoc.
+This week you move from understanding *what* an AI agent is to understanding *which tools exist* and *how agents connect to the outside world*. [Week 1](../week-01/week-01-notes.md) established the agent anatomy (perceive → plan → act → observe), the levels of autonomy, and LLM tool-calling. Now we populate the toolbox: real coding agents, AIOps platforms with agentic features, the Model Context Protocol (MCP) that lets agents plug into DevOps systems safely, orchestration frameworks, and the permissions model that keeps agents from causing havoc.
 
 By the end of this week you will have connected a small agent to a real tool and deployed a pipeline that calls an AI for code review — the building block of every lab that follows.
 
-**Looking ahead:** [Week 3](week-03-notes.md) puts agents *inside* the CI/CD pipeline — code review, test generation, and self-healing builds — so the pipeline and MCP plumbing you set up in this week's lab will carry forward directly.
+**Looking ahead:** [Week 3](../week-03/week-03-notes.md) puts agents *inside* the CI/CD pipeline — code review, test generation, and self-healing builds — so the pipeline and MCP plumbing you set up in this week's lab will carry forward directly.
 
 ---
 
@@ -19,7 +19,7 @@ This primer covers two base technologies you need for the lab and for the rest o
 
 ### Part A: Git & GitHub — Version Control from Scratch
 
-*Source deck: [Git deck](../slides/Git.md)*
+*Source deck: [Git deck](../../slides/Git.md)*
 
 #### Why version control exists
 
@@ -84,7 +84,7 @@ git checkout main
 git merge feature/add-review-step    # merge back
 ```
 
-This pattern — branching for every change and merging via a Pull Request on GitHub — is the foundation of the CI/CD pipelines we will build in [Week 3](week-03-notes.md).
+This pattern — branching for every change and merging via a Pull Request on GitHub — is the foundation of the CI/CD pipelines we will build in [Week 3](../week-03/week-03-notes.md).
 
 #### ⚠️ Common Git pitfalls
 
@@ -96,7 +96,7 @@ This pattern — branching for every change and merging via a Pull Request on Gi
 
 ### Part B: Docker & Containers — Packaging Applications
 
-*Source deck: [Docker 101 deck](../slides/Docker_101.md)*
+*Source deck: [Docker 101 deck](../../slides/Docker_101.md)*
 
 #### What is a container, and how is it different from a VM?
 
@@ -177,7 +177,7 @@ CMD ["python", "app.py"]
 
 #### Why Docker matters for this course
 
-Every lab in this course runs tools (Jenkins, MCP servers, agents) inside containers. Docker gives you a reproducible environment — the same image runs identically on your laptop, in CI, and in the cloud. The Jenkins teaching setup in [`../project/Jenkins/`](../project/Jenkins/) is entirely Docker-based, and this week's lab will use Docker to run both the pipeline and the MCP server.
+Every lab in this course runs tools (Jenkins, MCP servers, agents) inside containers. Docker gives you a reproducible environment — the same image runs identically on your laptop, in CI, and in the cloud. The Jenkins teaching setup in [`../../project/Jenkins/`](../../project/Jenkins/) is entirely Docker-based, and this week's lab will use Docker to run both the pipeline and the MCP server.
 
 #### ⚠️ Common Docker pitfalls
 
@@ -223,7 +223,7 @@ An **AI coding agent** is a software tool that uses a large language model (LLM)
 
 Think of a coding agent as a very capable contractor you have hired to work in your codebase. You give it a task ("add unit tests for this module"), it reads the relevant code, writes the tests, runs them to verify they pass, and hands you a pull request. You review and approve — or reject and redirect.
 
-This is exactly the **perceive → plan → act → observe** loop from [Week 1](week-01-notes.md), applied to a software development context.
+This is exactly the **perceive → plan → act → observe** loop from [Week 1](../week-01/week-01-notes.md), applied to a software development context.
 
 #### The competitive landscape (2025)
 
@@ -648,7 +648,7 @@ AutoGen supports both autonomous agent-to-agent conversation and human-in-the-lo
 
 **Google ADK** is Google's framework for building agents that run on Google Cloud infrastructure (Vertex AI). It provides: built-in tool use (Google Search, Code Execution), streaming support, evaluation tools, and deployment to Vertex AI Agent Builder. ADK agents can be composed into multi-agent hierarchies and share session state.
 
-If your organization is heavily invested in Google Cloud, ADK integrates naturally with BigQuery, Cloud Run, and GCP monitoring — useful for the observability and capacity planning work in [Week 4](week-04-notes.md) and [Week 5](week-05-notes.md).
+If your organization is heavily invested in Google Cloud, ADK integrates naturally with BigQuery, Cloud Run, and GCP monitoring — useful for the observability and capacity planning work in [Week 4](../week-04/week-04-notes.md) and [Week 5](../week-05/week-05-notes.md).
 
 #### Framework comparison summary
 
@@ -717,7 +717,7 @@ GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 
 #### The human-oversight spectrum revisited
 
-From [Week 1](week-01-notes.md), the three positions are:
+From [Week 1](../week-01/week-01-notes.md), the three positions are:
 
 | Position | What it means in agent permissions |
 |---|---|
@@ -809,7 +809,7 @@ In the full lab (see the 🧪 Lab section below) you will do this yourself. Here
 
 ### Looking Ahead: Week 3
 
-[Week 3](week-03-notes.md) takes everything you built this week and puts it *inside* the CI/CD pipeline as a first-class actor. You will:
+[Week 3](../week-03/week-03-notes.md) takes everything you built this week and puts it *inside* the CI/CD pipeline as a first-class actor. You will:
 
 - Build an agent that runs on every pull request, reviews code, and generates tests.
 - Create a self-healing pipeline that detects a failing build, proposes a fix, and opens a PR behind a human-approval gate.
@@ -823,12 +823,12 @@ The Jenkins pipeline and MCP server you built in this week's lab will be the sta
 
 ### Course Materials
 
-- [v2 Syllabus](../syllabus/CSE636_Syllabus_v2.md)
-- [Git deck](../slides/Git.md)
-- [Docker 101 deck](../slides/Docker_101.md)
-- [Jenkins setup](../project/Jenkins/)
-- [Week 1](week-01-notes.md) — Agent anatomy, levels of autonomy, LLM tool-calling
-- [Week 3](week-03-notes.md) — Agentic CI/CD Pipelines
+- [v2 Syllabus](../../syllabus/CSE636_Syllabus_v2.md)
+- [Git deck](../../slides/Git.md)
+- [Docker 101 deck](../../slides/Docker_101.md)
+- [Jenkins setup](../../project/Jenkins/)
+- [Week 1](../week-01/week-01-notes.md) — Agent anatomy, levels of autonomy, LLM tool-calling
+- [Week 3](../week-03/week-03-notes.md) — Agentic CI/CD Pipelines
 
 ### External References (from the v2 Syllabus)
 

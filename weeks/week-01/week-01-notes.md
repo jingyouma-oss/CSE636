@@ -7,7 +7,7 @@
 
 **Where this sits in the course arc:** This is the opening week. It sets the vocabulary, mental models, and historical context that the entire course relies on. There are no prior weeks to build on. By the end of Week 1, students should be able to have a clear conversation about DevOps, LLMs, and autonomous agents — using precise language — before touching any tool.
 
-**What comes next:** [Week 2](week-02-notes.md) moves from concepts to tools — comparing real AI coding agents, meeting the Model Context Protocol (MCP), and building a first MCP-connected agent.
+**What comes next:** [Week 2](../week-02/week-02-notes.md) moves from concepts to tools — comparing real AI coding agents, meeting the Model Context Protocol (MCP), and building a first MCP-connected agent.
 
 ---
 
@@ -358,7 +358,7 @@ Claude Code is a terminal-based AI coding agent that runs on a developer's local
 
 **Key capability:** Operates at human-on-the-loop level by default. The developer sees every file change before it is committed. Can be run autonomously in CI for tasks like dependency updates or test generation.
 
-**Relevant to this course:** The lab exercises use Claude Code as a reference agent implementation. The teaching Jenkins setup in [`../project/Jenkins/`](../project/Jenkins/) can be used with Claude Code in later labs.
+**Relevant to this course:** The lab exercises use Claude Code as a reference agent implementation. The teaching Jenkins setup in [`../../project/Jenkins/`](../../project/Jenkins/) can be used with Claude Code in later labs.
 
 #### GitHub Copilot Agent Mode
 
@@ -661,7 +661,7 @@ aws cloudwatch get-metric-statistics ...
 
 #### The Model Context Protocol (MCP)
 
-**MCP** is a standardized protocol (developed by Anthropic, released as an open standard) that defines how AI agents connect to external tools, data sources, and services. You will study MCP deeply in [Week 2](week-02-notes.md). The brief introduction here:
+**MCP** is a standardized protocol (developed by Anthropic, released as an open standard) that defines how AI agents connect to external tools, data sources, and services. You will study MCP deeply in [Week 2](../week-02/week-02-notes.md). The brief introduction here:
 
 MCP defines three concepts:
 - **Tools:** functions the agent can call (like a "run command" or "query database" tool).
@@ -749,7 +749,7 @@ Week 1 established the conceptual foundation for everything that follows:
 
 ### Looking ahead: Week 2
 
-In [Week 2: AI Agent Tooling, Protocols & Platforms](week-02-notes.md), we move from concepts to tools:
+In [Week 2: AI Agent Tooling, Protocols & Platforms](../week-02/week-02-notes.md), we move from concepts to tools:
 
 - **Session 3** compares real AI coding agents (Claude Code, Cursor, GitHub Copilot agent mode, Devin, Codex) in depth and surveys AIOps platforms with agentic features.
 - **Session 4** goes deep on MCP — how it works, how to build an MCP server, and how to manage agent permissions safely.
@@ -763,12 +763,12 @@ Bring the lab data you collected this week (CI build logs, system metrics) — w
 
 ### Course materials (this repository)
 
-- [Full syllabus (v2)](../syllabus/CSE636_Syllabus_v2.md)
-- [DevOps foundations deck](../slides/DevOps.md)
-- [Session 1: Introduction to DevOps and AI Convergence](../slides/Session%201_%20Introduction%20to%20DevOps%20and%20AI%20Convergence.md)
-- [AI Automation deck](../slides/AI_Automation.md)
-- [Jenkins teaching setup](../project/Jenkins/)
-- [Course overview slides](../slides/CSE636_Course_Overview.md)
+- [Full syllabus (v2)](../../syllabus/CSE636_Syllabus_v2.md)
+- [DevOps foundations deck](../../slides/DevOps.md)
+- [Session 1: Introduction to DevOps and AI Convergence](../../slides/Session%201_%20Introduction%20to%20DevOps%20and%20AI%20Convergence.md)
+- [AI Automation deck](../../slides/AI_Automation.md)
+- [Jenkins teaching setup](../../project/Jenkins/)
+- [Course overview slides](../../slides/CSE636_Course_Overview.md)
 
 ### Agentic AI and LLMs
 

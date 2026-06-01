@@ -7,7 +7,7 @@
 
 **Where it sits in the arc:** Weeks 1–3 built your pipeline and put agents inside it. This week you turn the agents forward-looking: instead of reacting to problems, they *predict* them. The skills you build here feed directly into Week 5, where you learn to *detect* anomalies and do root-cause analysis after things go wrong.
 
-**Builds on:** [Week 3](week-03-notes.md) — agentic CI/CD, approval gates, and self-healing pipelines. You already have agents that can open PRs and fix failing builds; now you will give them forecasting data to decide *whether to deploy at all* and how many resources to reserve.
+**Builds on:** [Week 3](../week-03/week-03-notes.md) — agentic CI/CD, approval gates, and self-healing pipelines. You already have agents that can open PRs and fix failing builds; now you will give them forecasting data to decide *whether to deploy at all* and how many resources to reserve.
 
 ---
 
@@ -845,7 +845,7 @@ Key takeaways:
 
 ### Looking ahead: Week 5
 
-[Week 5](week-05-notes.md) takes a different angle on the same operational data. Instead of predicting the future, you will learn to *detect anomalies in the present*:
+[Week 5](../week-05/week-05-notes.md) takes a different angle on the same operational data. Instead of predicting the future, you will learn to *detect anomalies in the present*:
 
 - **AI-driven anomaly detection** on logs, metrics, and traces.
 - **Unsupervised ML** (clustering, isolation forests) for detecting unusual patterns without labeled failure data.
@@ -859,10 +859,10 @@ The forecasting and anomaly-detection capabilities of Weeks 4–5 together provi
 
 ## References
 
-- [v2 Syllabus](../syllabus/CSE636_Syllabus_v2.md) — see Week 4 entries for session details and lab/assignment descriptions.
-- [Kubernetes deck](../slides/Kubernetes.md) — pod, deployment, node, and HPA concepts used throughout this week.
-- [Week 3: Agentic CI/CD Pipelines](week-03-notes.md) — approval gates, pipeline agents, blast-radius limits (prerequisites for Session 7).
-- [Week 5: Intelligent Monitoring, Observability & Agent Telemetry](week-05-notes.md) — anomaly detection and RCA (where this week's forecasts feed in).
+- [v2 Syllabus](../../syllabus/CSE636_Syllabus_v2.md) — see Week 4 entries for session details and lab/assignment descriptions.
+- [Kubernetes deck](../../slides/Kubernetes.md) — pod, deployment, node, and HPA concepts used throughout this week.
+- [Week 3: Agentic CI/CD Pipelines](../week-03/week-03-notes.md) — approval gates, pipeline agents, blast-radius limits (prerequisites for Session 7).
+- [Week 5: Intelligent Monitoring, Observability & Agent Telemetry](../week-05/week-05-notes.md) — anomaly detection and RCA (where this week's forecasts feed in).
 
 ### External resources
 

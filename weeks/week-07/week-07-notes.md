@@ -18,12 +18,12 @@ This is where everything comes together. Over the past six weeks you have moved 
 
 | Prior week | What it contributes here |
 |---|---|
-| [Week 1](week-01-notes.md) — Foundations | Levels of autonomy, the perceive→plan→act loop, and why guardrails matter |
-| [Week 2](week-02-notes.md) — Agent Tooling & MCP | Permission scoping, sandboxing, and least-privilege patterns introduced here reappear in agent security |
-| [Week 3](week-03-notes.md) — Agentic CI/CD | Approval gates and blast-radius limits on autonomous merges — the same pattern applies to IaC changes |
-| [Week 4](week-04-notes.md) — Predictive Analytics | Cost forecasting feeds back into IaC decisions (FinOps) |
-| [Week 5](week-05-notes.md) — Observability | Instrumented agent telemetry; audit trails rely on the same structured-logging discipline |
-| [Week 6](week-06-notes.md) — Agentic SRE & Incident Response | Self-healing playbooks that now target infrastructure resources, not just services |
+| [Week 1](../week-01/week-01-notes.md) — Foundations | Levels of autonomy, the perceive→plan→act loop, and why guardrails matter |
+| [Week 2](../week-02/week-02-notes.md) — Agent Tooling & MCP | Permission scoping, sandboxing, and least-privilege patterns introduced here reappear in agent security |
+| [Week 3](../week-03/week-03-notes.md) — Agentic CI/CD | Approval gates and blast-radius limits on autonomous merges — the same pattern applies to IaC changes |
+| [Week 4](../week-04/week-04-notes.md) — Predictive Analytics | Cost forecasting feeds back into IaC decisions (FinOps) |
+| [Week 5](../week-05/week-05-notes.md) — Observability | Instrumented agent telemetry; audit trails rely on the same structured-logging discipline |
+| [Week 6](../week-06/week-06-notes.md) — Agentic SRE & Incident Response | Self-healing playbooks that now target infrastructure resources, not just services |
 
 The **mental model** from Week 1 — an agent runs a loop; you choose whether a human is *in*, *on*, or *out* of that loop — reaches its highest-stakes expression in Week 7. Writing and applying infrastructure changes is as consequential as anything an agent can do. Getting the guardrails right is the capstone safety lesson of the course.
 
@@ -171,7 +171,7 @@ By the end of this session, students will be able to:
 
 #### From "write it yourself" to "agent proposes, policy enforces"
 
-Writing Terraform by hand is tedious and error-prone. The same LLM reasoning that helped an agent write Python code in [Week 3](week-03-notes.md) is equally capable of writing HCL (HashiCorp Configuration Language). What changes is the **blast radius**: a bad line of Python might fail a test; a bad Terraform resource might expose a database to the internet or delete a production table.
+Writing Terraform by hand is tedious and error-prone. The same LLM reasoning that helped an agent write Python code in [Week 3](../week-03/week-03-notes.md) is equally capable of writing HCL (HashiCorp Configuration Language). What changes is the **blast radius**: a bad line of Python might fail a test; a bad Terraform resource might expose a database to the internet or delete a production table.
 
 The agentic IaC workflow therefore follows the same human-in-the-loop pattern you saw in Weeks 3 and 6, with policy enforcement added:
 
@@ -282,7 +282,7 @@ With AI agents embedded in the template engine:
 
 ### Concept 3: Agent Security — The Safety Capstone
 
-> This is the most important safety topic in the course. The concepts here apply to every agent you build or deploy, not just IaC agents. Connect back to the permission-scoping discussion in [Week 2](week-02-notes.md) and the guardrails theme in [Week 3](week-03-notes.md) and [Week 6](week-06-notes.md).
+> This is the most important safety topic in the course. The concepts here apply to every agent you build or deploy, not just IaC agents. Connect back to the permission-scoping discussion in [Week 2](../week-02/week-02-notes.md) and the guardrails theme in [Week 3](../week-03/week-03-notes.md) and [Week 6](../week-06/week-06-notes.md).
 
 #### Why agent security is different from application security
 
@@ -333,7 +333,7 @@ An agent connected to a CI/CD system, a cloud provider, an IaC tool, and a Jira 
 
 #### Tool-Permission Scoping — Least Privilege for Agents
 
-You learned in [Week 2](week-02-notes.md) that MCP servers expose tools to agents. The rule that applies here is the same one that applies to cloud IAM, Kubernetes RBAC, and Linux file permissions: **grant the minimum permissions required for the task, nothing more.**
+You learned in [Week 2](../week-02/week-02-notes.md) that MCP servers expose tools to agents. The rule that applies here is the same one that applies to cloud IAM, Kubernetes RBAC, and Linux file permissions: **grant the minimum permissions required for the task, nothing more.**
 
 A practical scoping framework:
 
@@ -420,7 +420,7 @@ An audit trail is an immutable, timestamped, structured log of every significant
 - **What human approvals were obtained**, by whom, at what time
 - **What the final outcome was**, including any errors
 
-Using the OpenTelemetry GenAI semantic conventions (introduced in [Week 5](week-05-notes.md)) keeps these logs structured and queryable. Every agent span should carry:
+Using the OpenTelemetry GenAI semantic conventions (introduced in [Week 5](../week-05/week-05-notes.md)) keeps these logs structured and queryable. Every agent span should carry:
 
 ```
 gen_ai.system = "anthropic"
@@ -586,11 +586,11 @@ Good luck with your capstone projects. The skills you have built here — blendi
 
 ### Course materials (this repository)
 
-- Syllabus: [`../syllabus/CSE636_Syllabus_v2.md`](../syllabus/CSE636_Syllabus_v2.md)
-- AI Automation / n8n deck: [`../slides/AI_Automation.md`](../slides/AI_Automation.md)
-- Course overview: [`../slides/CSE636_Course_Overview.md`](../slides/CSE636_Course_Overview.md)
-- DevOps foundations deck: [`../slides/DevOps.md`](../slides/DevOps.md)
-- Jenkins teaching setup (runnable lab): [`../project/Jenkins/`](../project/Jenkins/)
+- Syllabus: [`../../syllabus/CSE636_Syllabus_v2.md`](../../syllabus/CSE636_Syllabus_v2.md)
+- AI Automation / n8n deck: [`../../slides/AI_Automation.md`](../../slides/AI_Automation.md)
+- Course overview: [`../../slides/CSE636_Course_Overview.md`](../../slides/CSE636_Course_Overview.md)
+- DevOps foundations deck: [`../../slides/DevOps.md`](../../slides/DevOps.md)
+- Jenkins teaching setup (runnable lab): [`../../project/Jenkins/`](../../project/Jenkins/)
 
 ### External references (from the v2 syllabus)
 
