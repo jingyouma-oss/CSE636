@@ -1,974 +1,809 @@
-CSE636: DevOps with AI Assistance
+# CSE 636 — DevOps with AI Assistance
 
-Fall, 2025
+### Qingsong Zhang, Ph.D.
 
-Qingsong Zhang, Ph. D.
+### Fall 2025
 
-Meet Your Professor
+---
 
-Academic Background
+## Meet Your Professor
 
-Ph. D. In Engineering, McGill University, Montreal, Canada
-Mathematical model, Signal automation, Coding, Control
-Language: Basic, Fortran, Cobol, Assembly, Pascal, C, C++, Java, SQL, MATLAB
-System: MainFrame, 8086/80286/80386, PC, IBM, MAC, HPUX, SUN
-Network: Novell, Token Ring, Ethernet, LAN, WAN, SD-WAN, PBX
+### Academic Background
 
-Professional Expertise
+- **Ph.D. in Engineering**, McGill University, Montreal, Canada
+- **Focus:** mathematical modeling, signal automation, coding, control
+- **Languages:** Basic, Fortran, Cobol, Assembly, Pascal, C, C++, Java, SQL, MATLAB
+- **Systems:** MainFrame, 8086/80286/80386, PC, IBM, MAC, HPUX, SUN
+- **Networks:** Novell, Token Ring, Ethernet, LAN, WAN, SD-WAN, PBX
 
-Hewlett Packard, IT Specialist —> Software Release Manager
-General Electric, Software Release Manager and Installer
-Affymetrix, Software Development Manager
-GE Digital, DevOps Manager, Cloud Infrastructure Staff
-Walmart eCommerce, DevOps Director, Infra/QA/Support
-PayPal, TPX (Technology, Platform and Technology) Director
-Michaels, VP of Technology, Infra, Operation (SRE) and Big Data
-PayPal, Principal Architect, SRE, Observability, Telemetry, AI Agent, MCP
+### Professional Expertise
 
-Teaching
+- **Hewlett Packard** — IT Specialist → Software Release Manager
+- **General Electric** — Software Release Manager and Installer
+- **Affymetrix** — Software Development Manager
+- **GE Digital** — DevOps Manager, Cloud Infrastructure Staff
+- **Walmart eCommerce** — DevOps Director, Infra/QA/Support
+- **PayPal** — TPX (Technology, Platform and Technology) Director
+- **Michaels** — VP of Technology, Infra, Operations (SRE) and Big Data
+- **PayPal** — Principal Architect, SRE, Observability, Telemetry, AI Agent, MCP
 
-Northeast Polytechnic University (SFBU), 15+ years, Unix, Network,
-Oracle, QA, DevOps (Agile)
-California Science and Technology University (CSTU), 2+ years,
-ChatGPT, DevOps+AI
+### Teaching
 
-Course
-Information
+- **Northeast Polytechnic University (SFBU)** — 15+ years: Unix, Network, Oracle, QA, DevOps (Agile)
+- **California Science and Technology University (CSTU)** — 2+ years: ChatGPT, DevOps + AI
 
-01
+---
 
-02
+## Course Information
 
-03
+- **Lecturer:** Qingsong Zhang
+- **TA:** Van Lam
+- **E-mail:** qingsong.zhang@cstu.edu, van.lam@cstu.edu
+- **Time:** Wed 7:30–9:00pm (Online), Sat 9:00–10:30am (Onsite)
+- **Length:** 23 Hours | **Credit:** 1.5 Units
+- **Office Hours:** By Appointment
+- **Review Date:** 11/4/2025
 
-04
+---
 
-05
+## Grading
 
-Lecturer: Qingsong Zhang
-TA: Van Lam
+### Grading Components
 
-E-mail: qingsong.zhang@cstu.edu
-            van.lam@cstu.edu
+| Component | Weight |
+| --------- | ------ |
+| Mid-term Exam | 15% |
+| Project | 20% |
+| Case Discussions | 30% |
+| Final Exam | 20% |
+| Class Participation | 15% |
+| **Total** | **100%** |
 
-Time: Wed 7:30–9:00pm (Online),
-          Sat 9:00–10:30am (Onsite)
+### Grading Scale
 
-Length: 23 Hours | Credit: 1.5
-Units
+| Score | Grade | Score | Grade |
+| ----- | ----- | ----- | ----- |
+| 98–100% | A+ | 78–79% | C+ |
+| 93–97% | A | 73–77% | C |
+| 90–92% | A- | 70–72% | C- |
+| 88–89% | B+ | 68–69% | D+ |
+| 83–87% | B | 63–67% | D |
+| 80–82% | B- | 60–62% | D- |
+| | | Below 60% | F |
 
-Office Hours: By Appointment
-Review Date: 11/4/2025
+---
 
-Grading
-Components
+## Course Summary: DevOps with AI
 
-Grading Scale
+**Course Overview**
 
-- Mid-term Exam: 15%
-- Project: 20%
-- Case Discussions: 30%
-- Final Exam: 20%
-- Class Participation: 15%
+This 1.5-unit course explores how AI and ML can be integrated into DevOps practices to automate, optimize, and enhance software development and operations.
 
-**Total: 100%**
+**Practical Experience**
 
-98–100%: A+
-93–97%: A
-90–92%: A-
-88–89%: B+
-83–87%: B
-80–82%: B-
-78–79%: C+
-73–77%: C
-70–72%: C-
-68–69%: D+
-63–67%: D
-60–62%: D-
-Below 60%: F
+Students will gain hands-on experience with AI-assisted CI/CD pipelines, predictive analytics, intelligent monitoring, automated remediation, and security.
 
-Course Summary: DevOps with AI
-
-Course Overview
-This 1.5-unit course explores how AI and ML can be integrated into
-DevOps practices to automate, optimize, and enhance software
-development and operations.
-
-Practical Experience
-Students will gain hands-on experience with AI-assisted CI/CD
-pipelines, predictive analytics, intelligent monitoring, automated
-remediation, and security.
-
-Learning Outcomes
+**Learning Outcomes**
 
 By the end of the course, students will:
 
-1) Understand AI in DevOps,
-2) Implement AI-driven automation,
-3) Apply predictive analytics,
-4) Use AI for monitoring and response,
-5) Evaluate AI frameworks at scale.
+1. Understand AI in DevOps.
+2. Implement AI-driven automation.
+3. Apply predictive analytics.
+4. Use AI for monitoring and response.
+5. Evaluate AI frameworks at scale.
 
-Session
-Overview: What
-You'll Learn
+---
 
-01
+## Session Overview: What You'll Learn
 
-02
+1. Evolution of DevOps and the need for AI
+2. Key DevOps challenges today
+3. AI vs. traditional automation
+4. AIOps and practical use cases
+5. Industry trends and case studies
 
-1. Evolution of DevOps and
-need for AI
+---
 
-2. Key DevOps challenges
-today
+## What is DevOps?
 
-03
+**Origins and Philosophy**
 
-3. AI vs traditional automation
+DevOps emerged to bridge the gap between software development and IT operations, emphasizing collaboration, automation, and continuous delivery.
 
-04
+**Key Practices**
 
-05
+Core practices include CI/CD, infrastructure as code, monitoring, and rapid feedback loops — all aimed at streamlining software delivery.
 
-4. AIOps and practical use
-cases
+**Why It Matters**
 
-5. Industry trends and case
-studies
+DevOps accelerates innovation and reduces time-to-market, making it essential in today's fast-paced tech world.
 
-What is DevOps?
+---
 
-Origins and Philosophy
-DevOps emerged to bridge the gap between software development and IT
-operations, emphasizing collaboration, automation, and continuous
-delivery.
+## What is DevOps?
 
-Key Practices
+**DevOps**
 
-Core practices include CI/CD, infrastructure as code, monitoring, and rapid
-feedback loops—all aimed at streamlining software delivery.
+The practice of operations and development engineers working together through the entire service lifecycle, from the design and development process all the way to production support, including the applications and systems.
 
-Why It Matters
+**CAMS Model**
 
-DevOps accelerates innovation and reduces time-to-market, making it
-essential in today's fast-paced tech world.
+- Culture
+- Automation
+- Measurement
+- Sharing
 
-What is DevOps?
+**Principles: The Three Ways**
 
-DevOps
+- Systems thinking and the principles of flow
+- Amplifying feedback loops
+- A culture of continuous experimentation and learning
 
-The practice of operations and development engineers
-working together through the entire service lifecycle, from
-the design and development process all the way to
-production support including the applications and systems.
+---
 
-CAMS Model
+## Rise of AI in Software Engineering
 
-Culture, Automation, Measurement and Sharing
+**AI Enters DevOps**
 
-Principles: The Three Ways
+Artificial Intelligence has gradually moved into the DevOps lifecycle, particularly in testing, monitoring, and issue resolution.
 
-Systems thinking and the principles of flow
-Amplifying feedback loops
-A culture of continuous experimentation and learning
+**Drivers of Adoption**
 
-Rise of AI in Software Engineering
+Rising system complexity, data volume, and expectations for uptime have made AI integration increasingly attractive.
 
-AI Enters DevOps
+**Impact on Engineering**
 
-Artificial Intelligence has gradually moved into the DevOps lifecycle,
-particularly in testing, monitoring, and issue resolution.
+AI tools help reduce manual tasks, improve decision-making, and detect issues earlier in the development process.
 
-Drivers of Adoption
+---
 
-Rising system complexity, data volume, and expectations for uptime
-have made AI integration increasingly attractive.
+## Why AI is a Game-Changer for DevOps
 
-Impact on Engineering
+**From Automation to Intelligence**
 
-AI tools help reduce manual tasks, improve decision-making, and
-detect issues earlier in the development process.
+AI elevates DevOps beyond rule-based automation by enabling systems to learn and adapt. This allows for smarter decision-making and proactive incident management.
 
-Why AI is a Game-Changer for DevOps
+**Enhanced Speed and Reliability**
 
-From Automation to Intelligence
+AI reduces human errors and speeds up deployment cycles by predicting issues before they happen. It brings consistency and efficiency across environments.
 
-Enhanced Speed and Reliability
+**Scalability with Insight**
 
-AI elevates DevOps beyond rule-based
-automation by enabling systems to learn and
-adapt. This allows for smarter decision-making
-and proactive incident management.
+AI tools analyze massive amounts of data in real-time, helping teams scale DevOps practices without losing visibility or control.
 
-AI reduces human errors and speeds up
-deployment cycles by predicting issues before
-they happen. It brings consistency and
-efficiency across environments.
+---
 
-Scalability with Insight
+## Why AI + DevOps?
 
-AI tools analyze massive amounts of data in
-real-time, helping teams scale DevOps
-practices without losing visibility or control.
+**Complexity at Scale**
 
-Why AI + DevOps?
+Modern systems generate enormous amounts of telemetry data, making manual monitoring and response increasingly impractical.
 
-Complexity at Scale
+**Speed Expectations**
 
-Modern systems generate enormous amounts of telemetry data,
-making manual monitoring and response increasingly impractical.
+Organizations demand faster deployments and minimal downtime, which requires intelligent automation to maintain reliability.
 
-Speed Expectations
+**Adaptive Learning**
 
-Organizations demand faster deployments and minimal downtime,
-which requires intelligent automation to maintain reliability.
+AI can analyze historical patterns to predict future issues, proactively helping teams before problems impact users.
 
-Adaptive Learning
+---
 
-AI can analyze historical patterns to predict future issues, proactively
-helping teams before problems impact users.
+## AI Across the DevOps Lifecycle
 
-AI Across the DevOps Lifecycle
+**Code & Build**
 
-From Automation to Intelligence
+AI enhances code reviews, suggests improvements, and predicts bugs early in the pipeline, improving code quality before deployment.
 
-Enhanced Speed and Reliability
+**Test & Deploy**
 
-AI elevates DevOps beyond rule-based
-automation by enabling systems to learn and
-adapt. This allows for smarter decision-making
-and proactive incident management.
+Machine learning models optimize test case selection and deployment strategies, minimizing downtime and failures.
 
-AI reduces human errors and speeds up
-deployment cycles by predicting issues before
-they happen. It brings consistency and efficiency
-across environments.
+**Monitor & Operate**
 
-Scalability with Insight
+Real-time anomaly detection and predictive analytics enable proactive issue resolution and smart alerting systems.
 
-AI tools analyze massive amounts of data in real-
-time, helping teams scale DevOps practices
-without losing visibility or control.
+---
 
-AI Across the DevOps Lifecycle
+## Benefits of AI in DevOps
 
-Code & Build
+**Faster Deployments**
 
-AI enhances code reviews, suggests
-improvements, and predicts bugs early in the
-pipeline, improving code quality before
-deployment.
+AI can automate repetitive processes and decision points, helping teams push changes to production more frequently and safely.
 
-Test & Deploy
+**Improved Stability**
 
-Machine learning models optimize test case
-selection and deployment strategies, minimizing
-downtime and failures.
+With real-time monitoring and learning-based alerting, systems can react to problems before they affect users.
 
-Monitor & Operate
+**Smarter Resource Allocation**
 
-Real-time anomaly detection and predictive analytics
-enable proactive issue resolution and smart alerting
-systems.
+AI-driven insights guide teams on how to optimize cloud usage, manage pipelines, and allocate developer attention effectively.
 
-Benefits of AI in DevOps
+---
 
-Faster Deployments
+## Challenges of Integrating AI in DevOps
 
-Improved Stability
+**Data Quality and Availability**
 
-AI can automate repetitive processes and
-decision points, helping teams push
-changes to production more frequently and
-safely.
+Effective AI models need high-quality, labeled data, which may be hard to obtain or organize in DevOps environments.
 
-With real-time monitoring and learning-
-based alerting, systems can react to
-problems before they affect users.
+**Model Transparency**
 
-Smarter Resource Allocation
+DevOps teams may face trust issues due to the black-box nature of some AI algorithms, especially in critical systems.
 
-AI-driven insights guide teams on how to
-optimize cloud usage, manage pipelines,
-and allocate developer attention effectively.
+**Skill Gap and Tooling**
 
-Challenges of Integrating AI in DevOps
+Bringing AI into DevOps workflows requires new skillsets, proper integration tools, and cultural readiness across teams.
 
-Data Quality and Availability Effective AI models need high-quality, labeled
+---
 
-data, which may be hard to obtain or organize in
-DevOps environments.
+## Scalability Challenges in DevOps
 
-Model Transparency
+**Growing Infrastructure**
 
-DevOps teams may face trust issues due to the
-black-box nature of some AI algorithms,
-especially in critical systems.
+Modern architectures like microservices and containers increase the complexity of managing environments at scale.
 
-Skill Gap and Tooling
+**Human Limitation**
 
-Bringing AI into DevOps workflows requires new
-skillsets, proper integration tools, and cultural
-readiness across teams.
+Manual oversight struggles to keep up with real-time monitoring and dynamic scaling requirements.
 
-Challenges of Integrating AI in DevOps
+**AI to the Rescue**
 
-Data Quality and Availability Effective AI models need high-quality, labeled
+AI assists by automating responses and detecting patterns across massive datasets.
 
-data, which may be hard to obtain or organize in
-DevOps environments.
+---
 
-Model Transparency
+## Monitoring and Incident Response
 
-DevOps teams may face trust issues due to the
-black-box nature of some AI algorithms,
-especially in critical systems.
+**Traditional Monitoring**
 
-Skill Gap and Tooling
+Relies heavily on pre-defined rules and manual analysis, which often leads to alert fatigue.
 
-Bringing AI into DevOps workflows requires new
-skillsets, proper integration tools, and cultural
-readiness across teams.
+**Challenges in Incident Triage**
 
-Scalability Challenges in DevOps
+Teams face delays in identifying root causes and prioritizing the right issues to fix.
 
-Growing Infrastructure
+**AI-Augmented Solutions**
 
-Modern architectures like microservices and containers increase the
-complexity of managing environments at scale.
+Machine learning models detect anomalies early, group related alerts, and recommend fixes.
 
-Human Limitation
+---
 
-Manual oversight struggles to keep up with real-time monitoring and
-dynamic scaling requirements.
+## Toolchain Complexity in DevOps
 
-AI to the Rescue
+**Too Many Tools**
 
-AI assists by automating responses and detecting patterns across
-massive datasets.
+Modern DevOps stacks include a mix of CI/CD, monitoring, infrastructure, and collaboration tools.
 
-Monitoring and Incident Response
+**Integration Fatigue**
 
-Traditional Monitoring
+Connecting and managing toolchains requires effort and introduces potential failure points.
 
-Relies heavily on pre-defined rules and manual analysis, which often
-leads to alert fatigue.
+**AI Integration Advantage**
 
-Challenges in Incident Triage
+AI can unify and make sense of data from across the toolchain, enhancing decision-making.
 
-Teams face delays in identifying root causes and prioritizing the right
-issues to fix.
+---
 
-AI-Augmented Solutions
+## Traditional Automation in DevOps
 
-Machine learning models detect anomalies early, group related
-alerts, and recommend fixes.
+**Scripted Workflows**
 
-Toolchain Complexity in DevOps
+Classic DevOps automation relies on scripts and tools configured for specific tasks like deployment or testing.
 
-Too Many Tools
-
-Modern DevOps stacks include a mix of CI/CD, monitoring,
-infrastructure, and collaboration tools.
-
-Integration Fatigue
-
-Connecting and managing toolchains requires effort and introduces
-potential failure points.
-
-AI Integration Advantage
-
-AI can unify and make sense of data from across the toolchain,
-enhancing decision-making.
-
-Traditional Automation in DevOps
-
-Scripted Workflows
-
-Classic DevOps automation relies on scripts and tools configured for
-specific tasks like deployment or testing.
-
-Benefits
+**Benefits**
 
 It increases speed and reduces manual error but lacks adaptability.
 
-Limitations
+**Limitations**
 
-Static rules can't handle unexpected events, making them reactive
-rather than proactive.
+Static rules can't handle unexpected events, making them reactive rather than proactive.
 
-AI-Driven DevOps
+---
 
-Proactive Intelligence
+## AI-Driven DevOps
 
-AI can analyze patterns, predict incidents, and recommend
-preventive actions before users are impacted.
+**Proactive Intelligence**
 
-Smart Decision-Making
+AI can analyze patterns, predict incidents, and recommend preventive actions before users are impacted.
 
-Machine learning models help prioritize alerts, assign tasks, and
-optimize workflows in real-time.
+**Smart Decision-Making**
 
-Key Difference
+Machine learning models help prioritize alerts, assign tasks, and optimize workflows in real-time.
 
-Unlike static automation, AI evolves and adapts over time, improving
-efficiency and reliability.
+**Key Difference**
 
-Understanding AIOps
+Unlike static automation, AI evolves and adapts over time, improving efficiency and reliability.
 
-Definition
+---
 
-AIOps stands for Artificial Intelligence for IT Operations, combining
-big data and ML to automate and enhance operations.
+## Understanding AIOps
 
-Core Functions
+**Definition**
 
-AIOps platforms ingest logs, metrics, and events to detect
-anomalies, correlate incidents, and trigger responses.
+AIOps stands for **Artificial Intelligence for IT Operations**, combining big data and ML to automate and enhance operations.
 
-Value Proposition
+**Core Functions**
 
-It reduces mean time to resolution (MTTR) and improves service
-reliability.
+AIOps platforms ingest logs, metrics, and events to detect anomalies, correlate incidents, and trigger responses.
 
-AI Use Case: Anomaly Detection
+**Value Proposition**
 
-What It Does
+It reduces mean time to resolution (MTTR) and improves service reliability.
 
-Automatically identifies deviations from normal behavior in logs,
-metrics, and performance data.
+---
 
-Why It Matters
+## AI Use Case: Anomaly Detection
+
+**What It Does**
+
+Automatically identifies deviations from normal behavior in logs, metrics, and performance data.
+
+**Why It Matters**
 
 Early detection helps prevent outages and performance degradation.
 
-Student Perspective
+**Student Perspective**
 
-Visualize how your future monitoring tools might detect a server
-issue before it affects users.
+Visualize how your future monitoring tools might detect a server issue before it affects users.
 
-AI Use Case: Resource Optimization
+---
 
-Dynamic Scaling
+## AI Use Case: Resource Optimization
 
-AI helps adjust compute and storage resources based on real-time
-usage patterns.
+**Dynamic Scaling**
 
-Cost Efficiency
+AI helps adjust compute and storage resources based on real-time usage patterns.
 
-Smart resource allocation avoids over-provisioning, cutting
-unnecessary costs.
+**Cost Efficiency**
 
-Example
+Smart resource allocation avoids over-provisioning, cutting unnecessary costs.
 
-A system detects low traffic periods and automatically scales down
-infrastructure without service impact.
+**Example**
 
-AI Use Case: Incident Triage
+A system detects low traffic periods and automatically scales down infrastructure without service impact.
 
-Alert Overload
+---
 
-DevOps teams face too many alerts, many of which are false
-positives or low priority.
+## AI Use Case: Incident Triage
 
-AI Filtering
+**Alert Overload**
 
-AI clusters alerts by root cause and urgency, allowing teams to focus
-on real issues first.
+DevOps teams face too many alerts, many of which are false positives or low priority.
 
-Student Takeaway
+**AI Filtering**
 
-Imagine being able to focus only on problems that truly matter—AI
-makes that possible in high-noise environments.
+AI clusters alerts by root cause and urgency, allowing teams to focus on real issues first.
 
-Case Study: Netflix AIOps
+**Student Takeaway**
 
-The Challenge
+Imagine being able to focus only on problems that truly matter — AI makes that possible in high-noise environments.
 
-Managing a vast microservices ecosystem and minimizing user-
-facing issues in real time.
+---
 
-The Solution
+## Case Study: Netflix AIOps
 
-Netflix uses AI to analyze metrics and logs, detect anomalies, and
-route incidents automatically.
+**The Challenge**
 
-The Outcome
+Managing a vast microservices ecosystem and minimizing user-facing issues in real time.
 
-Improved uptime, faster resolution, and better user experience at
-scale.
+**The Solution**
 
-AI Tooling Landscape (2025)
+Netflix uses AI to analyze metrics and logs, detect anomalies, and route incidents automatically.
 
-Monitoring & Observability
+**The Outcome**
 
-Tools like Dynatrace, DataDog, and New Relic are integrating more
-AI features for alert reduction and root-cause analysis.
+Improved uptime, faster resolution, and better user experience at scale.
 
-CI/CD & Deployment
+---
 
-GitHub Copilot, Harness, and others provide AI-driven code
-suggestions and deployment strategies.
+## AI Tooling Landscape (2025)
 
-Trends to Watch
+**Monitoring & Observability**
 
-Consolidation of platforms, low-code AIOps, and open-source
-innovation are shaping the future of AI in DevOps.
+Tools like Dynatrace, DataDog, and New Relic are integrating more AI features for alert reduction and root-cause analysis.
 
-What is Generative AI?
+**CI/CD & Deployment**
 
-Creating, Not Just Analyzing
+GitHub Copilot, Harness, and others provide AI-driven code suggestions and deployment strategies.
 
-Why It Matters in DevOps
+**Trends to Watch**
 
-Generative AI refers to models that can
-produce new content—like code, text, or
-images—based on training data and
-patterns.
+Consolidation of platforms, low-code AIOps, and open-source innovation are shaping the future of AI in DevOps.
 
-DevOps teams can use generative AI to
-generate config files, deployment scripts, or
-documentation, saving time and improving
-quality.
+---
 
-Common Examples
+## What is Generative AI?
 
-Tools like ChatGPT and GitHub Copilot
-showcase how generative AI can support
-day-to-day developer and ops work.
+**Creating, Not Just Analyzing**
 
-What is Generative AI?
+Generative AI refers to models that can produce new content — like code, text, or images — based on training data and patterns.
 
-Creating, Not Just Analyzing
+**Why It Matters in DevOps**
 
-Why It Matters in DevOps
+DevOps teams can use generative AI to generate config files, deployment scripts, or documentation, saving time and improving quality.
 
-Generative AI refers to models that can
-produce new content—like code, text, or
-images—based on training data and
-patterns.
+**Common Examples**
 
-DevOps teams can use generative AI to
-generate config files, deployment scripts, or
-documentation, saving time and improving
-quality.
+Tools like ChatGPT and GitHub Copilot showcase how generative AI can support day-to-day developer and ops work.
 
-Common Examples
+---
 
-Tools like ChatGPT and GitHub Copilot
-showcase how generative AI can support
-day-to-day developer and ops work.
+## LLMs: Large Language Models in DevOps
 
-LLMs: Large Language Models in DevOps
+**What is an LLM?**
 
-What is an LLM?
+LLMs are powerful AI systems trained on massive text datasets that understand and generate human-like language.
 
-LLMs are powerful AI systems trained on
-massive text datasets that understand and
-generate human-like language.
+**Use in DevOps**
 
-Use in DevOps
+They assist in writing shell scripts, analyzing logs, generating YAML files, and answering complex DevOps queries quickly.
 
-They assist in writing shell scripts,
-analyzing logs, generating YAML files, and
-answering complex DevOps queries
-quickly.
+**No Theory, Just Use**
 
-No Theory, Just Use
+Without diving into neural network theory, LLMs work like smart assistants — ready to solve real-world DevOps problems.
 
-Without diving into neural network theory,
-LLMs work like smart assistants—ready to
-solve real-world DevOps problems.
+---
 
-Prompt Engineering Basics
+## Prompt Engineering Basics
 
-What is a Prompt?
+**What is a Prompt?**
 
-A prompt is the input you give an AI model to
-get the desired output, like 'Write a bash
-script for CPU monitoring'.
+A prompt is the input you give an AI model to get the desired output, like "Write a bash script for CPU monitoring."
 
-Crafting Effective Prompts
+**Crafting Effective Prompts**
 
-Be specific, include context, and
-define format to get accurate
-responses from LLMs.
+Be specific, include context, and define format to get accurate responses from LLMs.
 
-DevOps Use Cases
+**DevOps Use Cases**
 
-From CI/CD pipelines to infrastructure
-provisioning, prompts can drive AI to
-generate useful artifacts instantly.
+From CI/CD pipelines to infrastructure provisioning, prompts can drive AI to generate useful artifacts instantly.
 
-Traditional Automation vs AI-Driven
+---
 
-Rule-Based vs Intelligent
+## Traditional Automation vs. AI-Driven
 
-Static Scripts vs Dynamic
-Generation
+**Rule-Based vs. Intelligent**
 
-Traditional DevOps automation relies on
-predefined rules. AI can adapt and learn from
-new data, making decisions without explicit
-instructions.
+Traditional DevOps automation relies on predefined rules. AI can adapt and learn from new data, making decisions without explicit instructions.
 
-AI enables dynamic creation of scripts and
-configurations tailored to real-time inputs and
-context.
+**Static Scripts vs. Dynamic Generation**
 
-Error Handling & Recovery
+AI enables dynamic creation of scripts and configurations tailored to real-time inputs and context.
 
-AI systems detect anomalies and
-recommend or execute recovery actions
-autonomously, reducing downtime and
-human effort.
+**Error Handling & Recovery**
 
-GitHub Copilot
+AI systems detect anomalies and recommend or execute recovery actions autonomously, reducing downtime and human effort.
 
-AI-Powered Code Assistant
+---
 
-GitHub Copilot suggests whole lines or
-blocks of code as you type, trained on public
-codebases, including shell and infra scripts.
+## GitHub Copilot
 
-DevOps Use Cases
+**AI-Powered Code Assistant**
 
-Copilot helps with writing CI/CD scripts,
-Dockerfiles, and configuration
-management in YAML or JSON.
+GitHub Copilot suggests whole lines or blocks of code as you type, trained on public codebases, including shell and infra scripts.
 
-Pros & Watch-outs
+**DevOps Use Cases**
 
-Accelerates development, but results
-should be reviewed for accuracy and
-security, especially in ops code.
+Copilot helps with writing CI/CD scripts, Dockerfiles, and configuration management in YAML or JSON.
 
-Amazon CodeWhisperer
+**Pros & Watch-outs**
 
-Developer-Focused AI
-Suggestions
+Accelerates development, but results should be reviewed for accuracy and security, especially in ops code.
 
-Amazon CodeWhisperer is an AI coding
-companion that provides real-time code
-recommendations tailored to AWS services.
+---
 
-DevOps-Relevant Features
+## Amazon CodeWhisperer
 
-Supports languages like Python, Bash, and
-JavaScript—useful for scripting automation
-and managing infrastructure.
+**Developer-Focused AI Suggestions**
 
-Enterprise Ready
+Amazon CodeWhisperer is an AI coding companion that provides real-time code recommendations tailored to AWS services.
 
-Offers integrations with AWS IAM, logging, and
-enterprise-grade security for DevOps
-workflows.
+**DevOps-Relevant Features**
 
-OpenAI API
+Supports languages like Python, Bash, and JavaScript — useful for scripting automation and managing infrastructure.
 
-Flexible LLM Capabilities OpenAI's GPT-based API allows DevOps teams
+**Enterprise Ready**
 
-to integrate intelligent chat, document
-generation, and scripting assistance into tools.
+Offers integrations with AWS IAM, logging, and enterprise-grade security for DevOps workflows.
 
-DevOps Integration
+---
 
-Useful for log summarization, YAML
-generation, and explaining error messages in
-plain English.
+## OpenAI API
 
-Use Responsibly
+**Flexible LLM Capabilities**
 
-While powerful, API usage should include
-safety guards, token limits, and audit trails in
-DevOps environments.
+OpenAI's GPT-based API allows DevOps teams to integrate intelligent chat, document generation, and scripting assistance into tools.
 
-Ansible + AI Integrations
+**DevOps Integration**
 
-Smart Configuration Management
+Useful for log summarization, YAML generation, and explaining error messages in plain English.
 
-Ansible modules can be extended with AI to
-predict deployment issues, validate playbooks,
-and generate templated configs.
+**Use Responsibly**
 
-Intelligent Playbook Reviews
+While powerful, API usage should include safety guards, token limits, and audit trails in DevOps environments.
 
-AI can audit or suggest improvements in
-playbooks based on past runbooks and
-common patterns.
+---
 
-Faster Remediation
+## Ansible + AI Integrations
 
-AI tools can read Ansible logs and recommend
-fixes for failed runs automatically.
+**Smart Configuration Management**
 
-Kubernetes with AI Monitoring
+Ansible modules can be extended with AI to predict deployment issues, validate playbooks, and generate templated configs.
 
-Complex System, Smarter
-Monitoring
+**Intelligent Playbook Reviews**
 
-AI-enhanced monitoring solutions can detect issues
-in Kubernetes clusters before they escalate by
-analyzing logs, metrics, and trends.
+AI can audit or suggest improvements in playbooks based on past runbooks and common patterns.
 
-Root Cause Analysis
+**Faster Remediation**
 
-Machine learning models help trace performance
-issues to their source faster than traditional
-dashboards.
+AI tools can read Ansible logs and recommend fixes for failed runs automatically.
 
-Better Scaling Decisions
+---
 
-Predictive scaling uses AI to allocate or remove
-resources proactively based on usage patterns.
+## Kubernetes with AI Monitoring
 
-Summary: Popular AI Tools for DevOps
+**Complex System, Smarter Monitoring**
 
-GitHub Copilot – Code generation and suggestions
+AI-enhanced monitoring solutions can detect issues in Kubernetes clusters before they escalate by analyzing logs, metrics, and trends.
 
-Amazon CodeWhisperer – AWS-optimized coding
-assistant
+**Root Cause Analysis**
 
-OpenAI API – Flexible LLM integration for custom
-workflows
+Machine learning models help trace performance issues to their source faster than traditional dashboards.
 
-Ansible + AI – Smarter playbook validation and
-automation
+**Better Scaling Decisions**
 
-Kubernetes AI Tools – Predictive monitoring and scaling
+Predictive scaling uses AI to allocate or remove resources proactively based on usage patterns.
 
-Student Reflection
+---
 
-Looking Ahead: Your
-Role in AI + DevOps
+## Summary: Popular AI Tools for DevOps
 
-How ready is your DevOps
-pipeline for AI?
+| Tool | Role |
+| ---- | ---- |
+| **GitHub Copilot** | Code generation and suggestions |
+| **Amazon CodeWhisperer** | AWS-optimized coding assistant |
+| **OpenAI API** | Flexible LLM integration for custom workflows |
+| **Ansible + AI** | Smarter playbook validation and automation |
+| **Kubernetes AI Tools** | Predictive monitoring and scaling |
 
-As future engineers, you will shape how AI
-transforms DevOps. Think critically about
-automation, ethics, and innovation. Ask yourself
-how you would approach integrating AI into your
-own workflows.
+---
 
-Hands-On Project: VM Health Checker
+## Student Reflection
 
-What You'll Build
+**Looking Ahead: Your Role in AI + DevOps**
 
-A bash script that checks key system parameters—CPU usage,
-memory, and disk space—and reports health status.
+> How ready is your DevOps pipeline for AI?
 
-Interactive Mode with 'explain'
+As future engineers, you will shape how AI transforms DevOps. Think critically about automation, ethics, and innovation. Ask yourself how you would approach integrating AI into your own workflows.
 
-The script accepts an 'explain' argument to provide a detailed, user-
-friendly summary of the VM's condition.
+---
 
-DevOps Impact
+## Hands-On Project: VM Health Checker
 
-Automating health checks helps teams monitor system integrity and
-proactively detect issues before outages occur.
+**What You'll Build**
 
-Step 1: GitHub Repository Setup
+A bash script that checks key system parameters — CPU usage, memory, and disk space — and reports health status.
 
-Create Your Repo
+**Interactive Mode with `explain`**
 
-Folder Structure
+The script accepts an `explain` argument to provide a detailed, user-friendly summary of the VM's condition.
 
-Start by creating a new GitHub repository named `vm-health-check`.
-Initialize it with a README and a `.gitignore` for shell scripts.
+**DevOps Impact**
 
-Organize your files with a clear folder structure, e.g., `scripts/
-health_check.sh` and `docs/usage.md`.
+Automating health checks helps teams monitor system integrity and proactively detect issues before outages occur.
 
-Version Control
+---
 
-Commit changes regularly with meaningful messages to track script
-improvements.
+## Step 1: GitHub Repository Setup
 
-Step 2: Script Structure Overview
+**Create Your Repo**
 
-Shell Script Entry Point
+Start by creating a new GitHub repository named `vm-health-check`. Initialize it with a README and a `.gitignore` for shell scripts.
 
-Create a `health_check.sh` file with a `main()` function. Use modular
-functions for CPU, memory, and disk checks.
+**Folder Structure**
 
-Argument Parsing
+Organize your files with a clear folder structure, e.g., `scripts/health_check.sh` and `docs/usage.md`.
 
-Support `--explain` using a `case` block or `getopts` to trigger a
-verbose summary mode.
+**Version Control**
 
-Execution Flow
+Commit changes regularly with meaningful messages to track script improvements.
 
-Check parameters > run health checks > generate output >
-optionally display explanations.
+---
 
-Step 3: CPU Health Check
+## Step 2: Script Structure Overview
 
-CPU Usage Monitoring
+**Shell Script Entry Point**
 
-Use `top`, `mpstat`, or `/proc/stat` to gather CPU usage. For
-example: `top -bn1 | grep 'Cpu(s)'`.
+Create a `health_check.sh` file with a `main()` function. Use modular functions for CPU, memory, and disk checks.
 
-Set Thresholds
+**Argument Parsing**
 
-Compare current usage against a defined threshold (e.g., 85%) to
-determine health status.
+Support `--explain` using a `case` block or `getopts` to trigger a verbose summary mode.
 
-Script Snippet
+**Execution Flow**
 
-Example: `if (( $(echo "$cpu > 85" | bc -l) )); then echo "High CPU
-usage"; fi`
+Check parameters → run health checks → generate output → optionally display explanations.
 
-Step 4: Memory Health Check
+---
 
-Capture Memory Usage
+## Step 3: CPU Health Check
 
-Use `free -m` to retrieve memory statistics and calculate usage:
-`used/total` * 100.
+**CPU Usage Monitoring**
 
-Set Safe Threshold
+Use `top`, `mpstat`, or `/proc/stat` to gather CPU usage. For example:
 
-A usage over 90% might indicate memory pressure. Flag as
-'Warning' or 'Critical' accordingly.
+```bash
+top -bn1 | grep 'Cpu(s)'
+```
 
-Script Snippet
+**Set Thresholds**
 
-Example: `mem_usage=$(free | awk '/Mem/ { printf("%.2f", $3/$2 *
-100.0) }')`
+Compare current usage against a defined threshold (e.g., 85%) to determine health status.
 
-Step 5: Disk Space Check
+**Script Snippet**
 
-Gather Disk Usage
+```bash
+if (( $(echo "$cpu > 85" | bc -l) )); then echo "High CPU usage"; fi
+```
 
-Threshold Alerts
+---
 
-Use `df -h /` or `df --output=pcent / | tail -1` to get the root
-filesystem's usage percentage.
+## Step 4: Memory Health Check
 
-Mark disks as unhealthy if usage exceeds, say, 80%. Show warnings
-in red or bold terminal output.
+**Capture Memory Usage**
 
-Script Snippet
+Use `free -m` to retrieve memory statistics and calculate usage: `used/total * 100`.
 
+**Set Safe Threshold**
+
+A usage over 90% might indicate memory pressure. Flag as "Warning" or "Critical" accordingly.
+
+**Script Snippet**
+
+```bash
+mem_usage=$(free | awk '/Mem/ { printf("%.2f", $3/$2 * 100.0) }')
+```
+
+---
+
+## Step 5: Disk Space Check
+
+**Gather Disk Usage**
+
+Use `df -h /` or `df --output=pcent / | tail -1` to get the root filesystem's usage percentage.
+
+**Threshold Alerts**
+
+Mark disks as unhealthy if usage exceeds, say, 80%. Show warnings in red or bold terminal output.
+
+**Script Snippet**
+
+```bash
 disk_usage=$(df / | awk 'END { print $5 }' | sed 's/%//')
+```
 
-Step 6: Combine All Health Metrics
+---
 
-Unified Health Logic
+## Step 6: Combine All Health Metrics
 
-Visual Output
+**Unified Health Logic**
 
-Run all three checks—CPU, memory, and disk—and aggregate their
-results into a single status report.
+Run all three checks — CPU, memory, and disk — and aggregate their results into a single status report.
 
-Use colors and symbols (✓ / ⚠  / ✗) to show system health per
-category.
+**Visual Output**
 
-Return Codes
+Use colors and symbols (✓ / ⚠ / ✗) to show system health per category.
 
-Return specific exit codes (0: OK, 1: Warning, 2: Critical) to allow
-integration with cron or monitoring systems.
+**Return Codes**
 
-Step 7: Implement --explain Argument
+Return specific exit codes (`0`: OK, `1`: Warning, `2`: Critical) to allow integration with cron or monitoring systems.
 
-Extended Output Mode
+---
 
-Add logic to detect `--explain` and display verbose descriptions for
-each metric's status.
+## Step 7: Implement --explain Argument
 
-Human-Friendly Language
+**Extended Output Mode**
 
-Translate raw values into plain language. For example, 'CPU usage
-is above threshold. This may affect performance.'
+Add logic to detect `--explain` and display verbose descriptions for each metric's status.
 
-Optional JSON or Markdown
+**Human-Friendly Language**
 
-Support output in structured formats for integration with monitoring
-tools or dashboards.
+Translate raw values into plain language. For example, "CPU usage is above threshold. This may affect performance."
 
-Step 8: Add Logging & Formatting
+**Optional JSON or Markdown**
 
-Log Important Events
+Support output in structured formats for integration with monitoring tools or dashboards.
 
-Use `logger` or redirect output to a log file for tracking script
-execution and results.
+---
 
-Terminal Aesthetics
+## Step 8: Add Logging & Formatting
 
-Use ANSI color codes for red (critical), yellow (warning), and green
-(healthy) statuses to improve readability.
+**Log Important Events**
 
-Error Handling
+Use `logger` or redirect output to a log file for tracking script execution and results.
 
-Include fallback logic for missing tools or malformed inputs to make
-the script robust.
+**Terminal Aesthetics**
 
-Step 9: Test Across VM Types
+Use ANSI color codes for red (critical), yellow (warning), and green (healthy) statuses to improve readability.
 
-Run on Different Environments
+**Error Handling**
 
-Test the script on small, medium, and large VMs to ensure
-thresholds are realistic across contexts.
+Include fallback logic for missing tools or malformed inputs to make the script robust.
 
-Validate --explain Output
+---
 
-Check if the extended output works as expected across varied loads
-and edge cases.
+## Step 9: Test Across VM Types
 
-Automate Testing
+**Run on Different Environments**
 
-Use cron jobs or CI pipelines to run and verify health checks
-periodically.
+Test the script on small, medium, and large VMs to ensure thresholds are realistic across contexts.
 
-Step 10: Script Usage Examples
+**Validate --explain Output**
 
-Basic Execution
+Check if the extended output works as expected across varied loads and edge cases.
 
-Verbose Mode
+**Automate Testing**
 
-Run `./health_check.sh` to print the current health status of the VM to
-the terminal.
+Use cron jobs or CI pipelines to run and verify health checks periodically.
 
-Run `./health_check.sh --explain` to get detailed output explaining
-each metric and its implications.
+---
 
-Automated Monitoring
+## Step 10: Script Usage Examples
 
-Integrate into cron with `*/15 * * * * /path/to/health_check.sh >> /var/
-log/vm_health.log`
+**Basic Execution**
 
-Step 11: Automate Health Monitoring
+```bash
+./health_check.sh
+```
 
-Using Cron Jobs
+Prints the current health status of the VM to the terminal.
 
-Email Alerts
+**Verbose Mode**
 
-Schedule the script to run periodically using `crontab -e` with your
-preferred timing interval.
+```bash
+./health_check.sh --explain
+```
 
-Use `mail` or `sendmail` to notify ops teams of unhealthy statuses
-directly from the script.
+Gets detailed output explaining each metric and its implications.
 
-Integrate with Dashboards
+**Automated Monitoring**
 
-Log results in a format consumable by Prometheus/Grafana or
-custom monitoring UIs.
+Integrate into cron:
 
-Step 12: Walkthrough Demo
+```bash
+*/15 * * * * /path/to/health_check.sh >> /var/log/vm_health.log
+```
 
-Demo Objectives
+---
 
-Show how the script runs, outputs statuses, and responds to `--
-explain`.
+## Step 11: Automate Health Monitoring
 
-Recording or Live Run
+**Using Cron Jobs**
 
-Use screen recording or live terminal share to walk through setup,
-usage, and output.
+Schedule the script to run periodically using `crontab -e` with your preferred timing interval.
 
-Validation
+**Email Alerts**
 
-Confirm script behavior under high CPU, low memory, or full disk
-scenarios.
+Use `mail` or `sendmail` to notify ops teams of unhealthy statuses directly from the script.
 
+**Integrate with Dashboards**
+
+Log results in a format consumable by Prometheus/Grafana or custom monitoring UIs.
+
+---
+
+## Step 12: Walkthrough Demo
+
+**Demo Objectives**
+
+Show how the script runs, outputs statuses, and responds to `--explain`.
+
+**Recording or Live Run**
+
+Use screen recording or live terminal share to walk through setup, usage, and output.
+
+**Validation**
+
+Confirm script behavior under high CPU, low memory, or full disk scenarios.

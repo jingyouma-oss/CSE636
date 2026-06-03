@@ -1,442 +1,491 @@
-CSE 636
-Version control with Git
-Qingsong Zhang, Dr.
-1
+# CSE 636 — Version Control with Git
 
-Problems Working Alone
-• Ever done one of the following?
-▪ Had code that worked, made a bunch of changes and saved it, which
-broke the code, and now you just want the working version back…
-▪ Accidentally deleted a critical file, hundreds of lines of code gone…
-▪ Somehow messed up the structure/contents of your code base, and
-want to just “undo” the crazy action you just did
-▪ Hard drive crash!!!! Everything’s gone, the day before deadline.
-• Possible options:
-▪ Save as (MyClass-v1.java)
-• Ugh. Just ugh. And now a single line change
-results in duplicating the entire file…
-2
+### Qingsong Zhang, Dr.
 
-Problems Working in teams
-▪ Whose computer stores the "official" copy of the project?
-• Can we store the project files in a neutral "official" location?
-▪ Will we be able to read/write each other's changes?
-• Do we have the right file permissions?
-• Lets just email changed files back and forth! Yay!
-▪ What happens if we both try to edit the same file?
-• Bill just overwrote a file I worked on for 6 hours!
-▪ What happens if we make a mistake and corrupt an important file?
-• Is there a way to keep backups of our project files?
-▪ How do I know what code each teammate is working on?
-3
+---
 
-Solution: Version Control
-• version control system: Software that tracks and manages changes
-to a set of files and resources.
-• You use version control all the time
-▪ Built into word processors/spreadsheets/presentation software
-• The magical “undo” button takes you back to “the version before my last
-action”
-▪ Wiki’s
-• Wiki’s are all about version control, managing updates, and allowing
-rollbacks to previous versions
-4
+## Problems Working Alone
 
-Software Version control
-• Many version control systems are designed and used especially for
-software engineering projects
-▪ examples: ClearCase, CVS, Subversion (SVN), Git, BitKeeper, Perforce
-• helps teams to work together on code projects
-▪ a shared copy of all code files that all users can access
-▪ keeps current versions of all files, and backups of past versions
-▪ can see what files others have modified and view the changes
-▪ manages conflicts when multiple users modify the same file
-▪ not particular to source code; can be used for papers, photos, etc.
-• but often works best with plain text/code files
-5
+Ever run into one of these?
 
-Repositories
-• Repository (aka “repo”): a location storing a copy of all files.
-▪ you don't edit files directly in the repo;
-▪ you edit a local working copy or “working tree”
-▪ then you commit your edited files into the repo
-• There may be only one repository that all users share (CVS,
-Subversion)
-• Or each user could also have their own copy of the repository (Git,
-Mercurial)
-• Files in your working directory must be added to the repo in order to
-be tracked.
-6
+- Had code that worked, made a bunch of changes, saved over it — and now you just want the working version back.
+- Accidentally deleted a critical file. Hundreds of lines, gone.
+- Messed up the structure or contents of your codebase and just want to **undo** the last crazy action.
+- Hard drive crash — everything's gone, the day before the deadline.
 
-What to put in a Repo?
-• Everything needed to create your project:
-▪ Source code (Examples: .java, .c, .h, .cpp )
-▪ Build files (Makefile, build.xml)
-▪ Other resources needed to build your project: icons, text etc.
-• Things generally NOT put in a repo (these can be easily re-created
-and just take up space):
-▪ Object files (.o)
-▪ Executables (.exe)
-7
+**The naive option:** *Save As* (`MyClass-v1.java`, `MyClass-v2.java`, …)
 
-Repository Location
-• Can create the repository anywhere
-▪ Can be on the same computer that you’re going to work on, which might
-be ok for a personal project where you just want rollback protection
-• But, usually you want the repository to be robust:
-▪ On a computer that’s up and running 24/7
-• Everyone always has access to the project
-▪ On a computer that has a redundant file system (ie RAID)
-• No more worries about that hard disk crash wiping away your project!
-• Options:
-▪ GitLab, GitHub
-8
+Ugh. And now a single one-line change means duplicating the entire file.
 
-Aside: Git and GitHub?
-• Git
-• The software that allows us to do version control
-• Like the “Track Changes” feature from Microsoft word, but more rigorous, powerful
-and scaled up to multiple files
-• GitHub.com
-• is a site for online storage of Git repositories.
-• Many open source projects use it, such as the Linux kernel.
-• You can get free space for open source projects or you can pay for private projects.
-Question: Do I have to use GitHub to use Git?
-Answer: No!
-• you can use Git completely locally for your own purposes, or
-• you could share a repo with users on the same file system as long everyone has the
-needed file permissions.
-9
+---
 
-Aside: So what is GitHub?
-• GitHub.com is a site for online storage of Git repositories.
-• Many open source projects use it, such as the Linux kernel.
-• You can get free space for open source projects or you can pay for
-private projects.
-Question: Do I have to use GitHub to use Git?
-Answer: No!
-• you can use Git completely locally for your own purposes, or
-• you could share a repo with users on the same file system as long
-everyone has the needed file permissions.
-10
+## Problems Working in Teams
 
-11
+- **Whose computer stores the "official" copy?** Can we keep the project in a neutral, official location?
+- **Can we read/write each other's changes?** Do we have the right permissions? (Emailing files back and forth doesn't scale.)
+- **What if we both edit the same file?** "Bill just overwrote a file I worked on for 6 hours!"
+- **What if we corrupt an important file?** Is there a way to keep backups?
+- **How do I know what code each teammate is working on?**
 
-Git
-HTTP://XKCD.COM/1597/
-12
+---
 
-Git Resources
-• At the command line: (where <verb> = config, add, commit, etc.)
+## Solution: Version Control
+
+A **version control system** is software that tracks and manages changes to a set of files.
+
+You already use version control all the time:
+
+- **Word processors / spreadsheets / presentation software** — the magical *Undo* button takes you back to "the version before my last action."
+- **Wikis** — built around managing updates and rolling back to previous versions.
+
+---
+
+## Software Version Control
+
+Many version control systems are designed especially for software engineering projects.
+
+> Examples: ClearCase, CVS, Subversion (SVN), Git, BitKeeper, Perforce.
+
+A version control system helps teams work together on code by providing:
+
+- A shared copy of all code files that everyone can access.
+- Current versions **and** backups of all past versions.
+- Visibility into what files others modified, and the ability to view the changes.
+- Conflict management when multiple users edit the same file.
+
+> It isn't limited to source code — you can version papers, photos, etc. — but it works best with plain text and code.
+
+---
+
+## Repositories
+
+A **repository** (or "repo") is a location storing a copy of all files.
+
+- You don't edit files directly in the repo.
+- You edit a local **working copy** (the "working tree").
+- Then you **commit** your edited files into the repo.
+
+There may be:
+
+- **One shared repository** for all users (CVS, Subversion), or
+- **A full copy per user** (Git, Mercurial).
+
+> Files in your working directory must be **added** to the repo before they are tracked.
+
+---
+
+## What to Put in a Repo
+
+**Include** everything needed to build your project:
+
+- Source code (`.java`, `.c`, `.h`, `.cpp`)
+- Build files (`Makefile`, `build.xml`)
+- Other build resources: icons, text, etc.
+
+**Leave out** things that are easily re-created and just take up space:
+
+- Object files (`.o`)
+- Executables (`.exe`)
+
+---
+
+## Repository Location
+
+You can create the repository anywhere.
+
+- **Same machine you work on** — fine for a personal project where you just want rollback protection.
+- **A robust, always-available machine** — usually preferable:
+  - Up and running 24/7, so everyone always has access.
+  - On a redundant file system (e.g. RAID), so a disk crash won't wipe out your project.
+
+**Hosted options:** GitLab, GitHub.
+
+---
+
+## Aside: Git vs. GitHub
+
+**Git** is the software that does version control.
+
+> Like Microsoft Word's "Track Changes," but more rigorous, more powerful, and scaled up to many files.
+
+**[GitHub.com](https://github.com)** is a site for online storage of Git repositories.
+
+- Many open-source projects use it (e.g. the Linux kernel).
+- Free for open-source projects; paid plans for private projects.
+
+**Q: Do I have to use GitHub to use Git?**
+**A: No!**
+
+- You can use Git completely locally for your own purposes, or
+- Share a repo with users on the same file system, as long as everyone has the needed permissions.
+
+---
+
+## Git Resources
+
+At the command line (where `<verb>` = `config`, `add`, `commit`, …):
+
+```bash
 $ git help <verb>
 $ git <verb> --help
 $ man git-<verb>
-• Free on-line book: https://git-scm.com/book/en/v2
-• Git tutorial: https://git-scm.com/docs/gittutorial
-• Reference page for Git: https://git-scm.com/docs
-• Git website: http://git-scm.com/
-• Git for Computer Scientists:
-http://eagain.net/articles/git-for-computer-scientists/
-13
+```
 
-History of Git
-• Came out of Linux development community
-• Linus Torvalds, 2005
-• Initial goals:
-▪ Speed
-▪ Support for non-linear development (thousands of parallel branches)
-▪ Fully distributed
-▪ Able to handle large projects like Linux efficiently
-14
+- **Free online book (Pro Git):** https://git-scm.com/book/en/v2
+- **Tutorial:** https://git-scm.com/docs/gittutorial
+- **Reference:** https://git-scm.com/docs
+- **Website:** https://git-scm.com/
+- **Git for Computer Scientists:** http://eagain.net/articles/git-for-computer-scientists/
 
-Git uses a distributed model
-Centralized Model Distributed Model
-(CVS, Subversion, Perforce) (Git, Mercurial)
-Result: Many operations are local
-15
+---
 
-Ways to use Git
-Possible servers:
-• GitHub
-Using Git on your own Using Git on multiple computers,
-computer, one user multiple users or one user on
-multiple computers
-16
+## History of Git
 
-A Local Git project has three areas
-| Unmodified/modified  |       | Staged  | Committed  |
-| -------------------- | ----- | ------- | ---------- |
-|                      | Files | Files   | Files      |
-Note: working directory sometimes called the “working tree”, staging area sometimes called the “index”.
-17
+- Came out of the Linux development community.
+- Created by Linus Torvalds in 2005.
 
-Git file lifecycle
-18
+**Initial goals:**
 
-Basic Workflow
-Basic Git workflow:
-1.Modify files in your working directory.
-2.Stage files, adding snapshots of them to your staging area.
-3.Do a commit, which takes the files as they are in the staging area
-and stores that snapshot permanently to your Git directory (your local
-copy of the repo).
-•Notes:
-▪ If a particular version of a file is in the git directory, it’s considered committed.
-▪ If it’s modified but has been added to the staging area, it is staged.
-▪ If it was changed since it was checked out but has not been staged, it is modified.
-19
+- Speed
+- Support for non-linear development (thousands of parallel branches)
+- Fully distributed
+- Able to handle large projects like Linux efficiently
 
-Get ready to use Git!
-1. Set the name and email for Git to use when you commit:
-$ git config --global user.name “Bugs Bunny”
+---
+
+## Git Uses a Distributed Model
+
+| Centralized Model | Distributed Model |
+| ----------------- | ----------------- |
+| CVS, Subversion, Perforce | Git, Mercurial |
+| One central "true" repo | Every clone is a full repo |
+
+**Result:** many operations are local — and therefore fast.
+
+---
+
+## Ways to Use Git
+
+A repo can live locally or on a server (e.g. **GitHub**). Common setups:
+
+- **One user, one computer** — local rollback protection.
+- **One user, multiple computers** — sync your own work across machines.
+- **Multiple users** — a shared remote everyone pushes to and pulls from.
+
+---
+
+## A Local Git Project Has Three Areas
+
+| Working Directory | Staging Area | Git Directory (Repo) |
+| ----------------- | ------------ | -------------------- |
+| Files you edit | Snapshots you've staged | Committed snapshots |
+| *modified / unmodified* | *staged* | *committed* |
+
+> The working directory is sometimes called the **working tree**; the staging area is sometimes called the **index**.
+
+---
+
+## Basic Workflow
+
+1. **Modify** files in your working directory.
+2. **Stage** files, adding snapshots of them to your staging area.
+3. **Commit**, which takes the files as they are in the staging area and stores that snapshot permanently in your Git directory (your local copy of the repo).
+
+A file's state at any time:
+
+- **Committed** — that version is safely in the Git directory.
+- **Staged** — modified and added to the staging area.
+- **Modified** — changed since checkout, but not yet staged.
+
+---
+
+## Get Ready to Use Git!
+
+**1. Set the name and email Git uses for your commits:**
+
+```bash
+$ git config --global user.name "Bugs Bunny"
 $ git config --global user.email bugs@gmail.com
-▪You can call git config –-list to verify these are set.
-▪These will be set globally for all Git projects you work with.
-▪You can set variables on a project-only basis by not using the --global flag.
-• The latest version of git will also prompt you that push.default is not set,
-you can make this warning go away with:
+```
+
+- Run `git config --list` to verify these are set.
+- `--global` applies to all your Git projects; omit it to set values per-project.
+
+**Silence the `push.default` warning** (older Git):
+
+```bash
 $ git config --global push.default simple
-• You can also set the editor used for writing commit messages:
-$ git config --global core.editor emacs (it is vim by default)
-vim tips: “a” add, “esc” when done adding, “wq:” to save and quit
-vim editor: http://www.gentoo.org/doc/en/vi-guide.xml
-vim ref card: http://tnerual.eriogerg.free.fr/vimqrc.pdf
-20
+```
 
-Create a local copy of a repo
-2. Two common scenarios: (only do one of these)
-a) To clone an already existing repo to your current directory:
-$ git clone <url> [local dir name]
-This will create a directory named local dir name, containing a working copy of
-the files from the repo, and a .git directory which you can ignore (used to hold
-the staging area and your local repo)
-Example: git clone https://github.com/sidpalas/devops-directive-docker-
-course.git
-b) To create a Git repo in your current directory:
+**Set the editor for commit messages** (defaults to vim):
+
+```bash
+$ git config --global core.editor emacs
+```
+
+> vim tips: `a` to start adding, `esc` when done, `:wq` to save and quit.
+> vim guide: http://www.gentoo.org/doc/en/vi-guide.xml — ref card: http://tnerual.eriogerg.free.fr/vimqrc.pdf
+
+---
+
+## Create a Local Copy of a Repo
+
+Two common scenarios — **do only one of these.**
+
+**A. Clone an existing repo into your current directory:**
+
+```bash
+$ git clone <url> [local-dir-name]
+```
+
+This creates a directory containing a working copy of the repo's files plus a `.git` directory (holds the staging area and your local repo — you can ignore it).
+
+```bash
+$ git clone https://github.com/sidpalas/devops-directive-docker-course.git
+```
+
+**B. Create a new repo in your current directory:**
+
+```bash
 $ git init
-This will create a .git directory in your current directory which you can ignore
-(used to hold the staging area and your local repo).
-Then you can commit files in your current directory into the local repo:
+```
+
+This creates a `.git` directory in place. You can then commit files into the local repo:
+
+```bash
 $ git add file1.java
-$ git commit –m “initial project version”
-21
+$ git commit -m "initial project version"
+```
 
-Git commands
-command description
-copy a git repository so you can add to it
-git clone url [dir]
-adds file contents to the staging area
-git add files
-records a snapshot of the staging area
-git commit
-view the status of your files in the working
-git status
-directory and staging area
-shows diff of what is staged and what is
-git diff
-modified but unstaged
-get help info about a particular command
-git help [command]
-fetch from a remote repo and try to merge
-git pull
-into the current branch
-push your new branches and data to a remote
-git push
-repository
-others: init, reset, branch, checkout, merge, log, tag
-22
+---
 
-Adding & Committing files
-1. The first time we ask a file to be tracked, and every time
-before we commit a file we must add it to the staging
-area:
+## Git Commands at a Glance
+
+| Command | Description |
+| ------- | ----------- |
+| `git clone <url> [dir]` | Copy a Git repository so you can add to it |
+| `git add <files>` | Add file contents to the staging area |
+| `git commit` | Record a snapshot of the staging area |
+| `git status` | View the status of files in your working directory and staging area |
+| `git diff` | Show the diff of what is staged vs. modified-but-unstaged |
+| `git help [command]` | Get help about a particular command |
+| `git pull` | Fetch from a remote repo and merge into the current branch |
+| `git push` | Push your new branches and data to a remote repository |
+
+> Others worth knowing: `init`, `reset`, `branch`, `checkout`, `merge`, `log`, `tag`.
+
+---
+
+## Adding & Committing Files
+
+**1. Stage files.** The first time a file is tracked — and before every commit — add it to the staging area:
+
+```bash
 $ git add README.txt hello.java
-This takes a snapshot of these files at this point in time and
-adds it to the staging area.
-Note: To unstage a change on a file before you have committed it:
-$ git reset HEAD filename
-2. To move staged changes into the local repo we commit:
-$ git commit –m “Fixing bug #22”
-Note: You can edit your most recent commit message (if you have not
-pushed your commit yet) using: git commit –-amend
-Note: These commands are just acting on your local version of repo.
-23
+```
 
-Adding your files to git repository
-24
+This snapshots the files at this point in time.
 
-Use Good Commit Messages
-HTTP://XKCD.COM/1296/
-25
+> To **unstage** a change before committing: `git reset HEAD <filename>`
 
-Status
-• To view the status of your files in the working directory and
-staging area:
-$ git status or
-$ git status –s (-s shows a short one line version)
-26
+**2. Commit** to move staged changes into your local repo:
 
-Status
-27
+```bash
+$ git commit -m "Fixing bug #22"
+```
 
-Diff
-• To see difference between your working directory and the staging
-area (This shows what is modified but unstaged):
-$ git diff
-• To see difference between the staging area and your local copy of
-the repo (This shows staged changes): (--staged is synonymous)
-$ git diff --cached
-28
+> Edit your most recent commit message (if not yet pushed): `git commit --amend`
+> These commands act only on your **local** repo.
 
-After editing a file…
-$emacs rea.txt
+---
+
+## Use Good Commit Messages
+
+- Write a short, descriptive summary line (the "why," not just the "what").
+- Each commit should have a **single logical purpose**.
+- Use the imperative mood: *"Fix login redirect"*, not *"Fixed"* or *"Fixes."*
+- Add a longer body when the change needs explanation.
+
+---
+
+## Status and Diff
+
+### Status
+
+View the status of files in your working directory and staging area:
+
+```bash
+$ git status        # full status
+$ git status -s     # short, one line per file
+```
+
+### Diff
+
+```bash
+$ git diff          # working directory vs. staging area (modified but unstaged)
+$ git diff --cached # staging area vs. local repo (staged changes); --staged is synonymous
+```
+
+---
+
+## After Editing a File…
+
+```bash
+$ emacs rea.txt
 $ git status
 # On branch master
 # Changes not staged for commit:
-# (use "git add <file>..." to update what will be committed)
-# (use "git checkout -- <file>..." to discard changes in working directory)
+#   (use "git add <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
 #
-# modified: rea.txt
+#   modified: rea.txt
 #
 no changes added to commit (use "git add" and/or "git commit -a")
+
 $ git status -s
-M rea.txt  Note: M is in second column = “working tree”
-$ git diff  Shows modifications that have not been staged.
+ M rea.txt          # M in the second column = working tree
+
+$ git diff          # shows modifications that have NOT been staged
 diff --git a/rea.txt b/rea.txt
 index 66b293d..90b65fd 100644
 --- a/rea.txt
 +++ b/rea.txt
 @@ -1,2 +1,4 @@
-Here is rea's file.
+ Here is rea's file.
 +
 +One new line added.
-$ git diff --cached  Shows nothing, no modifications have been staged yet.
-$
-29
 
-30
+$ git diff --cached # shows nothing — nothing staged yet
+```
 
-After adding file to staging area…
+---
+
+## After Adding the File to the Staging Area…
+
+```bash
 $ git add rea.txt
 $ git status
 # On branch master
 # Changes to be committed:
-# (use "git reset HEAD <file>..." to unstage)
+#   (use "git reset HEAD <file>..." to unstage)
 #
-# modified: rea.txt
+#   modified: rea.txt
 #
+
 $ git status -s
-M rea.txt  Note: M is in first column = “staging area”
-$ git diff  Note: Shows nothing, no modifications that have not been staged.
-$ git diff --cached  Note: Shows staged modifications.
+M  rea.txt          # M in the first column = staging area
+
+$ git diff          # shows nothing — nothing unstaged
+
+$ git diff --cached # shows the staged modifications
 diff --git a/rea.txt b/rea.txt
 index 66b293d..90b65fd 100644
 --- a/rea.txt
 +++ b/rea.txt
 @@ -1,2 +1,4 @@
-Here is rea's file.
+ Here is rea's file.
 +
 +One new line added.
-31
+```
 
-Viewing logs
-To see a log of all changes in your local repo:
-•$ git log or
-•$ git log --oneline (to show a shorter version)
+---
+
+## Viewing Logs
+
+See a log of all changes in your local repo:
+
+```bash
+$ git log              # full log
+$ git log --oneline    # one line per commit
 1677b2d Edited first line of readme
 258efa7 Added line to readme
 0e52da7 Initial commit
-•git log -5 (to show only the 5 most recent updates, etc.)
-Note: changes will be listed by commitID #, (SHA-1 hash)
-Note: changes made to the remote repo before the last time you
-cloned/pulled from it will also be included here
-32
 
-git log
-33
+$ git log -5           # only the 5 most recent commits
+```
 
-Pulling and Pushing
-Good practice:
-1.Add and Commit your changes to your local repo
-2.Pull from remote repo to get most recent changes (fix conflicts if
-necessary, add and commit them to your local repo)
-3.Push your changes to the remote repo
-To fetch the most recent updates from the remote repo into your local
-repo, and put them into your working directory:
-$ git pull origin master
-To push your changes from your local repo to the remote repo:
-$ git push origin master
-Notes: origin = an alias for the URL you cloned from
-master = the remote branch you are pulling from/pushing to,
-(the local branch you are pulling to/pushing from is your current branch)
-34
+> Changes are listed by commit ID (a SHA-1 hash).
+> Changes pulled/cloned from the remote before your last sync also appear here.
 
-pull
-35
+---
 
-Undoing mistakes
-36
+## Pulling and Pushing
 
-Undoing mistakes
-37
+**Good practice:**
 
-Avoiding Common Problems
-•Do not edit the repository (the .git directory) manually. It wasn't
-designed for modifications by humans.
-•Try not to make many drastic changes at once. Instead, make
-multiple commits, each of which has a single logical purpose. This
-will minimize merge conflicts. This is good coding practice in general.
-•Always git pull before editing a file. It's easy to forget this. If
-you forget, you may end up editing an outdated version, which can
-cause nasty merge conflicts.
-•Don't forget git push after you have made and committed
-changes. They are not copied to the remote repository until you do a
-push.
-38
+1. **Add and commit** your changes to your local repo.
+2. **Pull** from the remote to get the latest changes (resolve conflicts, then add and commit them).
+3. **Push** your changes to the remote.
 
-Branching
-To create a branch called experimental:
-•$ git branch experimental
-To list all branches: (* shows which one you are currently on)
-•$ git branch
-To switch to the experimental branch:
-•$ git checkout experimental
-Later on, changes between the two branches differ, to merge changes from
-experimental into the master:
-•$ git checkout master
-•$ git merge experimental
-Note: git log --graph can be useful for showing branches.
-Note: These branches are in your local repo!
-39
+```bash
+$ git pull origin master   # fetch + merge remote changes into your working directory
+$ git push origin master   # push your local commits to the remote
+```
 
-SVN vs. Git
-• SVN:
-▪ central repository approach – the main repository is the only “true”
-source, only the main repository has the complete file history
-▪ Users check out local copies of the current version
-• Git:
-▪ Distributed repository approach – every checkout of the repository is a
-full fledged repository, complete with history
-▪ Greater redundancy and speed
-▪ Branching and merging repositories is more heavily used as a result
-40
+> `origin` = an alias for the URL you cloned from.
+> `master` = the remote branch you're pulling from / pushing to. The local branch is your current branch.
 
-Resources
-Version Control with Git
-GitHub Git Cheatsheet
-Learn Git Branching in Visual and Interactive Way
-Pro Git book
-Happy Git and GitHub for the useR
-Git Cheatsheet
-W3School Git Tutorial
-41
+---
 
-Wrap-up
-• You *will* use version control software when working on projects,
-both here and in industry
-▪ Rather foolish not to
-▪ Advice: just set up a repository, even for small projects, it will save you
-time and hassle
-• HW9 (Git) has more details and walks you through creating a Git repo
-and adding to a shared repo.
-42
+## Avoiding Common Problems
+
+- **Don't edit the repository (`.git`) manually.** It wasn't designed for hand-editing.
+- **Don't make many drastic changes at once.** Make multiple commits, each with a single logical purpose — this minimizes merge conflicts and is good practice anyway.
+- **Always `git pull` before editing.** Easy to forget. If you don't, you may edit an outdated version and cause nasty conflicts.
+- **Don't forget `git push` after committing.** Your changes aren't on the remote until you push.
+
+---
+
+## Branching
+
+```bash
+$ git branch experimental    # create a branch called "experimental"
+$ git branch                 # list all branches (* marks the current one)
+$ git checkout experimental  # switch to the experimental branch
+```
+
+Later, to merge changes from `experimental` into `master`:
+
+```bash
+$ git checkout master
+$ git merge experimental
+```
+
+> `git log --graph` is handy for visualizing branches.
+> These branches live in your **local** repo.
+
+---
+
+## SVN vs. Git
+
+**SVN — centralized**
+
+- The main repository is the only "true" source; only it has the complete history.
+- Users check out local copies of the current version.
+
+**Git — distributed**
+
+- Every checkout is a full-fledged repository, complete with history.
+- Greater redundancy and speed.
+- Branching and merging are used much more heavily as a result.
+
+---
+
+## Resources
+
+- Version Control with Git (O'Reilly)
+- GitHub Git Cheat Sheet
+- Learn Git Branching — visual and interactive
+- Pro Git book
+- Happy Git and GitHub for the useR
+- Git Cheat Sheet
+- W3Schools Git Tutorial
+
+---
+
+## Wrap-Up
+
+You **will** use version control on projects — both here and in industry. It's rather foolish not to.
+
+- Set up a repository even for small projects — it will save you time and hassle.
+- **HW9 (Git)** walks you through creating a Git repo and adding to a shared repo.
