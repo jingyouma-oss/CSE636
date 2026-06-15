@@ -117,3 +117,5 @@ These notes reuse and point to existing course content:
 | Class Participation | 15% |
 
 > **Responsible AI-tool use.** Students are expected to *use* AI coding agents in labs and projects **and to disclose and critically evaluate** that use — verifying correctness, reviewing agent-generated changes, and noting failures. Undisclosed or uncritical reliance on AI output is handled under the Academic Integrity policy.
+
+> **Group project, capstone & exams.** The cross-week graded work (the 20% capstone, plus the mid-term and final) is consolidated in **[GROUP_PROJECT_GUIDE.md](GROUP_PROJECT_GUIDE.md)** — team formation, a week-by-week build plan, deliverables, and exam scope.

@@ -1,0 +1,36 @@
+{
+  "format_version": "1.2",
+  "comment": "COMPLIANT sample of `terraform show -json` output for s3.tf. Bundled so conftest runs offline (no AWS creds needed). Regenerate from real Terraform with the Makefile's `plan` target.",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.capstone_artifacts",
+      "type": "aws_s3_bucket",
+      "name": "capstone_artifacts",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "bucket": "cse636-capstone-artifacts",
+          "tags": { "Environment": "capstone", "ManagedBy": "terraform" }
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket_versioning.capstone_artifacts",
+      "type": "aws_s3_bucket_versioning",
+      "name": "capstone_artifacts",
+      "change": { "actions": ["create"], "after": { "versioning_configuration": [{ "status": "Enabled" }] } }
+    },
+    {
+      "address": "aws_s3_bucket_server_side_encryption_configuration.capstone_artifacts",
+      "type": "aws_s3_bucket_server_side_encryption_configuration",
+      "name": "capstone_artifacts",
+      "change": { "actions": ["create"], "after": { "rule": [{ "apply_server_side_encryption_by_default": [{ "sse_algorithm": "AES256" }] }] } }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.capstone_artifacts",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "capstone_artifacts",
+      "change": { "actions": ["create"], "after": { "block_public_acls": true, "block_public_policy": true, "ignore_public_acls": true, "restrict_public_buckets": true } }
+    }
+  ]
+}
