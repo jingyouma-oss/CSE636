@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="470" viewBox="0 0 700 470" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="cah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+    </marker>
+    <linearGradient id="treq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <linearGradient id="tagent" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient>
+    <linearGradient id="thuman" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fef3c7"/><stop offset="1" stop-color="#fde68a"/></linearGradient>
+    <linearGradient id="tci" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcfce7"/><stop offset="1" stop-color="#bbf7d0"/></linearGradient>
+    <linearGradient id="tmon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fce7f3"/><stop offset="1" stop-color="#fbcfe8"/></linearGradient>
+    <filter id="csh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="700" height="470" fill="#f8fafc"/>
+  <text x="350" y="28" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">An AI agent orchestrates a toolchain</text>
+
+  <!-- arrows -->
+  <g stroke="#6366f1" stroke-width="2.5" fill="none">
+    <line x1="350" y1="62" x2="350" y2="82" marker-end="url(#cah)"/>
+    <line x1="350" y1="210" x2="350" y2="230" marker-end="url(#cah)"/>
+    <line x1="350" y1="278" x2="350" y2="298" marker-end="url(#cah)"/>
+    <line x1="350" y1="346" x2="350" y2="366" marker-end="url(#cah)"/>
+  </g>
+
+  <!-- Developer request -->
+  <rect x="250" y="40" width="200" height="22" rx="11" fill="url(#treq)" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="350" y="56" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Developer request</text>
+
+  <!-- AI coding agent with sub-steps -->
+  <rect x="150" y="84" width="400" height="126" rx="12" fill="url(#tagent)" stroke="#4f46e5" stroke-width="2.5" filter="url(#csh)"/>
+  <text x="350" y="106" text-anchor="middle" font-size="13" font-weight="800" fill="#4338ca">AI coding agent (Claude Code / Copilot)</text>
+  <text x="174" y="128" font-size="11" fill="#334155">• reads codebase (Git)</text>
+  <text x="174" y="148" font-size="11" fill="#334155">• writes / edits code (file system)</text>
+  <text x="174" y="168" font-size="11" fill="#334155">• runs tests (CI runner)</text>
+  <text x="174" y="188" font-size="11" fill="#334155">• checks style &amp; security (linter, SAST)</text>
+  <text x="382" y="128" font-size="11" fill="#334155">• opens pull request (GitHub API)</text>
+  <text x="382" y="150" font-size="10" font-style="italic" fill="#64748b">glue between tools</text>
+  <text x="382" y="164" font-size="10" font-style="italic" fill="#64748b">is increasingly MCP</text>
+
+  <!-- Human reviewer -->
+  <rect x="225" y="232" width="250" height="46" rx="12" fill="url(#thuman)" stroke="#d97706" stroke-width="2" filter="url(#csh)"/>
+  <text x="350" y="253" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">Human reviewer approves PR</text>
+  <text x="350" y="270" text-anchor="middle" font-size="10" fill="#64748b">the approval gate — human-in-the-loop</text>
+
+  <!-- CI/CD deploy -->
+  <rect x="225" y="300" width="250" height="46" rx="12" fill="url(#tci)" stroke="#16a34a" stroke-width="2" filter="url(#csh)"/>
+  <text x="350" y="321" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">CI/CD pipeline deploys change</text>
+  <text x="350" y="338" text-anchor="middle" font-size="10" fill="#64748b">build → test → release</text>
+
+  <!-- AIOps monitor -->
+  <rect x="200" y="368" width="300" height="64" rx="12" fill="url(#tmon)" stroke="#db2777" stroke-width="2" filter="url(#csh)"/>
+  <text x="350" y="390" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">AIOps platform monitors health</text>
+  <text x="350" y="408" text-anchor="middle" font-size="10.5" fill="#475569">anomaly detected? → trigger rollback agent</text>
+  <text x="350" y="424" text-anchor="middle" font-size="10" font-style="italic" fill="#64748b">(closes the loop back to the agent)</text>
+</svg>

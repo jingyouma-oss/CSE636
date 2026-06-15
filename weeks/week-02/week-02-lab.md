@@ -16,6 +16,15 @@
 - Git and GitHub account
 - Python 3.10+
 
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Part 1** | A Jenkins pipeline (built from `Dockerfile_Master`) with a Lint → Test → **AI Code Review** stage |
+> | **Part 2** | A minimal **MCP server** exposing live Jenkins build status to Claude Code |
+> | **Submit** | Build screenshot, the AI review report, your MCP server code, and a permissions reflection |
+> | **Ties to notes** | The [MCP host/client/server model](week-02-notes.md#concept-the-model-context-protocol-mcp) and [least-privilege](week-02-notes.md#concept-secrets-credentials-and-permission-management-for-agents) |
+
 ---
 
 ### Part 1: Stand Up the Jenkins Pipeline
@@ -313,6 +322,16 @@ claude "List all Jenkins jobs and tell me the status of the ai-review-demo job."
 ```
 
 Observe: Claude Code should call the `list_jobs` and `get_build_status` tools and incorporate the live results into its response.
+
+<details><summary>✅ Did it work? Confirm it's a real tool call, not a guess</summary>
+
+You've succeeded when the agent's answer reflects **live** state — the actual job names from *your* Jenkins and the real build number/result — not a plausible-sounding invented answer.
+
+- If Claude Code answers without ever calling the tool, check that `~/.claude/claude.json` points at the **absolute path** of `jenkins_status.py` and that the server starts standalone (Part 2, Step 2).
+- If the tool call errors, verify `JENKINS_URL`, `JENKINS_USER`, and a valid `JENKINS_TOKEN` (Manage Jenkins → API token).
+- Sanity check: stop Jenkins (`docker compose stop`) and ask again — a real tool call now fails/empties, proving the agent was querying live infrastructure rather than its training data.
+
+</details>
 
 ---
 

@@ -1,3 +1,16 @@
+# =============================================================================
+# ⚠️ LEGACY / REFERENCE ONLY — DO NOT USE FOR LABS. This image WILL NOT BUILD.
+#
+# Line 23 (`ADD slave.py ...`) references a slave.py that is not in this repo,
+# so `docker build` fails with "slave.py: not found". It is kept only as a
+# historical example of the old Jenkins master/agent ("slave") pattern on
+# ubuntu:16.04 (an end-of-life base image).
+#
+# 👉 For all coursework use `Dockerfile_Master` instead:
+#      docker build -t cstu-jenkins -f Dockerfile_Master .
+#    See ../../weeks/week-02/week-02-lab.md and the repo README.
+# =============================================================================
+
 FROM ubuntu:16.04
 
 # Install Docker CLI in the agent
