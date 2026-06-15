@@ -1,8 +1,8 @@
 # California Science and Technology University
 ## DevOps with AI — Syllabus (Revised for Agentic AI)
-### CSE636 · Fall 2025
+### CSE636 · Summer 2026
 
-> **Revision note (v2):** This edition modernizes the course around the 2025–2026 shift from *AI-assisted* DevOps to *agentic* DevOps — autonomous AI agents that plan and execute multi-step work — while preserving the original 7-week / 13-session structure, grading, and policies. Sessions, labs, assignments, textbook, and references have been updated.
+> **Revision note (v2):** This edition modernizes the course around the 2025–2026 shift from *AI-assisted* DevOps to *agentic* DevOps — autonomous AI agents that plan and execute multi-step work — while preserving the original 7-week / 13-session structure, grading, and policies. Sessions, labs, assignments, and references have been updated. The course uses **no required (purchased) textbook**: required readings are free, continuously updated online references, with optional recommended books for students new to DevOps or AI (see *Textbook and Reference Material*).
 
 ---
 
@@ -12,11 +12,11 @@
 |---|---|
 | **Lecturer** | Qingsong Zhang |
 | **E-mail** | qingsong.zhang@cstu.edu |
-| **Time** | Wednesday 7:30pm – 9:00pm (Online) · Saturday 9:00am – 10:30am (Onsite) |
+| **Time** | Wednesday 7:30pm – 9:30pm (Online) · Saturday 10:40am – 12:10pm (Onsite) |
 | **Contact** | 23 Hours |
 | **Credit** | 1.5 Units |
 | **Office hours** | By Appointment |
-| **Review Date** | 11/4/2025 |
+| **Review Date** | 6/8/2026 |
 
 ---
 
@@ -42,11 +42,17 @@ By the end of the course, students will be able to:
 
 ### Textbook Information
 
-*Mastering ChatGPT and Prompt Engineering*, ISBN-13: 979-8390306932, ASIN: B0C1J1H9WQ — retained as **supplementary** reading for prompting fundamentals. (Recommend refreshing in a future revision; the field has moved well beyond single-prompt techniques toward agents and context engineering.)
+**There is no required textbook to purchase.** Agentic DevOps is a fast-moving field (2025–2026) with no single authoritative textbook; any printed book is partly outdated before it ships. Instead, this course uses a **curated set of freely available, continuously updated references** (listed below), assigned per session. All required readings are free and accessible online.
 
-### Reference Information (current)
+For students who are **new to DevOps and/or AI** and want a deeper anchor for the fundamentals, the following books are **optional and recommended** (not required, not purchased for any exam or assignment):
 
-Primary, freely available references that reflect the current state of agentic DevOps:
+- **DevOps foundations** — *The Phoenix Project* (Kim, Behr, Spafford) for an approachable narrative on *why* DevOps exists, or *The DevOps Handbook, 2nd ed.* (Kim, Humble, Debois, Willis) for the practices.
+- **AI / LLM foundations** — *AI Engineering: Building Applications with Foundation Models* (Chip Huyen, O'Reilly, 2025) for LLMs, RAG, agents, and evaluation.
+- **Reliability foundations** — *Site Reliability Engineering* (Google) — **free online** at https://sre.google/books/ — for the SRE concepts behind several later sessions.
+
+### Reference Information (current — required readings)
+
+Primary, freely available references that reflect the current state of agentic DevOps. These are the course's working "textbook," assigned per session:
 
 1. **Anthropic — "Building Effective Agents"** (engineering guide): https://www.anthropic.com/engineering/building-effective-agents
 2. **Anthropic — Claude Developer & Claude Code documentation**: https://docs.anthropic.com
@@ -57,7 +63,8 @@ Primary, freely available references that reflect the current state of agentic D
 7. **DORA — Accelerate State of DevOps / DevOps metrics**: https://dora.dev
 8. **Platform Engineering & Internal Developer Platforms** (Backstage): https://backstage.io · https://platformengineering.org
 9. **Open Policy Agent (Policy-as-Code)**: https://www.openpolicyagent.org
-10. **GitHub Copilot, Cursor, and AIOps vendor docs** (Datadog Bits AI, New Relic AI, Dynatrace Davis, PagerDuty AI) — linked per session.
+10. **Google — Site Reliability Engineering** (free online book): https://sre.google/books/ — SRE concepts behind the monitoring, incident-response, and agentic-SRE sessions.
+11. **GitHub Copilot, Cursor, and AIOps vendor docs** (Datadog Bits AI, New Relic AI, Dynatrace Davis, PagerDuty AI) — linked per session.
 
 ---
 

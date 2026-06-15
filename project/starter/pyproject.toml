@@ -1,0 +1,5 @@
+# Minimal project config. The pytest section lets `pytest` import the `app`
+# package by putting the project root on the Python path.
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

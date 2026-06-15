@@ -9,7 +9,7 @@ Course materials for **CSE636 DevOps with AI**. The bulk of the repo is non-code
 - `slides/` — lecture decks (`.key`, `.pptx`, `.pdf`) on Git, Docker, Jenkins, Kubernetes, OpenTelemetry, monitoring, AI automation
 - `syllabus/`, `homework/`, `class materials/` — `.pdf` / `.pages` documents and cheat sheets
 
-The only executable code lives in `project/Jenkins/`. Treat everything else as read-only reference content — there is nothing to build, lint, or test outside that folder.
+Executable code lives in `project/Jenkins/` (Jenkins-in-Docker teaching setup) and `project/starter/` (the Week 0 beginner on-ramp — a tiny Flask service with tests, Docker, and CI). Treat everything else as read-only reference content — there is nothing to build, lint, or test outside those folders.
 
 ## Jenkins project (`project/Jenkins/`)
 

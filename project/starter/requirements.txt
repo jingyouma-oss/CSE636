@@ -1,0 +1,4 @@
+# Runtime + test dependencies for the CSE636 starter service.
+# Pinned to minor versions so everyone in class gets the same behavior.
+flask>=3.0,<4.0
+pytest>=8.0,<9.0

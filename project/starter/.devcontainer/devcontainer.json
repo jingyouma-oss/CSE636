@@ -1,0 +1,24 @@
+{
+  // A Dev Container gives every student an identical, ready-to-go environment.
+  // Open this folder in GitHub Codespaces or VS Code ("Reopen in Container")
+  // and Python, Docker, and the dependencies are set up for you — no local
+  // install needed. This is the lowest-friction way to start the Week 0 lab.
+  "name": "CSE636 Starter",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    // Lets you build and run Docker images from inside the container (Week 1).
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  // Install project dependencies once the container is created.
+  "postCreateCommand": "make setup",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "github.copilot"
+      ]
+    }
+  },
+  // Expose the app's port so you can open it in a browser.
+  "forwardPorts": [8000]
+}

@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="580" viewBox="0 0 760 580" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <!-- arrowheads (one per edge color) -->
+    <marker id="arrowIndigo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#818cf8"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"/>
+    </marker>
+    <marker id="arrowPink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f472b6"/>
+    </marker>
+
+    <!-- box gradients -->
+    <linearGradient id="gradYou" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef2ff"/><stop offset="1" stop-color="#c7d2fe"/>
+    </linearGradient>
+    <linearGradient id="gradGit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef3c7"/><stop offset="1" stop-color="#fde68a"/>
+    </linearGradient>
+    <linearGradient id="gradPy" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/>
+    </linearGradient>
+    <linearGradient id="gradDocker" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cffafe"/><stop offset="1" stop-color="#a5f3fc"/>
+    </linearGradient>
+    <linearGradient id="gradGH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f3e8ff"/><stop offset="1" stop-color="#e9d5ff"/>
+    </linearGradient>
+    <linearGradient id="gradActions" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fce7f3"/><stop offset="1" stop-color="#fbcfe8"/>
+    </linearGradient>
+    <linearGradient id="gradCheck" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dcfce7"/><stop offset="1" stop-color="#86efac"/>
+    </linearGradient>
+
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+
+    <style>
+      .title { font-size: 14px; font-weight: 700; fill: #0f172a; }
+      .sub   { font-size: 11px; fill: #475569; }
+      .lbl   { font-size: 11px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <!-- backdrop -->
+  <rect x="0" y="0" width="760" height="580" fill="#f1f5f9"/>
+
+  <!-- column lane backgrounds -->
+  <rect x="44" y="18" width="272" height="436" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <rect x="444" y="18" width="272" height="436" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="180" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#6366f1" letter-spacing="1">YOUR LAPTOP</text>
+  <text x="580" y="42" text-anchor="middle" font-size="12" font-weight="700" fill="#9333ea" letter-spacing="1">GITHUB · CLOUD</text>
+
+  <!-- ============ LEFT COLUMN ============ -->
+
+  <!-- You -->
+  <rect x="60" y="56" width="240" height="58" rx="10" fill="url(#gradYou)" stroke="#4f46e5" stroke-width="2" filter="url(#shadow)"/>
+  <text class="title" x="180" y="81" text-anchor="middle">You (+ an AI coding agent)</text>
+  <text class="sub"   x="180" y="99" text-anchor="middle">direct and audit the work</text>
+
+  <line x1="180" y1="114" x2="180" y2="158" stroke="#818cf8" stroke-width="3" marker-end="url(#arrowIndigo)"/>
+  <rect x="188" y="126" width="70" height="18" rx="4" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text class="lbl" x="223" y="139" text-anchor="middle" fill="#4338ca">edit code</text>
+
+  <!-- Git repo -->
+  <rect x="60" y="160" width="240" height="58" rx="10" fill="url(#gradGit)" stroke="#d97706" stroke-width="2" filter="url(#shadow)"/>
+  <text class="title" x="180" y="185" text-anchor="middle">Git repo on your laptop</text>
+  <text class="sub"   x="180" y="203" text-anchor="middle">version-controlled project</text>
+
+  <line x1="180" y1="218" x2="180" y2="262" stroke="#818cf8" stroke-width="3" marker-end="url(#arrowIndigo)"/>
+  <rect x="188" y="230" width="134" height="18" rx="4" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text class="lbl" x="255" y="243" text-anchor="middle" fill="#4338ca">make test / make run</text>
+
+  <!-- Python -->
+  <rect x="60" y="264" width="240" height="58" rx="10" fill="url(#gradPy)" stroke="#2563eb" stroke-width="2" filter="url(#shadow)"/>
+  <text class="title" x="180" y="289" text-anchor="middle">Python runs tests &amp; app</text>
+  <text class="sub"   x="180" y="307" text-anchor="middle">the starter service</text>
+
+  <line x1="180" y1="322" x2="180" y2="366" stroke="#818cf8" stroke-width="3" marker-end="url(#arrowIndigo)"/>
+  <rect x="188" y="334" width="124" height="18" rx="4" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text class="lbl" x="250" y="347" text-anchor="middle" fill="#4338ca">make docker-build</text>
+
+  <!-- Docker -->
+  <rect x="60" y="368" width="240" height="58" rx="10" fill="url(#gradDocker)" stroke="#0891b2" stroke-width="2" filter="url(#shadow)"/>
+  <text class="title" x="180" y="393" text-anchor="middle">Docker container</text>
+  <text class="sub"   x="180" y="411" text-anchor="middle">runs anywhere</text>
+
+  <!-- ============ RIGHT COLUMN ============ -->
+
+  <!-- Git repo -> GitHub (push, diagonal) -->
+  <line x1="300" y1="186" x2="440" y2="92" stroke="#f472b6" stroke-width="3" marker-end="url(#arrowPink)"/>
+  <rect x="338" y="120" width="50" height="18" rx="4" fill="#fce7f3" stroke="#fbcfe8"/>
+  <text class="lbl" x="363" y="133" text-anchor="middle" fill="#be185d">push</text>
+
+  <!-- GitHub -->
+  <rect x="460" y="56" width="240" height="58" rx="10" fill="url(#gradGH)" stroke="#9333ea" stroke-width="2" filter="url(#shadow)"/>
+  <text class="title" x="580" y="81" text-anchor="middle">GitHub (shared repo)</text>
+  <text class="sub"   x="580" y="99" text-anchor="middle">where teams collaborate</text>
+
+  <line x1="580" y1="114" x2="580" y2="262" stroke="#34d399" stroke-width="3" marker-end="url(#arrowGreen)"/>
+  <rect x="588" y="179" width="58" height="18" rx="4" fill="#dcfce7" stroke="#86efac"/>
+  <text class="lbl" x="617" y="192" text-anchor="middle" fill="#15803d">triggers</text>
+
+  <!-- GitHub Actions -->
+  <rect x="460" y="264" width="240" height="58" rx="10" fill="url(#gradActions)" stroke="#db2777" stroke-width="2" filter="url(#shadow)"/>
+  <text class="title" x="580" y="289" text-anchor="middle">GitHub Actions (CI)</text>
+  <text class="sub"   x="580" y="307" text-anchor="middle">runs the same tests</text>
+
+  <line x1="580" y1="322" x2="580" y2="366" stroke="#34d399" stroke-width="3" marker-end="url(#arrowGreen)"/>
+
+  <!-- green checkmark -->
+  <rect x="460" y="368" width="240" height="58" rx="10" fill="url(#gradCheck)" stroke="#16a34a" stroke-width="2" filter="url(#shadow)"/>
+  <text x="512" y="405" font-size="24" text-anchor="middle">✅</text>
+  <text class="title" x="600" y="402" text-anchor="middle" fill="#14532d">green checkmark</text>
+
+  <!-- caption -->
+  <text x="380" y="498" text-anchor="middle" font-size="12.5" fill="#334155">
+    The same code runs locally (left) and on GitHub's CI (right) — proving it works everywhere.
+  </text>
+</svg>

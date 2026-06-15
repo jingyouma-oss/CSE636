@@ -8,6 +8,7 @@ Classroom-ready lecture notes for **CSE636 DevOps with AI**, a 7-week graduate c
 
 ## How the course is structured
 
+- An optional **Week 0** on-ramp ([`week-00/`](week-00/)) gets absolute beginners to a working toolchain *before* Week 1 — install + verify Git, Python, Docker, and an AI agent by running the [starter service](../project/starter/) end to end. It is pre-work, not part of the 13 graded sessions.
 - **7 weeks**, **13 sessions** total.
 - Weeks 1–6 have **2 sessions** each; Week 7 has **1 session** (Session 13).
 - **Session timing** (assumed in the notes; adjust to your schedule):
@@ -22,6 +23,7 @@ The course tells one continuous story: **move from using AI as a passive assista
 
 | Week | Theme | What students can do by the end |
 |---|---|---|
+| **0** *(optional pre-work)* | Getting Ready — A Beginner's On-Ramp | Have a working toolchain (Git, Python, Docker, an AI agent) and run a tiny app end to end; know the core vocabulary |
 | **1** | Foundations of AI-Assisted & Agentic DevOps | Explain DevOps, the CI/CD lifecycle, what an LLM and an AI *agent* are, and the *levels of autonomy* |
 | **2** | AI Agent Tooling, Protocols & Platforms | Compare AI coding agents and AIOps tools; connect an agent to a tool with **MCP**; manage agent permissions |
 | **3** | Agentic CI/CD Pipelines | Put agents *inside* the pipeline — review code, generate tests, triage/fix failing builds behind approval gates |
@@ -39,6 +41,7 @@ Each week is split into **two files** so the teaching material and the hands-on 
 ```
 weeks/
   README.md
+  week-00/   week-00-notes.md   week-00-lab.md   (optional beginner on-ramp)
   week-01/   week-01-notes.md   week-01-lab.md
   week-02/   week-02-notes.md   week-02-lab.md
   …
