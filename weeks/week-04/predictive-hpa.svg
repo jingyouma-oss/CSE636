@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="340" viewBox="0 0 780 340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <filter id="phsh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="780" height="340" fill="#f8fafc"/>
+  <text x="390" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Reactive HPA lags; predictive HPA scales ahead</text>
+
+  <!-- shared time axis idea: two mini charts -->
+  <!-- Reactive (left) -->
+  <text x="200" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#dc2626">Reactive HPA</text>
+  <rect x="40" y="70" width="320" height="170" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+  <!-- axes -->
+  <line x1="60" y1="220" x2="345" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="60" y1="90" x2="60" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- demand spike curve -->
+  <path d="M 60 200 L 150 198 L 200 100 L 250 96 L 345 120" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="150" y="180" font-size="9.5" fill="#2563eb">demand</text>
+  <!-- capacity step lagging -->
+  <path d="M 60 205 L 215 205 L 215 130 L 345 130" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <text x="300" y="148" font-size="9.5" fill="#dc2626">capacity</text>
+  <!-- gap shading -->
+  <rect x="200" y="100" width="15" height="105" fill="#fecaca" opacity="0.6"/>
+  <text x="208" y="250" text-anchor="middle" font-size="10.5" fill="#b91c1c">users feel the lag (60–120s)</text>
+
+  <!-- Predictive (right) -->
+  <text x="580" y="58" text-anchor="middle" font-size="13" font-weight="800" fill="#16a34a">Predictive HPA</text>
+  <rect x="420" y="70" width="320" height="170" rx="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+  <line x1="440" y1="220" x2="725" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+  <line x1="440" y1="90" x2="440" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+  <!-- demand -->
+  <path d="M 440 200 L 530 198 L 580 100 L 630 96 L 725 120" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="530" y="180" font-size="9.5" fill="#2563eb">demand</text>
+  <!-- capacity steps up early -->
+  <path d="M 440 205 L 545 205 L 545 110 L 725 110" fill="none" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="660" y="128" font-size="9.5" fill="#16a34a">capacity</text>
+  <text x="560" y="250" text-anchor="middle" font-size="10.5" fill="#15803d">forecast scales up before the spike</text>
+
+  <!-- bottom explanation -->
+  <rect x="40" y="278" width="700" height="46" rx="10" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="390" y="300" text-anchor="middle" font-size="11" fill="#334155">Forecast next 5–15 min CPU → desired_replicas = ceil(predicted_cpu / target_per_replica) → scale now.</text>
+  <text x="390" y="316" text-anchor="middle" font-size="10.5" fill="#64748b">Emit the forecast as a Prometheus metric and let a KEDA ScaledObject act on it.</text>
+</svg>

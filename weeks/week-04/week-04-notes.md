@@ -1,5 +1,7 @@
 # Week 4: Predictive Analytics & Capacity Intelligence
 
+![Course learning path with Week 4 (Predict) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-04-lab.md](week-04-lab.md)**.
 
 
@@ -8,6 +10,15 @@
 **Where it sits in the arc:** Weeks 1–3 built your pipeline and put agents inside it. This week you turn the agents forward-looking: instead of reacting to problems, they *predict* them. The skills you build here feed directly into Week 5, where you learn to *detect* anomalies and do root-cause analysis after things go wrong.
 
 **Builds on:** [Week 3](../week-03/week-03-notes.md) — agentic CI/CD, approval gates, and self-healing pipelines. You already have agents that can open PRs and fix failing builds; now you will give them forecasting data to decide *whether to deploy at all* and how many resources to reserve.
+
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Prerequisites** | [Week 3](../week-03/week-03-notes.md) + the ML basics in the primer below (no math background needed) |
+> | **Time budget** | 2 sessions: ~2 hrs + ~1.5 hrs · **mid-term exam covers Weeks 1–4** |
+> | **By the end you can** | Score deployment risk, run AI-gated canary/blue-green rollouts, forecast capacity with Prophet, and drive predictive autoscaling (HPA/KEDA) and FinOps |
+> | **What you'll build** | A Prophet CPU forecast that produces a scaling recommendation — runnable starter in [`project/forecasting/`](../../project/forecasting/) (see the [lab](week-04-lab.md)) |
 
 ---
 
@@ -215,6 +226,18 @@ The trade-off versus canary: blue-green is faster to switch but exposes all user
 | Infrastructure cost | Low (canary is small) | Higher (two full environments) |
 | Best for | High-traffic services, risk-averse | Services needing zero-downtime cutover |
 
+![Canary versus blue-green deployments side by side. Canary (gradual): users are split so the stable version serves 95% and the canary serves 5%; if healthy, traffic widens 5% to 25% to 50% to 100%, and if degraded all traffic routes back to stable — small blast radius, low extra cost, best for high traffic. Blue-green (instant flip): all users flip at once from the old blue (now standby rollback target) to the new green (live); rollback is flipping back to blue — instant cutover and rollback but all users are exposed at once and it costs more (two full environments).](canary-vs-bluegreen.svg)
+
+#### ✅ Check your understanding
+
+**Q:** A payment service needs zero-downtime cutover and has a fast, reliable rollback target, but you're worried about exposing all users to a bad release at once. Which strategy trades which risk?
+
+<details><summary>💡 Show answer</summary>
+
+**Blue-green** gives the instant, zero-downtime cutover and instant rollback (flip back to blue) — but exposes *all* users the moment you flip. **Canary** limits the blast radius (only 5% see the new version first) at the cost of a slower, gradual rollout. For a payment service many teams actually prefer canary's small blast radius, or combine the two: deploy to green, then shift traffic to it canary-style.
+
+</details>
+
 #### 4. AI Gating: Scoring a Deployment
 
 Manually watching canary metrics is tedious and error-prone. An **AI gate** is a model (or agent) that watches the metrics automatically and makes — or recommends — the advance/abort decision.
@@ -242,6 +265,8 @@ A simple ML-based gate works like this:
    - *Human-in-the-loop* — posts a recommendation to Slack, a human approves.
    - *Human-on-the-loop* — automatically aborts unless a human overrides within 5 minutes.
    - *Autonomous* — aborts immediately, notifies on-call after the fact.
+
+![An AI gate scoring a canary. Live canary features (error-rate delta vs stable, p99 latency delta, CPU/memory increase, change volume, number of dependent services, team historical fail rate, whether security files were touched) feed a trained classifier (XGBoost or logistic regression), which outputs a probability such as "78% healthy"; if it falls below the threshold (70%) the gate recommends abort. The same score drives three autonomy policies: human-in-the-loop (post to Slack, human approves), human-on-the-loop (auto-abort unless overridden within 5 minutes), and autonomous (abort now, notify on-call after).](ai-gate.svg)
 
 #### 5. Agentic Rollback Decisions
 
@@ -297,6 +322,16 @@ Building a deployment-risk model sounds straightforward until you try to gather 
 **Survivorship bias.** If your team has been doing canary deployments for years, you never see what would have happened with a full bad rollout. Your "failures" are only the ones that got through the safety net — an unrepresentative sample.
 
 **Class imbalance.** In a healthy team, 95% of deployments succeed. A naive model can achieve 95% accuracy by always predicting "success" — which is useless. You must use balanced sampling, class-weighted loss, or metrics like **precision/recall** and **F1 score** instead of raw accuracy.
+
+#### ✅ Check your understanding
+
+**Q:** Your deployment-risk model reports **95% accuracy**, and 95% of historical deploys succeeded. Why might this model be worthless, and what would you measure instead?
+
+<details><summary>💡 Show answer</summary>
+
+A model that *always predicts "success"* scores 95% accuracy on this **class-imbalanced** data while catching **zero** real failures — accuracy is hiding total uselessness. Measure **precision and recall (and F1) on the failure class**: recall tells you what fraction of real failures it catches, precision how many of its alarms are real. Also train with class weighting / balanced sampling so the model actually learns the rare failure pattern.
+
+</details>
 
 **Concept drift.** The system changes over time — a model trained on last year's deployments may not reflect today's architecture. Models need retraining on a rolling window of recent data.
 
@@ -567,6 +602,8 @@ Standard Kubernetes HPA is **reactive**: it adds pods *after* CPU exceeds the th
 2. A controller converts the predicted CPU into a required replica count: `desired_replicas = ceil(predicted_cpu / target_cpu_per_replica)`.
 3. Kubernetes scales to `desired_replicas` now, before the load materializes.
 
+![Reactive versus predictive HPA. Left: reactive HPA — a demand curve spikes while the capacity step lags 60–120 seconds behind, leaving a shaded gap where users feel the lag. Right: predictive HPA — capacity steps up early, before the demand spike arrives, because a forecast drove it. Bottom: forecast the next 5–15 minutes of CPU, compute desired_replicas = ceil(predicted_cpu / target_per_replica), scale now; emit the forecast as a Prometheus metric and let a KEDA ScaledObject act on it.](predictive-hpa.svg)
+
 The Kubernetes community has implemented this via custom controllers (e.g., the **Predictive Horizontal Pod Autoscaler** project) and via integration with KEDA.
 
 ##### KEDA (Kubernetes Event-Driven Autoscaling)
@@ -610,6 +647,16 @@ spec:
 
 This KEDA config combines a forecast-driven trigger with a cron-based floor — a robust real-world pattern.
 
+#### ✅ Check your understanding
+
+**Q:** Reactive HPA already scales when CPU crosses 60%. What concrete problem does a *predictive* HPA solve that a reactive one cannot?
+
+<details><summary>💡 Show answer</summary>
+
+The **scale-up lag**. Reactive HPA only adds pods *after* the threshold is crossed, and new pods take 60–120s to schedule, start, and pass readiness — so a sharp spike hurts users during that window. Predictive HPA forecasts the load 5–15 min out and scales *before* it arrives, so capacity is already in place. (You still keep a reactive floor as a safety net for unforecastable spikes.)
+
+</details>
+
 #### 6. Agents That Recommend and Apply Scaling Policies
 
 Beyond static thresholds, an **agentic scaling advisor** can reason about the full context of a scaling decision:
@@ -647,6 +694,8 @@ This is a **human-in-the-loop** design — the agent gathers data, reasons about
 ### Worked Example / Demo: Forecasting CPU with Prophet
 
 This demo shows the full loop: train a Prophet model on historical CPU data, generate a 1-hour forecast, and translate it into a scaling recommendation.
+
+![The lab pipeline in four stages: 1 CPU history (a time series of ds/y 5-minute samples) → 2 Prophet (models trend plus seasonality, forecasts the next 30 minutes) → 3 Replica calc (ceil of current replicas times predicted CPU over target, clamped to min/max) → 4 Scale action (e.g. "scale 5 → 7 pods", pre-emptive). Evaluate first by holding out the last 24 hours and checking MAE/MAPE; a MAPE under about 10% is good enough to act on. Use the upper confidence bound when under-provisioning is costlier than over-provisioning.](forecast-to-scale.svg)
 
 **Setup:**
 
@@ -782,6 +831,16 @@ print(f"MAPE: {mean_absolute_percentage_error(actual, predicted)*100:.1f}%")
 ```
 
 A MAPE under 10% on CPU forecasting is generally good enough to make reliable scaling decisions.
+
+#### ✅ Check your understanding
+
+**Q:** To evaluate the forecast you split the data into train/test. Why must you split *chronologically* (train on the past, test on the future) instead of shuffling randomly?
+
+<details><summary>💡 Show answer</summary>
+
+Because the data is **time-ordered**. Random shuffling puts *future* points into the training set, so the model effectively "sees the answer" — this is data leakage, and it produces an over-optimistic score that collapses in production. **Temporal cross-validation** (train on the first 80% of time, test on the last 20%) mirrors how the model is actually used: predicting forward from only past data.
+
+</details>
 
 ---
 

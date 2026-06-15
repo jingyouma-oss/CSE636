@@ -14,6 +14,20 @@
 
 **Estimated time:** 2–3 hours (can be started in class, completed as homework)
 
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **You'll need** | Python 3.10+, `prophet pandas scikit-learn matplotlib`; a dataset (public or synthetic) |
+> | **You'll produce** | A trained forecast, an evaluation (MAE/MAPE on a temporal split), and a scaling recommendation |
+> | **Shortcut** | A complete runnable version lives in [`project/forecasting/`](../../project/forecasting/) — `make data && make forecast`. Read it, then build your own or extend it. |
+> | **Ties to notes** | [Forecast → scale pipeline](week-04-notes.md#worked-example--demo-forecasting-cpu-with-prophet) and [predictive HPA/KEDA](week-04-notes.md#5-predictive-hpa-and-keda) |
+
+> 💡 **Don't want to assemble it from scratch?** The repo ships a working starter at
+> [`project/forecasting/`](../../project/forecasting/): `generate_data.py` (synthetic CPU series),
+> `forecast.py` (Prophet → recommendation + MAE/MAPE), and a **tested** pure `scaling.py`.
+> Run `cd project/forecasting && make setup && make forecast`. The steps below explain what it does so you can build or extend your own.
+
 ---
 
 ### Step 0: Environment Setup
@@ -232,6 +246,19 @@ elif recommended < current:
 else:
     print("DECISION: No change")
 ```
+
+> The starter packages this exact logic as a tested pure function in
+> [`project/forecasting/scaling.py`](../../project/forecasting/scaling.py) — run `make test` there to see it verified.
+
+<details><summary>✅ Check your understanding — why <code>yhat_upper</code> and why <code>ceil</code>?</summary>
+
+- It uses **`yhat_upper`** (the top of the confidence interval), not `yhat`, because under-provisioning hurts users more than a little over-provisioning — you want a *safety margin* for scale-up.
+- It uses **`ceil`** because you can't run a fraction of a pod, and rounding *down* would leave you short of the target.
+- It **clamps to `[min, max]`** so a wild forecast can't scale you to zero or to thousands of pods.
+
+If under-provisioning were *cheap* for your service (e.g. a batch job), you'd switch to `yhat` and a higher target — match the math to the cost trade-off.
+
+</details>
 
 ---
 
