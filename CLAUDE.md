@@ -9,7 +9,17 @@ Course materials for **CSE636 DevOps with AI**. The bulk of the repo is non-code
 - `slides/` — lecture decks (`.key`, `.pptx`, `.pdf`) on Git, Docker, Jenkins, Kubernetes, OpenTelemetry, monitoring, AI automation
 - `syllabus/`, `homework/`, `class materials/` — `.pdf` / `.pages` documents and cheat sheets
 
-Executable code lives in `project/Jenkins/` (Jenkins-in-Docker teaching setup) and `project/starter/` (the Week 0 beginner on-ramp — a tiny Flask service with tests, Docker, and CI). Treat everything else as read-only reference content — there is nothing to build, lint, or test outside those folders.
+The classroom-ready **teaching notes and labs** live in `weeks/` (Week 0–7, two files per week: `week-NN-notes.md` + `week-NN-lab.md`). See `weeks/README.md` for the course arc, the file conventions, and the "gold-standard week" patterns (linked `.svg` diagrams, `<details>` "Check your understanding" collapsibles, and the learning-path nav strip). `weeks/GROUP_PROJECT_GUIDE.md` consolidates the capstone and exam scope.
+
+Executable code lives under `project/`:
+
+- `project/Jenkins/` — Jenkins-in-Docker teaching setup (details below).
+- `project/starter/` — Week 0 on-ramp: a tiny Flask service with tests, Docker, and CI.
+- `project/forecasting/` — Week 4: Prophet CPU forecast → autoscaling recommendation. Pure scaling logic in `scaling.py` is unit-tested (`make test`) and needs no heavy deps; `forecast.py` (the Prophet driver) needs `make setup`.
+- `project/anomaly/` — Week 5: Isolation-Forest anomaly detection scored against ground truth. Pure precision/recall/F1 in `evaluation.py` is unit-tested (`make test`); `detect.py` needs scikit-learn.
+- `project/iac/` — Week 7: agent-style Terraform (`s3.tf`) gated by an OPA/Rego policy. `make policy` / `make policy-fail` run `conftest` against bundled plan JSON (works offline; only `conftest` required).
+
+Each starter mirrors the same shape (`Makefile`, `README.md`, a pure tested core + a heavier driver). Everything else — `slides/`, `syllabus/`, `homework/`, `class materials/` — is read-only reference content with nothing to build.
 
 ## Jenkins project (`project/Jenkins/`)
 
@@ -44,4 +54,5 @@ docker exec cstu-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ## Conventions
 
 - `cstu-jenkins` / `jenkins_data_cstu` naming ties the image, container, and volume together across `automate.py`, `docker-compose.yml`, and the shell scripts — keep them consistent when editing.
-- `.gitignore` excludes `Recording`, `Blurb.pages`, and `EvaluationReport.pdf` — these are intentionally kept out of the repo.
+- When editing `weeks/` content, follow the patterns documented in `weeks/README.md`: diagrams are **linked `.svg` files** (GitHub strips inline SVG) with full descriptive alt text; interactive checks use `<details><summary>` blocks; each notes file opens with the learning-path strip + 🎯 At-a-glance and closes with a recap. Each week folder keeps its own `learning-path.svg` with that week highlighted.
+- `.gitignore` excludes `Recording`, `Blurb.pages`, `EvaluationReport.pdf`, and standard Python build artifacts (`__pycache__/`, `*.pyc`, `.venv/`), `.env`, `.DS_Store`, and regenerable lab outputs (the starters' generated CSVs / Terraform plan files). Don't commit those.
