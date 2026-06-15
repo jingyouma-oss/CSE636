@@ -1,5 +1,7 @@
 # Week 5: Intelligent Monitoring, Observability & Agent Telemetry
 
+![Course learning path with Week 5 (Observe) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-05-lab.md](week-05-lab.md)**.
 
 
@@ -8,6 +10,15 @@
 **Arc placement:** Week 5 sits at the heart of the course. You have now built pipelines (Weeks 1–3) and taught the system to *predict* the future (Week 4). This week you give the system *eyes*: the ability to watch what is happening right now, detect when something looks wrong, pinpoint the root cause, and — critically — observe the AI agents that are doing all the watching. [Week 6](../week-06/week-06-notes.md) will take the next step and let agents *act* on what they see.
 
 **Builds on:** [Week 4](../week-04/week-04-notes.md) (time-series data, forecasting, Kubernetes autoscaling) and the agent fundamentals introduced in Weeks 1–2.
+
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Prerequisites** | [Week 4](../week-04/week-04-notes.md) + the agent loop from [Week 1](../week-01/week-01-notes.md) |
+> | **Time budget** | 2 sessions: ~2 hrs + ~1.5 hrs |
+> | **By the end you can** | Explain the three pillars; run unsupervised anomaly detection; build an agentic RCA pipeline; and **observe the agents themselves** with OTel GenAI conventions |
+> | **What you'll build** | An isolation-forest detector scored against ground truth + an OTel-instrumented agent — runnable starter in [`project/anomaly/`](../../project/anomaly/) (see the [lab](week-05-lab.md)) |
 
 ---
 
@@ -74,6 +85,18 @@ Think of a detective story:
 
 Each pillar answers a different question. Together they give you full observability.
 
+![The three pillars of observability side by side. Metrics ("the vital signs"): numbers over time like CPU, error rate, p99 — cheap and fast — answer "Is it healthy?". Logs ("the diary"): timestamped events and error messages — forensic detail — answer "What exactly happened?". Traces ("the journey map"): one request across all hops, spans plus timing — answer "Where did it fail?". Used together as a detective story: a metric alert ("errors hit 5%") leads you to read logs (find the error text) and then pull a trace (see which call failed and how slow). OpenTelemetry instruments all three, vendor-neutral.](three-pillars.svg)
+
+#### ✅ Check your understanding
+
+**Q:** A metric alert tells you "checkout error rate jumped to 5%." Which pillar do you reach for to learn *exactly what* failed, and which to learn *where in the request path* it failed?
+
+<details><summary>💡 Show answer</summary>
+
+**Logs** tell you *what* — the specific error messages/stack traces around that moment. **Traces** tell you *where* — following one failing request across services to the exact span that errored or got slow. The **metric** was just the smoke alarm that started the investigation; logs and traces find the fire.
+
+</details>
+
 ### Unsupervised Learning — Intuition for Non-ML Students
 
 Later in Session 9 we will use unsupervised machine learning for anomaly detection. Here is the intuition you need — no math required.
@@ -89,6 +112,16 @@ Imagine scattering grains of rice on a table. Your eye naturally groups them int
 Think of a game: to "isolate" a data point you keep drawing random lines through the data, splitting it, until the point is alone. Normal points are surrounded by neighbours — it takes many cuts to isolate them. Anomalies are unusual — they get isolated quickly with just a few cuts. The algorithm counts the cuts needed; few cuts → high anomaly score.
 
 Neither technique needs you to know in advance what an anomaly looks like. That is the key advantage for ops data, where novel failures are by definition things you have not seen before.
+
+#### ✅ Check your understanding
+
+**Q:** Why use *unsupervised* anomaly detection for production incidents instead of training a *supervised* classifier on "normal vs. anomalous" examples?
+
+<details><summary>💡 Show answer</summary>
+
+Because **labelled anomalies are rare and, by definition, novel** — the next outage often looks unlike anything you've seen, so you can't have labelled it in advance. Unsupervised methods (isolation forest, DBSCAN) learn what "normal" looks like from unlabelled data and flag whatever deviates, with no need to enumerate failure types ahead of time. Supervised models are great when you *do* have abundant labels (e.g. spam), but ops failures rarely give you that.
+
+</details>
 
 ---
 
@@ -285,25 +318,7 @@ Anomaly detection should be a first-class citizen in your CI/CD and observabilit
 
 **Architecture pattern:**
 
-```
-Application / Infrastructure
-        |
-        v
- OpenTelemetry Collector  (collect logs, metrics, traces)
-        |
-        +--> Metrics backend (Prometheus / Thanos)
-        |           |
-        |           v
-        |    Anomaly Detection Service
-        |    (isolation forest, or ML microservice)
-        |           |
-        |           v
-        |    Alert Manager
-        |           |
-        +--> Trace backend (Jaeger / Tempo)     v
-        |                               PagerDuty / Slack / Incident
-        +--> Log backend (Elasticsearch)
-```
+![Anomaly detection wired into the observability pipeline. App/Infra emits telemetry to an OpenTelemetry Collector, which fans out to three backends: Metrics (Prometheus), Traces (Jaeger/Tempo), and Logs (Elasticsearch). The metrics backend feeds an Anomaly Detection service (isolation forest / ML microservice), which feeds an Alert Manager that pages PagerDuty/Slack. Best practice: separate detection from response — the detector only scores and publishes events; remediation lives in a separate agent (Week 6) — and start with the four golden signals.](anomaly-pipeline.svg)
 
 **Best practices:**
 
@@ -434,6 +449,16 @@ print(recommendation)
 
 **Important: never log the full prompt or completion in production if it may contain PII or secrets.** Use truncated strings or hashed representations for sensitive content.
 
+#### ✅ Check your understanding
+
+**Q:** Your application dashboards all look green, yet your cloud bill spiked overnight because an agent burned thousands of dollars in LLM calls. Why didn't normal observability catch it, and what specifically would?
+
+<details><summary>💡 Show answer</summary>
+
+Standard app metrics don't see *inside* the agent — it's a **black box** that happens to call an LLM API. You need to treat the agent as a first-class service and emit **OTel GenAI telemetry**: `gen_ai.usage.input_tokens` / `output_tokens` per call (→ cost), span duration (→ latency), and tool-call success spans. With those you can alert on token-spend or call-rate in real time instead of discovering it on the monthly invoice.
+
+</details>
+
 ---
 
 ### 💬 Discussion & Case Questions — Session 9
@@ -519,6 +544,18 @@ A **service dependency graph** (sometimes called a service map or call graph) is
 - **Edge attributes** record metrics: call rate, error rate, p99 latency
 
 When `checkout-service` starts returning errors, is the problem in `checkout-service` itself, or in `payment-service` which it depends on? The dependency graph answers this by letting you trace the error back to its source.
+
+![A service dependency graph: frontend → checkout → payment → postgres-db. Frontend is healthy (0.2% errors). Checkout and payment both show 4% errors and are marked as symptoms. postgres-db is marked the ROOT CAUSE. The red error edges run from checkout to payment to the database. Both checkout and payment only started erroring when postgres-db failed; the node with a high error rate and no failing upstream is the root. Rule of thumb: high error rate plus no upstream also erroring means likely the cause, not a symptom.](dependency-graph.svg)
+
+#### ✅ Check your understanding
+
+**Q:** Three services — `checkout`, `payment`, and `postgres-db` — all show high error rates at once. How does the dependency graph tell you which is the root cause rather than a symptom?
+
+<details><summary>💡 Show answer</summary>
+
+Walk *upstream*: the root cause is the failing node whose own upstream dependencies are **healthy**. `checkout` calls `payment` calls `postgres-db`; `checkout` and `payment` only error *because* the thing they depend on (the DB) is down — they're symptoms. `postgres-db` has high errors and nothing healthy upstream of it explains them, so it's the root. (This is exactly what `find_error_source` encodes.)
+
+</details>
 
 #### Building the Graph
 
@@ -748,6 +785,16 @@ def compute_burn_rate(
 
 A burn rate above 14.4 (Google SRE's recommended page threshold) means the entire 30-day error budget will be exhausted in 2 hours or less — wake someone up immediately.
 
+#### ✅ Check your understanding
+
+**Q:** Two incidents fire at once: a 1% error rate on an internal analytics API, and a 0.2% error rate on the checkout flow. Why might the *smaller* error rate be the higher priority?
+
+<details><summary>💡 Show answer</summary>
+
+Raw error rate isn't impact. Checkout is a **critical, revenue-generating** user journey with a tight SLO, so even 0.2% may burn its error budget fast and hit real users/revenue; the internal analytics API has low user/revenue impact and a looser SLO. Prioritize by **impact dimensions** (user/revenue impact, SLO burn rate, data integrity, blast radius) — burn rate converts this into urgency ("budget gone in N hours"), not by the absolute error number.
+
+</details>
+
 ---
 
 ### Concept 5: Agentic RCA — Investigate-and-Report Agents
@@ -760,38 +807,7 @@ An **agentic RCA system** automates the investigation phase, producing a draft R
 
 #### Anatomy of an Agentic RCA Pipeline
 
-```
-TRIGGER: Alert fired (anomaly detected in Session 9's system)
-    |
-    v
-STEP 1 — Gather context (agent uses tools)
-    - Fetch metric time series for affected service and its dependencies
-    - Pull log excerpts from the incident window
-    - Retrieve the most recent deployment events
-    - Query the dependency graph for the affected service
-    |
-    v
-STEP 2 — Correlate (LLM reasoning)
-    - Feed all gathered context to the LLM
-    - LLM identifies candidate root causes and cites evidence
-    |
-    v
-STEP 3 — Assess impact
-    - Compute SLO burn rate
-    - Estimate affected user count from traffic metrics
-    - Classify incident severity
-    |
-    v
-STEP 4 — Generate structured report
-    - Produce Markdown RCA draft
-    - Attach relevant log line excerpts and trace IDs
-    |
-    v
-STEP 5 — Human review gate
-    - Post draft to incident channel (Slack/PagerDuty)
-    - On-call engineer reviews, edits, and approves
-    - (Optional) Agent applies recommended fix if approved
-```
+![A five-step agentic RCA pipeline triggered by an anomaly alert. Step 1 Gather context (the agent uses tools to pull metrics, logs, recent deployments, and the dependency graph — perceive). Step 2 Correlate (LLM reasoning proposes candidate root causes, each citing evidence — plan). Step 3 Assess impact (SLO burn rate, affected users, severity). Step 4 Generate a structured Markdown RCA report with log excerpts and trace IDs — act. Step 5 Human review gate — the on-call engineer reviews, edits, and approves, staying on the loop. It is the perceive→plan→act→observe loop applied to incident investigation.](rca-pipeline.svg)
 
 #### Simple Agentic RCA in Code
 

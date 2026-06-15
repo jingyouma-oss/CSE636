@@ -12,6 +12,19 @@
 
 **Deliverables:** A Jupyter notebook (.ipynb) plus a short write-up (PDF or Markdown) answering the reflection questions.
 
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Part A** | Detect anomalies in metrics with an Isolation Forest and **score it against ground truth** (precision/recall/F1) |
+> | **Part B** | Instrument an agent with **OTel GenAI conventions** (tokens, latency, cost) |
+> | **Shortcut** | A runnable Part A lives in [`project/anomaly/`](../../project/anomaly/): `make data && make detect`. Read it, then build your notebook around it. |
+> | **Ties to notes** | [Unsupervised anomaly detection](week-05-notes.md#concept-2-unsupervised-approaches--clustering-and-isolation-forests) and [OTel GenAI conventions](week-05-notes.md#concept-5-observability-for-ai-agents--why-we-must-watch-the-agents) |
+
+> 💡 **Starter provided.** [`project/anomaly/`](../../project/anomaly/) ships `generate_data.py` (labelled synthetic metrics),
+> `detect.py` (Isolation Forest → precision/recall/F1), and a **tested** pure `evaluation.py`.
+> Run `cd project/anomaly && make setup && make detect`. The steps below explain the pieces so you can reproduce them in your notebook.
+
 ---
 
 ### Part A: Log and Metric Anomaly Detection
@@ -99,6 +112,20 @@ print(classification_report(ground_truth, predictions,
 ```
 
 **Experiment:** Change the `contamination` parameter to 0.01 and 0.10. How does precision vs. recall change?
+
+> The starter packages the scoring as a tested pure function in
+> [`project/anomaly/evaluation.py`](../../project/anomaly/evaluation.py) — including the "accuracy trap" test. Run `make test` there to see it.
+
+<details><summary>✅ Check your understanding — why not just report accuracy?</summary>
+
+Your dataset is ~98% normal. A detector that predicts **"normal" for everything** scores ~98% accuracy while catching **zero** anomalies (recall = 0) — useless. That's why `classification_report` shows **precision and recall for the Anomaly class**, and why tuning `contamination` is really tuning the precision↔recall trade-off:
+
+- **Lower `contamination`** → fewer flags → higher precision, lower recall (you miss some).
+- **Higher `contamination`** → more flags → higher recall, lower precision (more false alarms → alert fatigue).
+
+Pick the balance from the *cost* of a miss vs. a false alarm for your service.
+
+</details>
 
 #### Step 5: Bonus — DBSCAN Comparison
 

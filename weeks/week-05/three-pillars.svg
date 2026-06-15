@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="340" viewBox="0 0 760 340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ppah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+    <linearGradient id="pmet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <linearGradient id="plog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fef3c7"/><stop offset="1" stop-color="#fde68a"/></linearGradient>
+    <linearGradient id="ptra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcfce7"/><stop offset="1" stop-color="#bbf7d0"/></linearGradient>
+    <filter id="ppsh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="760" height="340" fill="#f8fafc"/>
+  <text x="380" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">The three pillars answer different questions</text>
+
+  <!-- Metrics -->
+  <rect x="36" y="56" width="216" height="150" rx="12" fill="url(#pmet)" stroke="#2563eb" stroke-width="2" filter="url(#ppsh)"/>
+  <text x="144" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#1d4ed8">📈 Metrics</text>
+  <text x="144" y="102" text-anchor="middle" font-size="10.5" font-style="italic" fill="#475569">"the vital signs"</text>
+  <text x="144" y="126" text-anchor="middle" font-size="10.5" fill="#334155">numbers over time</text>
+  <text x="144" y="144" text-anchor="middle" font-size="10.5" fill="#334155">CPU, error rate, p99</text>
+  <text x="144" y="168" text-anchor="middle" font-size="10" fill="#64748b">cheap · fast to query</text>
+  <text x="144" y="190" text-anchor="middle" font-size="10" font-weight="700" fill="#1d4ed8">"Is it healthy?"</text>
+
+  <!-- Logs -->
+  <rect x="272" y="56" width="216" height="150" rx="12" fill="url(#plog)" stroke="#d97706" stroke-width="2" filter="url(#ppsh)"/>
+  <text x="380" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#b45309">📝 Logs</text>
+  <text x="380" y="102" text-anchor="middle" font-size="10.5" font-style="italic" fill="#475569">"the diary"</text>
+  <text x="380" y="126" text-anchor="middle" font-size="10.5" fill="#334155">timestamped events</text>
+  <text x="380" y="144" text-anchor="middle" font-size="10.5" fill="#334155">errors, messages</text>
+  <text x="380" y="168" text-anchor="middle" font-size="10" fill="#64748b">forensic detail</text>
+  <text x="380" y="190" text-anchor="middle" font-size="10" font-weight="700" fill="#b45309">"What exactly happened?"</text>
+
+  <!-- Traces -->
+  <rect x="508" y="56" width="216" height="150" rx="12" fill="url(#ptra)" stroke="#16a34a" stroke-width="2" filter="url(#ppsh)"/>
+  <text x="616" y="82" text-anchor="middle" font-size="14" font-weight="800" fill="#15803d">🧭 Traces</text>
+  <text x="616" y="102" text-anchor="middle" font-size="10.5" font-style="italic" fill="#475569">"the journey map"</text>
+  <text x="616" y="126" text-anchor="middle" font-size="10.5" fill="#334155">one request, all hops</text>
+  <text x="616" y="144" text-anchor="middle" font-size="10.5" fill="#334155">spans + timing</text>
+  <text x="616" y="168" text-anchor="middle" font-size="10" fill="#64748b">where time went</text>
+  <text x="616" y="190" text-anchor="middle" font-size="10" font-weight="700" fill="#15803d">"Where did it fail?"</text>
+
+  <!-- detective flow -->
+  <rect x="36" y="232" width="688" height="80" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="380" y="254" text-anchor="middle" font-size="12" font-weight="800" fill="#0f172a">A detective story — used together</text>
+  <text x="120" y="284" text-anchor="middle" font-size="10.5" fill="#1d4ed8">metric alert:</text>
+  <text x="120" y="299" text-anchor="middle" font-size="10" fill="#475569">"errors hit 5%"</text>
+  <line x1="190" y1="288" x2="248" y2="288" stroke="#64748b" stroke-width="2" marker-end="url(#ppah)"/>
+  <text x="330" y="284" text-anchor="middle" font-size="10.5" fill="#b45309">read logs:</text>
+  <text x="330" y="299" text-anchor="middle" font-size="10" fill="#475569">find the error text</text>
+  <line x1="410" y1="288" x2="468" y2="288" stroke="#64748b" stroke-width="2" marker-end="url(#ppah)"/>
+  <text x="560" y="284" text-anchor="middle" font-size="10.5" fill="#15803d">pull a trace:</text>
+  <text x="560" y="299" text-anchor="middle" font-size="10" fill="#475569">see which call failed &amp; how slow</text>
+
+  <text x="408" y="148" text-anchor="middle" font-size="11" fill="#94a3b8" opacity="0">spacer</text>
+  <!-- OpenTelemetry note -->
+  <text x="380" y="50" text-anchor="middle" font-size="10" fill="#94a3b8">OpenTelemetry instruments all three, vendor-neutral</text>
+</svg>
