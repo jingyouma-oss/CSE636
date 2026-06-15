@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m ' *)",
+      "Bash(git push *)",
+      "Bash(python3 -m doctest evaluation.py)",
+      "Bash(python3 -)",
+      "Bash(python3 generate_data.py --days 7)",
+      "Bash(rm -f metrics_sample.csv)",
+      "Bash(python3 -m py_compile evaluation.py generate_data.py detect.py tests/test_evaluation.py)",
+      "Bash(grep -n '─\\\\|│\\\\|►\\\\|┌\\\\|└\\\\|▼\\\\|```$\\\\|```text\\\\|^## \\\\|^### ' week-06-lab.md)",
+      "Bash(python3 -c \"import json; json.load\\(open\\('tfplan.json'\\)\\); json.load\\(open\\('tfplan-bad.json'\\)\\); print\\('both JSON valid'\\)\")",
+      "Bash(command -v conftest)",
+      "Bash(conftest --version)",
+      "Bash(echo \"conftest found: $\\(conftest --version 2>&1)",
+      "Bash(conftest test *)",
+      "Bash(gh pr create --base main --head course-pilot-weeks-0-1 --title 'Make CSE636 attractive, interactive & easy to follow \\(Weeks 0–7\\)' --body ' *)",
+      "Bash(gh pr *)",
+      "Bash(git rm *)"
+    ]
+  }
+}
