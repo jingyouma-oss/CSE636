@@ -1,5 +1,7 @@
 # Week 1: Foundations of AI-Assisted & Agentic DevOps
 
+![Course learning path with Week 1 (Basics) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-01-lab.md](week-01-lab.md)**.
 
 
@@ -8,6 +10,15 @@
 **Where this sits in the course arc:** This is the opening week. It sets the vocabulary, mental models, and historical context that the entire course relies on. There are no prior weeks to build on. By the end of Week 1, students should be able to have a clear conversation about DevOps, LLMs, and autonomous agents — using precise language — before touching any tool.
 
 **What comes next:** [Week 2](../week-02/week-02-notes.md) moves from concepts to tools — comparing real AI coding agents, meeting the Model Context Protocol (MCP), and building a first MCP-connected agent.
+
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Prerequisites** | None (Week 0 setup helps but isn't required to follow the concepts) |
+> | **Time budget** | 2 sessions: ~2 hrs + ~1.5 hrs |
+> | **By the end you can** | Explain DevOps & the CI/CD lifecycle; define LLM, AI agent, and the four *levels of autonomy*; describe how agents connect to tools via MCP |
+> | **What you'll build** | A cloud DevOps lab and your first AI-agent run (see the [lab](week-01-lab.md)) |
 
 ---
 
@@ -54,6 +65,8 @@ DevOps is often depicted as an infinity loop (the ∞ symbol), showing that soft
 | **Operate** | Manage infrastructure, config | Terraform, Puppet, Chef |
 | **Monitor** | Track performance, errors, costs | Prometheus, Grafana, ELK, Datadog |
 
+![The DevOps lifecycle drawn as an infinity loop. The left lobe (Dev) holds stages 1 Plan, 2 Code, 3 Build, 4 Test; the right lobe (Ops) holds 5 Release, 6 Deploy, 7 Operate, 8 Monitor. Monitor feeds back into Plan, so the loop never ends.](devops-infinity.svg)
+
 Each stage feeds into the next, and the Monitor stage feeds back into Plan — closing the loop. This feedback-driven cycle is what allows teams to improve continuously rather than in big risky batches.
 
 #### CI/CD: the automation spine of DevOps
@@ -73,6 +86,16 @@ The idea is to integrate code *frequently* (multiple times per day) so that prob
 **Continuous Deployment:** No human click is needed. Every passing commit goes to production automatically. This requires very high test coverage and fast rollback mechanisms. Not every organization goes this far — and that's a reasonable choice.
 
 **Analogy:** Think of a car factory assembly line. Raw materials (code commits) enter one end. At each station, something is added or checked (compile, test, package, deploy). Only vehicles that pass every quality check roll out the other end. CI/CD is the assembly line for software.
+
+#### ✅ Check your understanding
+
+**Q:** A team auto-tests every commit, but a human still clicks "deploy" to send a release to production. Are they doing Continuous *Delivery* or Continuous *Deployment*?
+
+<details><summary>💡 Show answer</summary>
+
+Continuous **Delivery**. The software is *always kept ready* to ship (that's the CI + automated prep), but a human still triggers the actual production release. Continuous **Deployment** removes that click — every passing commit ships automatically.
+
+</details>
 
 #### DevSecOps: security is not an afterthought
 
@@ -128,15 +151,7 @@ Think of the difference between a GPS that shows you a map (assistant) versus a 
 
 **The perceive → plan → act → observe loop:**
 
-```
-┌─────────────────────────────────────────────────────┐
-│                                                     │
-│   Perceive ──► Plan/Reason ──► Act (use a tool)     │
-│      ▲                                │             │
-│      └────────── Observe ◄────────────┘             │
-│                                                     │
-└─────────────────────────────────────────────────────┘
-```
+![An AI agent runs a four-step loop, clockwise: 1 Perceive (read the task, logs, code, alerts) → 2 Plan/Reason (the LLM decides what to do next) → 3 Act (call a tool: run, edit, open a PR) → 4 Observe (read the result, then repeat). At the center: an agent is an LLM plus tools plus a goal, looping until done or a limit is hit.](agent-loop.svg)
 
 1. **Perceive:** The agent receives input — a task description, an error message, a log file, the current state of a repository.
 2. **Plan/Reason:** The agent (powered by an LLM) decides what to do next. It may decompose the task into sub-steps.
@@ -157,7 +172,19 @@ Not all agents operate with the same level of independence. The course introduce
 | 3 | **Human-on-the-loop** | Agent acts autonomously; human monitors and can intervene | Agent applies routine patches; SRE watches a dashboard |
 | 4 | **Fully autonomous** | Agent acts without human involvement | Agent auto-scales, auto-heals, and auto-remediates 24/7 |
 
+![Four levels of autonomy drawn as a rising staircase. Level 1 AI assistant (AI suggests; human decides and acts). Level 2 Human-in-the-loop (agent acts but pauses for approval each step). Level 3 Human-on-the-loop (agent acts on its own; human monitors and can step in). Level 4 Fully autonomous (agent acts with no human; needs the strongest guardrails). As autonomy rises left to right, the blast radius grows; most real deployments live at levels 2–3.](autonomy-levels.svg)
+
 Most enterprise deployments today operate at levels 2–3. Level 4 requires very high confidence in the agent's safety and correctness, and strong guardrails. A central theme of this course is: *choose the right level of autonomy for each task, and build appropriate guardrails*.
+
+#### ✅ Check your understanding
+
+**Q:** An agent that *auto-merges its own pull requests into `main` with no human review* sits at which level — and why is that risky for most teams?
+
+<details><summary>💡 Show answer</summary>
+
+Level **4 (fully autonomous)** for that action. It's risky because merging to `main` has a **high blast radius** — a wrong change reaches everyone — and LLM-based agents occasionally reason incorrectly. Most teams keep code-merge at level 2 (human-in-the-loop) and reserve level 4 for low-blast-radius actions.
+
+</details>
 
 ---
 
@@ -206,15 +233,7 @@ DevOps solved the silo problem between Dev and Ops. But as organizations scaled 
 
 Each wave of the practice was a response to these pressures:
 
-```
-DevOps          (2009–)   Collaboration + automation + CI/CD
-    │
-DevSecOps       (2012–)   Security integrated into every pipeline stage
-    │
-AIOps           (2017–)   ML/AI to process operational data at machine scale
-    │
-Agentic DevOps  (2024–)   Autonomous AI agents that plan and act across the lifecycle
-```
+![A left-to-right timeline of four waves, each more autonomous than the last. DevOps (2009–): collaboration + automation + CI/CD. DevSecOps (2012–): security built into every pipeline stage. AIOps (2017–): ML reads telemetry — detects but doesn't act. Agentic DevOps (2024–): agents that plan and take action.](evolution-timeline.svg)
 
 #### AIOps: intelligence before agents
 
@@ -323,6 +342,20 @@ As covered in the Foundations Primer, the agent acts, observes the result, and c
 
 - **Max iterations / step budget:** the agent is not allowed to run forever. A cap of 20 or 50 iterations is common.
 - **Approval gates:** at certain steps (e.g., "about to push to main"), the agent pauses and waits for human sign-off before continuing.
+
+#### ✅ Check your understanding
+
+**Q:** Match each to its agent component: (a) "read the contents of this 500-page runbook when relevant," (b) "the agent calls `kubectl get pods`," (c) "the LLM thinks step by step about the error before acting."
+
+<details><summary>💡 Show answer</summary>
+
+- (a) → **Memory** (specifically external/retrieved memory via **RAG**).
+- (b) → **Tool use / function calling**.
+- (c) → **Planning and reasoning** (chain-of-thought).
+
+The remaining two components are **Perception** (the input the agent receives) and the **act–observe loop** that ties them together.
+
+</details>
 
 ---
 
@@ -534,6 +567,16 @@ Example: an agent that analyzes a failing CI pipeline can return:
 
 This output can be parsed and fed directly into an incident management system without a human reading it.
 
+#### ✅ Check your understanding
+
+**Q:** Why is a tool call (structured JSON) fundamentally different from an LLM simply *writing out* the command `kubectl get pods` as text in its answer?
+
+<details><summary>💡 Show answer</summary>
+
+A tool call is a structured request that an external system actually **executes**, then feeds the real result back to the LLM to reason over. Text that merely *describes* a command does nothing — nothing runs, and the model is only guessing what the output would be. Tool use is what lets an agent affect and observe the real world.
+
+</details>
+
 ---
 
 ### 2.3 DevOps Data Sources as Agent Context
@@ -585,6 +628,16 @@ An LLM cannot be trained on your organization's private documentation, and even 
 4. The agent uses both its trained knowledge *and* the retrieved documents to reason and act.
 
 **Analogy:** RAG is like giving the agent a briefing packet of relevant documents before the meeting, rather than expecting it to have memorized the entire company wiki.
+
+#### ✅ Check your understanding
+
+**Q:** Your runbooks change every week. Why is RAG a better fit than retraining the model on them — and what would happen if you relied on the model's built-in knowledge instead?
+
+<details><summary>💡 Show answer</summary>
+
+RAG retrieves the *current* documents at query time, so updates appear instantly with no retraining. Relying on the model's built-in (training-time) knowledge means it can't know your private runbooks at all, and anything it did "know" would be stale the moment a runbook changed — risking confident, out-of-date answers.
+
+</details>
 
 ---
 
@@ -672,14 +725,17 @@ An **MCP server** is a small service that wraps a tool (e.g., a Jenkins server) 
 
 The key benefit: instead of writing a custom integration for every tool, you write one MCP server per tool, and any MCP-compatible agent can use it. Think of it as USB for AI agents — a universal connector.
 
-```
-Agent (MCP client)
-    │
-    ├── MCP Server: GitHub   → create PR, read files, list issues
-    ├── MCP Server: Jenkins  → trigger build, get build status, get logs
-    ├── MCP Server: Datadog  → query metrics, list monitors, create alert
-    └── MCP Server: Kubectl  → get pods, scale deployment, describe service
-```
+![MCP as a universal connector, like USB for AI agents. A single Agent (MCP client) connects through MCP to four MCP servers: GitHub (create PR, read files, list issues), Jenkins (trigger build, get status, get logs), Datadog (query metrics, list monitors, create alert), and Kubectl (get pods, scale deployment, describe service). You write one MCP server per tool and any MCP agent can use it.](mcp-connector.svg)
+
+#### ✅ Check your understanding
+
+**Q:** Why is "USB for AI agents" a fitting analogy for MCP? What problem does it remove?
+
+<details><summary>💡 Show answer</summary>
+
+Like USB, MCP is a *standard connector*: you build one MCP server per tool, and **any** MCP-compatible agent can use it — no custom, one-off integration per agent-tool pair. It removes the combinatorial explosion of writing bespoke glue code for every agent × every tool.
+
+</details>
 
 ⚠️ **Pitfall — Permission creep:** When you give an agent access to a tool via MCP or API, it gets *all* the permissions that tool allows — unless you explicitly limit them. Always scope agent credentials to the minimum necessary permissions. An agent that can "read GitHub" does not need to also "delete GitHub repositories."
 

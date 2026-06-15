@@ -10,6 +10,8 @@
 
 **Goal:** Prove your toolchain works by taking one small real project — the [starter service](../../project/starter/) — all the way through the DevOps loop: **run it → test it → containerize it → push it → watch CI go green → point an AI agent at it.**
 
+![The loop you run in this lab: 1 Code (edit the app), 2 Test (make test → 7 passed), 3 Run (make run → /health ok), 4 Containerize (make docker-build), 5 Push (git push to GitHub), 6 CI green (Actions runs the tests), then loop back to Code.](devops-loop.svg)
+
 **What you submit:** a short checklist with a few screenshots (see [Step 8](#step-8-what-to-submit)).
 
 > **Two ways to do this lab.** Pick one:
@@ -112,6 +114,18 @@ Stop the app with **Ctrl+C** when you're done.
 
 > 🎉 If you saw `7 passed` and `{"status":"ok"}`, you've just run the full inner DevOps loop: code → test → run.
 
+<details><summary>✅ Did it work? Check your output</summary>
+
+You're good if **all three** are true:
+
+- `make test` ended with `7 passed` (not `6 passed` or any `failed`).
+- `curl …/health` returned exactly `{"status":"ok"}`.
+- `curl …/risk?...` returned a JSON object containing `"risk_score":0.27`.
+
+If `make test` fails or `pytest` "can't find `app`", you're almost certainly running it from the wrong folder — see the [Troubleshooting](#troubleshooting) table at the bottom.
+
+</details>
+
 ---
 
 ### Step 4: Containerize it (needs Docker)
@@ -162,6 +176,16 @@ git push -u origin main
 
 **Optional — see CI catch a failure.** On a branch, break a test on purpose (change an expected number in [`tests/test_main.py`](../../project/starter/tests/test_main.py)), commit, push, and open a pull request. Watch CI turn **red** ❌ on the PR. Then fix it and watch it go green. This is exactly the feedback loop Week 3 builds agents around.
 
+<details><summary>✅ Did it work? No CI run appears in the Actions tab</summary>
+
+CI only runs if the workflow file sits at the **repository root**. If the Actions tab is empty:
+
+- Confirm you pushed the **`project/starter` folder as its own repo** (Step 5), so `.github/workflows/ci.yml` landed at the root — not the whole course repo.
+- Check `git log` shows your commit on `main`, and the **Actions** tab (not Pull requests).
+- Still nothing? See the [Troubleshooting](#troubleshooting) table.
+
+</details>
+
 ---
 
 ### Step 7: Point an AI coding agent at the repo
@@ -207,6 +231,8 @@ A short checklist (half a page is fine) confirming you're ready for Week 1:
 6. Confirm the self-check boxes in [week-00-notes.md](week-00-notes.md#-am-i-ready-for-week-1-self-check) are all ticked.
 
 ---
+
+<a id="troubleshooting"></a>
 
 ## ⛑️ Troubleshooting
 

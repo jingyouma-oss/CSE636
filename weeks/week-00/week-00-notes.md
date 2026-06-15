@@ -1,5 +1,7 @@
 # Week 0: Getting Ready — A Beginner's On-Ramp
 
+![Course learning path from Week 0 (Setup, highlighted) through Week 7 (Governance): 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+
 > 📝 **Primer notes.** The hands-on setup walkthrough lives in **[week-00-lab.md](week-00-lab.md)**. Do the lab *before* Week 1's first class.
 
 **Theme:** Get every student — including those who have never used Git, Docker, or an AI agent — to the same starting line, with a working toolchain and a shared vocabulary, *before* the course begins in earnest.
@@ -7,6 +9,15 @@
 **Where this sits in the course arc:** Week 0 is optional-but-strongly-recommended pre-work. It is not graded as heavily as later weeks; its job is to remove setup friction so that in [Week 1](../week-01/week-01-notes.md) you can focus on *concepts* (what DevOps and agents are) instead of fighting with installation. Week 1 re-teaches every concept introduced here in much greater depth — so if something below feels fuzzy, that's fine. This is a first pass.
 
 **What comes next:** [Week 1: Foundations of AI-Assisted & Agentic DevOps](../week-01/week-01-notes.md) goes deep on the DevOps lifecycle, LLMs, and the anatomy of an AI agent.
+
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Prerequisites** | None — this is the on-ramp |
+> | **Time budget** | ~2 hours (the [lab](week-00-lab.md)); the reading below is ~20 min |
+> | **By the end you can** | Use the five core words (repo, commit, container, pipeline, agent) in plain language, and run a tiny app end to end |
+> | **What you'll build** | Nothing new — you run the [starter service](../../project/starter/) through the whole DevOps loop |
 
 ---
 
@@ -35,6 +46,16 @@ Each idea below gets one paragraph and an analogy. Week 1 expands all of them.
 
 > **Analogy:** Git is the "track changes" and version history of a document, but for an entire project — and far more powerful. GitHub is the shared drive where everyone's copy lives.
 
+#### ✅ Check your understanding
+
+**Q:** Your teammate says "I just pushed a commit to a new branch and opened a PR." In plain words, what did they actually do?
+
+<details><summary>💡 Show answer</summary>
+
+They saved a snapshot of their changes (**commit**) on a parallel line of work (**branch**) so it didn't disturb the main version, uploaded it to GitHub (**push**), and then *proposed* merging it into the main branch (**pull request**) — which is where review happens before it becomes official.
+
+</details>
+
 ### 2. A container (Docker)
 
 A **container** packages your application together with everything it needs to run — the right language version, libraries, and settings — into one portable unit. The same container runs identically on your laptop, a teammate's laptop, and a production server. This kills the classic excuse, *"but it works on my machine."* **Docker** is the most common tool for building and running containers. A **Dockerfile** is the recipe that describes how to build one.
@@ -47,6 +68,17 @@ A **pipeline** is an automated assembly line for software. Every time you push c
 
 > **Analogy:** A factory quality-control line. Each change rides the belt; only the ones that pass every check make it out the door.
 
+#### ✅ Check your understanding
+
+**Q:** A classmate says *"it works on my machine, so it'll work in production."* Which two ideas from above push back on that — and how?
+
+<details><summary>💡 Show answer</summary>
+
+- A **container** packages the app with everything it needs, so "my machine" and "production" run the *same* environment — killing the excuse.
+- A **CI pipeline** automatically builds and tests every change on a *fresh* machine in the cloud, so "works on my machine" gets checked against a neutral one before anyone trusts it.
+
+</details>
+
 ### 4. An LLM and an AI agent
 
 A **Large Language Model (LLM)** — like Claude, GPT, or Gemini — is an AI trained on huge amounts of text that can read, write, summarize, and reason about language and code. An **AI assistant** answers your question and stops. An **AI agent** goes further: it can take *actions* — run commands, edit files, open pull requests — in a loop, observing the result of each action and deciding the next step, in pursuit of a goal you gave it.
@@ -54,6 +86,16 @@ A **Large Language Model (LLM)** — like Claude, GPT, or Gemini — is an AI tr
 > **Analogy:** An assistant is a GPS that shows you the route. An agent is a self-driving car that actually takes you there — which is exactly why you watch it carefully.
 
 This single distinction — *assistant answers, agent acts* — is the spine of the entire course.
+
+#### ✅ Check your understanding
+
+**Q:** You ask an AI tool to fix a failing test. It edits the file, re-runs the tests, sees they pass, and tells you it's done. Was that an assistant or an agent — and what's the giveaway?
+
+<details><summary>💡 Show answer</summary>
+
+An **agent**. The giveaway is that it *took actions in a loop* — edited a file, ran a tool (the tests), observed the result, and decided it was finished. An assistant would have only *told you* what to change and stopped, leaving you to act.
+
+</details>
 
 ---
 
@@ -122,6 +164,22 @@ You're ready when you can honestly check every box. The [lab](week-00-lab.md) wa
 ⚠️ **Installing tools but never verifying them.** "Installed" is not "working." The whole point of the [lab](week-00-lab.md) is to *prove* your toolchain works by running a real project end to end.
 
 ⚠️ **Committing secrets.** When you create your GitHub repo, never commit API keys or passwords. The starter's [`.gitignore`](../../project/starter/.gitignore) already excludes `.env`; keep keys there. (Week 2 and Week 7 cover agent secret-handling in depth.)
+
+---
+
+## Recap and Looking Ahead
+
+### What this week gave you
+
+- A **working toolchain** (Git, Python, Docker, an AI agent) proven by running one real app end to end.
+- Five plain-language words you'll hear all course: **repo, commit, container, pipeline, agent**.
+- The one distinction the whole course turns on: **an assistant answers; an agent acts.**
+
+### Looking ahead: Week 1
+
+[Week 1: Foundations of AI-Assisted & Agentic DevOps](../week-01/week-01-notes.md) re-teaches every concept here in real depth — the full DevOps lifecycle, how LLMs work, the five parts of an AI agent, and the *levels of autonomy* that decide how much you let an agent do on its own. Nothing here needs to feel mastered yet; this was the first pass.
+
+> ✅ **Before Week 1:** finish the [lab](week-00-lab.md) and tick every box in the [self-check](#-am-i-ready-for-week-1-self-check) above.
 
 ---
 

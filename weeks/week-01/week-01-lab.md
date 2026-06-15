@@ -12,6 +12,15 @@
 
 **Goal:** Have a working cloud lab environment and have successfully run an AI coding agent against a real repository — so you arrive at Week 2 with hands-on context for the tool comparison discussion.
 
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **You'll need** | A cloud free-tier account (or local Docker / Codespaces), an AI agent (Claude Code or Copilot), an Anthropic API key |
+> | **You'll produce** | A running lab VM, observations from 4 agent tasks, and saved `ci-build-log.txt` + `system-metrics.txt` (reused in later weeks) |
+> | **Submit** | A 1–2 page lab report (Step 6) **and** the assignment below |
+> | **Ties to notes** | Watch the agent run the [perceive → plan → act → observe loop](week-01-notes.md#13-anatomy-of-an-ai-agent) live |
+
 ---
 
 ### Step 1: Set up a cloud-based DevOps lab account
@@ -130,6 +139,19 @@ Task 4 (iteration):
 "The Dockerfile uses an old base image. Update it to use the latest 
 stable version and explain the change."
 ```
+
+<details><summary>✅ Check your understanding — spot the loop</summary>
+
+As the agent works Task 1, try to name each step of the loop from the notes as it happens:
+
+- **Perceive** — it reads files / the repo structure.
+- **Plan/Reason** — it states what it will look at next and why.
+- **Act** — it calls a tool (read a file, run a command, grep).
+- **Observe** — it reads that tool's output, then decides the next step.
+
+If you can point at each of these in the agent's transcript, you've seen the core mental model of the whole course in action. Note **which level of autonomy** it ran at — did it act, or pause for your approval?
+
+</details>
 
 ---
 
