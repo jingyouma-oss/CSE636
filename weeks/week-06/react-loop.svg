@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="380" viewBox="0 0 680 380" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="rlah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+    </marker>
+    <linearGradient id="rlobs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <linearGradient id="rlrea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient>
+    <linearGradient id="rlact" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fce7f3"/><stop offset="1" stop-color="#fbcfe8"/></linearGradient>
+    <linearGradient id="rldone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcfce7"/><stop offset="1" stop-color="#86efac"/></linearGradient>
+    <filter id="rlsh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="680" height="380" fill="#f8fafc"/>
+  <text x="340" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">ReAct: Reason → Act → Observe → repeat</text>
+
+  <!-- three nodes in a triangle/cycle -->
+  <!-- Reason (top-left) -->
+  <rect x="70" y="80" width="200" height="80" rx="12" fill="url(#rlrea)" stroke="#4f46e5" stroke-width="2" filter="url(#rlsh)"/>
+  <text x="170" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#4338ca">💭 Reason (Thought)</text>
+  <text x="170" y="130" text-anchor="middle" font-size="10" fill="#475569">"errors spiked 5 min ago;</text>
+  <text x="170" y="145" text-anchor="middle" font-size="10" fill="#475569">a deploy landed 8 min ago…"</text>
+
+  <!-- Act (top-right) -->
+  <rect x="410" y="80" width="200" height="80" rx="12" fill="url(#rlact)" stroke="#db2777" stroke-width="2" filter="url(#rlsh)"/>
+  <text x="510" y="108" text-anchor="middle" font-size="14" font-weight="800" fill="#be185d">⚙ Act (Action)</text>
+  <text x="510" y="130" text-anchor="middle" font-size="10" fill="#475569">call a tool:</text>
+  <text x="510" y="145" text-anchor="middle" font-size="10" fill="#475569">"check canary status"</text>
+
+  <!-- Observe (bottom-center) -->
+  <rect x="240" y="232" width="200" height="80" rx="12" fill="url(#rlobs)" stroke="#2563eb" stroke-width="2" filter="url(#rlsh)"/>
+  <text x="340" y="260" text-anchor="middle" font-size="14" font-weight="800" fill="#1d4ed8">👁 Observe</text>
+  <text x="340" y="282" text-anchor="middle" font-size="10" fill="#475569">tool result:</text>
+  <text x="340" y="297" text-anchor="middle" font-size="10" fill="#475569">"canary error rate: 12%"</text>
+
+  <!-- cycle arrows -->
+  <line x1="270" y1="120" x2="408" y2="120" stroke="#6366f1" stroke-width="2.5" marker-end="url(#rlah)"/>
+  <text x="339" y="112" text-anchor="middle" font-size="9" fill="#64748b">what to do next?</text>
+  <path d="M 470 160 C 470 220 440 230 412 250" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#rlah)"/>
+  <path d="M 268 250 C 240 230 210 220 210 160" fill="none" stroke="#6366f1" stroke-width="2.5" marker-end="url(#rlah)"/>
+  <text x="150" y="210" font-size="9" fill="#64748b">what do I know now?</text>
+
+  <!-- exit to final answer -->
+  <line x1="340" y1="312" x2="340" y2="338" stroke="#16a34a" stroke-width="2.5" marker-end="url(#rlah)"/>
+  <rect x="225" y="338" width="230" height="34" rx="11" fill="url(#rldone)" stroke="#16a34a" stroke-width="2"/>
+  <text x="340" y="360" text-anchor="middle" font-size="12" font-weight="700" fill="#15803d">resolved → stop (or escalate)</text>
+
+  <!-- safety note -->
+  <rect x="430" y="232" width="230" height="80" rx="11" fill="#fff7ed" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="545" y="256" text-anchor="middle" font-size="11" font-weight="700" fill="#9a3412">Why ReAct is safe</text>
+  <text x="545" y="276" text-anchor="middle" font-size="9.5" fill="#9a3412">the Thought is written before acting:</text>
+  <text x="545" y="291" text-anchor="middle" font-size="9.5" fill="#9a3412">log it · gate it · threshold it</text>
+  <text x="545" y="306" text-anchor="middle" font-size="9.5" fill="#9a3412">before the tool call runs</text>
+</svg>

@@ -10,35 +10,20 @@
 
 **Objective:** Build a Python-based agent, with tools exposed via MCP, that receives a simulated incident, triages it using a structured runbook, and triggers a remediation only after passing through a human-approval gate.
 
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **You'll need** | Python 3.10+, the `mcp` SDK, an Anthropic API key (or the provided simulation mode) |
+> | **You'll build** | `incident_tools_server.py` (MCP tools) + `react_agent.py` (ReAct loop + approval gate) |
+> | **Submit** | A transcript showing the agent's thoughts/tool calls, the approval pause, and the console postmortem |
+> | **Ties to notes** | [The ReAct loop](week-06-notes.md#concept-the-react-reasoning-loop), [approval gates & blast radius](week-06-notes.md#concept-levels-of-autonomy--blast-radius-control), and [ITSM integration](week-06-notes.md#concept-itsm-and-on-call-integration) |
+
 ---
 
 ### What You Will Build
 
-```
-Simulated incident event
-        │
-        ▼
-┌───────────────────┐
-│   MCP Server      │  ← exposes: get_metrics, get_logs,
-│   (incident_tools)│             get_deployment_history,
-│                   │             dry_run_rollback, execute_rollback,
-│                   │             create_pd_incident, resolve_pd_incident
-└────────┬──────────┘
-         │ tool calls
-         ▼
-┌───────────────────┐
-│   Python Agent    │  ← ReAct loop: reason → call tool → observe → repeat
-│   (react_agent.py)│
-└────────┬──────────┘
-         │
-  Approval gate (terminal input simulating Slack)
-         │
-         ▼
-  Remediation executed (or escalated)
-         │
-         ▼
-  Console postmortem summary printed
-```
+![The lab architecture. A simulated incident event flows into a paired MCP Server (incident_tools_server.py — exposing get_metrics, get_logs, get_deployment_history, dry_run_rollback, execute_rollback, and create/resolve_pd_incident) and Python Agent (react_agent.py) that exchange tool calls and results in a ReAct loop (reason → call tool → observe → repeat). The agent's proposed remediation passes through an approval gate (a terminal input simulating a Slack confirm) before remediation is executed or escalated, ending with a console postmortem summary. The agent reasons and proposes; the gate ensures a human approves before anything irreversible runs.](incident-agent-flow.svg)
 
 ---
 
@@ -456,6 +441,18 @@ python react_agent.py
    - What guardrails did you implement beyond the approval gate?
    - What would you need to add to deploy this agent against a real Kubernetes cluster safely?
    - What surprised you about the agent's reasoning?
+
+<details><summary>✅ Check your understanding — prove the gate and the loop</summary>
+
+A correct run shows all three:
+
+- **A ReAct trace** — the agent prints a *Thought* (reasoning) before each tool call, not just final actions. If you only see actions, your loop isn't surfacing reasoning.
+- **A real pause at the approval gate** — execution stops and waits for your input; typing `no` must *abort* (escalate), not silently proceed.
+- **Least privilege in action** — the agent reaches remediation only through `execute_rollback`, and only *after* approval; `dry_run_rollback` should be what it calls before asking.
+
+Stretch test: decline the approval and confirm the agent escalates and still prints a postmortem noting the human declined.
+
+</details>
 
 ---
 
