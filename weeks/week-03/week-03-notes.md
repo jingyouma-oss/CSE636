@@ -1,5 +1,7 @@
 # Week 3: Agentic CI/CD Pipelines
 
+![Course learning path with Week 3 (CI/CD) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-03-lab.md](week-03-lab.md)**.
 
 
@@ -8,6 +10,15 @@
 **Arc placement:** This is the pivot week. [Week 2](../week-02/week-02-notes.md) gave you the *tools* — MCP servers, agent frameworks, coding agents. Now those tools move off the workbench and into the assembly line. By the end of today you will understand how to wire an agent into every stage of a CI/CD pipeline *and* how to make sure it cannot break production without a human saying so. [Week 4](../week-04/week-04-notes.md) will build on this by adding predictive analytics: instead of reacting to failures after they occur, the pipeline will start forecasting them.
 
 **Builds on:** [Week 2](../week-02/week-02-notes.md) — MCP protocol, agent tooling, permission management.
+
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Prerequisites** | [Week 2](../week-02/week-02-notes.md) (MCP, agent tooling, least-privilege) |
+> | **Time budget** | 2 sessions: ~2 hrs + ~1.5 hrs |
+> | **By the end you can** | Put agents inside CI/CD — review code, generate/heal tests, triage builds — and design the **guardrails** (approval gates, blast-radius limits) that keep autonomy safe |
+> | **What you'll build** | A build-fixer agent that detects a failure, proposes a fix, and opens a PR behind a human-approval gate (see the [lab](week-03-lab.md)) |
 
 ---
 
@@ -192,6 +203,16 @@ jobs:
 
 The `require_human_approval: true` flag is the **guardrail**: the agent cannot merge or close the PR. It can only write comments. A human reviewer must still click "Approve."
 
+#### ✅ Check your understanding
+
+**Q:** What can an AI review agent reason about that a rule-based linter (like `pylint`) fundamentally cannot?
+
+<details><summary>💡 Show answer</summary>
+
+**Intent and context.** A linter applies fixed pattern rules and can't tell genuinely risky code from code that merely *looks* risky. An agent reads surrounding comments, variable names, and tests to infer *purpose* — so it can say "this is correct but returns the wrong answer when `user_list` is empty, here's the fix" rather than just flagging a pattern. The trade-off: the linter is deterministic; the agent must be treated as a *proposer* whose comments a human still judges.
+
+</details>
+
 ---
 
 ### 5.2 AI-Driven Test Generation, Self-Healing Tests, and Test Prioritization
@@ -304,6 +325,16 @@ Google has publicly stated that flaky tests cost thousands of engineering hours 
 
 ⚠️ **Pitfall:** Agents tend to *hide* flakiness by wrapping tests in retry loops rather than fixing the underlying cause. A retry-wrapped flaky test is still a flaky test — it is just harder to notice. Require the agent's fix to explain the root cause, not just suppress the symptom.
 
+#### ✅ Check your understanding
+
+**Q:** An agent "fixes" a flaky test by wrapping it in `@retry(3)` and the build goes green. Why is this worse than leaving it red?
+
+<details><summary>💡 Show answer</summary>
+
+It **hides** the flakiness instead of fixing it — the underlying race condition, time dependency, or external-call fragility is still there, now masked. Worse, a retry that occasionally passes can also paper over a *real* intermittent bug. The fix should name the root cause (e.g. replace a hardcoded timestamp, mock the external API) and then prove it by re-running the test many times — not suppress the symptom.
+
+</details>
+
 ---
 
 ### 5.4 Measuring Coverage and Quality with AI; Eval Harnesses for AI-Generated Code
@@ -326,35 +357,19 @@ This is why **eval harnesses** (short for *evaluation harnesses*) have become an
 
 An **eval harness** is a separate test framework — with independently written reference cases, fuzzing, formal contracts, or golden-output comparisons — whose sole job is to verify AI-generated artifacts. It is *not* written by the same agent that produced the code being evaluated.
 
-```
-┌─────────────────────────────────────────────────────┐
-│  Developer commits code change                       │
-└───────────────────────┬─────────────────────────────┘
-                        │ triggers
-                        ▼
-┌─────────────────────────────────────────────────────┐
-│  Agent A: Test Generation Agent                      │
-│  → reads changed functions                          │
-│  → produces: tests/generated/test_payment.py        │
-└───────────────────────┬─────────────────────────────┘
-                        │ produced tests feed into
-                        ▼
-┌─────────────────────────────────────────────────────┐
-│  Eval Harness (independently maintained)             │
-│  → contract tests (OpenAPI assertions)              │
-│  → property-based fuzzing (Hypothesis)              │
-│  → golden-output regression tests                   │
-│  → detects: trivially true / always-pass tests      │
-└───────────────────────┬─────────────────────────────┘
-                        │ eval score feeds into
-                        ▼
-┌─────────────────────────────────────────────────────┐
-│  Human approval gate                                 │
-│  (required if eval score < threshold)               │
-└─────────────────────────────────────────────────────┘
-```
+![A top-to-bottom flow showing why an agent can't grade its own homework. A developer commits a code change, which triggers Agent A (the test-generation agent) that reads the changed functions and writes tests/generated/test_payment.py. Those generated tests feed into an independently-maintained Eval Harness that runs contract tests (OpenAPI assertions), property-based fuzzing (Hypothesis), and golden-output regression tests, and detects trivially-true / always-pass tests. The eval score then feeds a human approval gate, required if the score is below threshold. The harness is not written by the agent it checks.](eval-harness.svg)
 
 The key insight: **an AI agent cannot grade its own homework.** Eval harnesses provide an independent signal.
+
+#### ✅ Check your understanding
+
+**Q:** If the same agent writes both the code *and* the tests, why isn't "all tests pass" enough to trust the change? What makes an eval harness different?
+
+<details><summary>💡 Show answer</summary>
+
+An agent can write tests that pass *by construction* — trivially-true assertions, or tests that only exercise the happy path it already coded for. "Tests pass" then just means "the agent agrees with itself." An **eval harness is maintained independently** of the code-generating agent (separate reference cases, fuzzing, golden outputs), so it provides an *external* signal the agent can't game — and it specifically hunts for always-pass tests.
+
+</details>
 
 ---
 
@@ -454,6 +469,8 @@ A **build triage agent** automates this investigation:
 5. **Open a PR:** Using the GitHub/GitLab API (or an MCP tool), the agent creates a branch, commits the fix, and opens a PR with a structured description: *"This build failed because X. I changed Y. Please review before merging."*
 6. **Wait for human approval.** It does not merge. It cannot merge. This is the guardrail.
 
+![A six-step build-triage agent flow. 1 Failure (red build signal) → 2 Collect (logs, diff, history) → 3 Reason (find root cause) → 4 Propose (minimal fix) → 5 Open PR (with a PR-scope token) → 6 Wait (human approves). A callout notes the token has pull_request:write only — it cannot push to main, delete branches, or deploy. Steps 1–4 turn "47 failing steps, find it yourself" into a reasoned diagnosis in minutes.](build-triage.svg)
+
 #### Worked example: a build-fixer agent in pseudocode
 
 ```python
@@ -525,26 +542,7 @@ Not every build needs the same resources. A change to a README file versus a cha
 
 An ML model trained on historical build metadata (`(changed_files, resource_used, build_time)`) can predict, at the moment a pipeline is triggered, how much CPU and memory this particular run will need. The CI system then provisions that exact size of runner — no more, no less.
 
-```
-┌──────────────────────────────────────┐
-│  New commit: only docs/ changed      │
-└──────────────┬───────────────────────┘
-               │
-               ▼
-┌──────────────────────────────────────┐
-│  Resource predictor model            │
-│  → predicted build time: 2 min       │
-│  → predicted CPU need: 1 vCPU        │
-│  → provision: t3.micro runner        │
-└──────────────┬───────────────────────┘
-               │
-               ▼
-┌──────────────────────────────────────┐
-│  Selective execution model           │
-│  → skip: frontend, backend tests     │
-│  → run: markdown lint only           │
-└──────────────────────────────────────┘
-```
+![Two stacked ML models size a build to the change. A new commit that only touches docs/ flows into a resource-predictor model (predicted build time 2 min, CPU need 1 vCPU, provision a t3.micro runner instead of a 32-vCPU box), then into a selective-execution model that skips the frontend and backend test suites and runs only the markdown lint.](pipeline-speed.svg)
 
 **GitHub Actions** supports this natively with self-hosted runners; **Jenkins** supports it via the Kubernetes plugin (which can provision appropriately sized pods per job). Cloud CI services (CircleCI, Buildkite) are increasingly adding ML-driven resource recommendations.
 
@@ -656,22 +654,19 @@ These limits are implemented at multiple layers: the agent's system prompt ("you
 
 Think of guardrails as concentric fences, not a single gate:
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  Outer fence: token permissions (agent cannot push to main)     │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │  Middle fence: CODEOWNERS + branch protection rules       │  │
-│  │  ┌─────────────────────────────────────────────────────┐  │  │
-│  │  │  Inner fence: agent system-prompt scope restriction  │  │  │
-│  │  │  ┌─────────────────────────────────────────────────┐│  │  │
-│  │  │  │  Approval gate: human reviews before merge      ││  │  │
-│  │  │  └─────────────────────────────────────────────────┘│  │  │
-│  │  └─────────────────────────────────────────────────────┘  │  │
-│  └───────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-```
+![Four concentric fences around an agent action. From outside in: ① token permissions (agent cannot push to main); ② CODEOWNERS plus branch-protection rules; ③ agent system-prompt scope restriction; ④ a human approval gate. At the very center sits the agent action (e.g. merge a proposed fix), which a human reviews before it runs. Outer fences catch mistakes even if an inner one fails — no single layer is trusted alone.](guardrail-layers.svg)
 
 The outer fences catch mistakes even if the inner ones fail. No single layer is trusted alone.
+
+#### ✅ Check your understanding
+
+**Q:** A team relies *only* on the agent's system prompt ("never modify infra files") to keep it safe. Why is that fragile, and what layers would you add?
+
+<details><summary>💡 Show answer</summary>
+
+A system prompt is a single, *soft* layer — it can be confused, ignored, or overridden by **prompt injection**, and it isn't enforced by anything outside the LLM. Add hard, external layers: a **scoped token** with no write access to infra/main, **branch-protection + CODEOWNERS**, and a **human approval gate** before merge. Then a failure of any one fence is caught by the others.
+
+</details>
 
 #### Continuous feedback loops
 

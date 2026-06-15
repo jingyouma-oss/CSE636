@@ -9,32 +9,18 @@
 **Duration:** In-class or take-home (1–2 hours)
 **Goal:** Implement a minimal pipeline where an AI agent detects a failing CI build, proposes a fix, and opens a PR that requires human approval before merging.
 
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **You'll need** | GitHub repo, Python 3.10+, `anthropic` + `PyGithub`, an Anthropic API key, a scoped GitHub token |
+> | **You'll build** | A CI pipeline + `build_fixer_agent.py` that turns a red build into a reviewed PR |
+> | **Submit** | Screenshots of the failure, the agent's PR, and the approval-gate pause + a short reflection |
+> | **Ties to notes** | [Build-triage agent](week-03-notes.md#61-agents-that-triage-and-fix-failing-builds-and-open-pull-requests) and [guardrails](week-03-notes.md#65-continuous-feedback-loops-and-guardrails-on-autonomous-merges) |
+
 ### What you will build
 
-```
-Developer pushes code with an intentional bug
-         │
-         ▼
-CI pipeline runs → test stage FAILS
-         │
-         ▼
-Build-fixer agent step activates
-  → reads build log
-  → identifies failing test and likely cause
-  → proposes a fix
-  → opens a PR (write permission only, no merge permission)
-         │
-         ▼
-Human approval gate pauses the pipeline
-  → team member reviews the PR
-  → clicks Approve in GitHub / clicks "Proceed" in Jenkins
-         │
-         ▼
-(Optional) Auto-merge to feature branch only (not main)
-         │
-         ▼
-Green pipeline confirms fix works
-```
+![The lab flow, top to bottom: push code with an intentional bug → CI pipeline runs and the test stage FAILS (continue-on-error lets the agent run next) → the build-fixer agent activates (reads the build log, identifies the failing test and cause, proposes a minimal fix, and opens a PR with write-only, no-merge permission) → a human approval gate pauses the pipeline (a teammate reviews the PR then clicks Approve; it times out to abort, never auto-approves) → optional auto-merge to a feature branch, never to main → a green pipeline confirms the fix.](build-fixer-flow.svg)
 
 ### Prerequisites
 
@@ -290,6 +276,18 @@ In GitHub, configure the `agent-proposed` environment (Settings → Environments
 3. Enable **Prevent self-review** if available.
 
 Now when the workflow reaches the `agent-fix` job (which runs in the `agent-proposed` environment), GitHub will pause and send a notification to the designated reviewers. The job cannot proceed until a reviewer clicks "Approve and deploy."
+
+<details><summary>✅ Check your understanding — is your gate actually a gate?</summary>
+
+Your guardrail is real only if **the agent genuinely cannot merge on its own**. Verify:
+
+- The agent's token is scoped to open PRs, **not** to push to `main` or merge (try it — a merge call should be denied).
+- The `agent-proposed` environment has **Required reviewers** set, so the job *pauses* rather than proceeding.
+- There is **no auto-approve-on-timeout** anywhere; a timeout should abort, not merge.
+
+If you removed the human and nothing dangerous could still happen, the gate is doing its job.
+
+</details>
 
 ---
 
