@@ -71,6 +71,33 @@ weeks/
 - **🔑 Key terms** = a glossary at the end of each session.
 - Code and commands are shown in fenced blocks; they're illustrative starting points, not turnkey solutions.
 
+### The "gold-standard week" patterns (piloted in Weeks 0–1)
+
+Three patterns make each week visual, interactive, and easy to navigate. Apply all three when authoring or revising a week.
+
+**1. 📊 SVG diagrams.** Replace ASCII art (and wordy concept tables) with diagrams in the shared visual style — gradient-filled rounded boxes, bright color-coded arrows with arrowheads, soft drop shadows, labeled "lanes", a one-line caption. See [`week-00/five-tools-flow.svg`](week-00/five-tools-flow.svg) and [`week-01/agent-loop.svg`](week-01/agent-loop.svg) as references.
+  - Store each as a **sibling `.svg` file** in the week folder and reference it with `![descriptive alt text](name.svg)`. **Linked files only** — GitHub strips inline `<svg>` from Markdown, but renders linked SVGs.
+  - The **alt text must describe the diagram in full** — it's the accessibility fallback and replaces the ASCII for screen readers.
+
+**2. ✅ "Check your understanding" (interactive).** GitHub Markdown renders `<details><summary>` as a native click-to-expand widget — use it for self-test checkpoints placed *after each major concept block* (2–4 per session), each tied to a learning objective:
+  ```markdown
+  #### ✅ Check your understanding
+
+  **Q:** <a question that forces recall or application>
+
+  <details><summary>💡 Show answer</summary>
+
+  <a 2–4 sentence answer — blank lines around the inner Markdown so it renders>
+
+  </details>
+  ```
+  In labs, use the same widget as a **"✅ Did it work?"** check with the exact expected output and a pointer to troubleshooting.
+
+**3. 🧭 Flow & navigation.** Every `week-NN-notes.md` opens with two elements, and closes with a recap:
+  - A **📍 learning-path strip** — `learning-path.svg` placed in the week folder with *that* week's pill highlighted (same filename per folder, so the reference is uniform). Shows Week 0→7 so students always see "you are here".
+  - A **🎯 At a glance** blockquote table — *Prerequisites · Time budget · By the end you can… · What you'll build*.
+  - A **Recap and Looking Ahead** footer that ties the week to the next (see [`week-01/week-01-notes.md`](week-01/week-01-notes.md)). Labs get a lighter **🎯 At a glance** box but no nav strip.
+
 ## Source materials in this repository
 
 These notes reuse and point to existing course content:
@@ -90,3 +117,5 @@ These notes reuse and point to existing course content:
 | Class Participation | 15% |
 
 > **Responsible AI-tool use.** Students are expected to *use* AI coding agents in labs and projects **and to disclose and critically evaluate** that use — verifying correctness, reviewing agent-generated changes, and noting failures. Undisclosed or uncritical reliance on AI output is handled under the Academic Integrity policy.
+
+> **Group project, capstone & exams.** The cross-week graded work (the 20% capstone, plus the mid-term and final) is consolidated in **[GROUP_PROJECT_GUIDE.md](GROUP_PROJECT_GUIDE.md)** — team formation, a week-by-week build plan, deliverables, and exam scope.

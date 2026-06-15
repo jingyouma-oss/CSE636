@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="apah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+    </marker>
+    <linearGradient id="aapp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <linearGradient id="acol" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient>
+    <linearGradient id="aback" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1f5f9"/><stop offset="1" stop-color="#e2e8f0"/></linearGradient>
+    <linearGradient id="adet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fef3c7"/><stop offset="1" stop-color="#fde68a"/></linearGradient>
+    <linearGradient id="aalert" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fce7f3"/><stop offset="1" stop-color="#fbcfe8"/></linearGradient>
+    <filter id="apsh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="360" fill="#f8fafc"/>
+  <text x="400" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Anomaly detection as a first-class pipeline stage</text>
+
+  <!-- app -->
+  <rect x="40" y="150" width="150" height="60" rx="11" fill="url(#aapp)" stroke="#2563eb" stroke-width="2" filter="url(#apsh)"/>
+  <text x="115" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">App / Infra</text>
+  <text x="115" y="194" text-anchor="middle" font-size="10" fill="#475569">emits telemetry</text>
+
+  <line x1="190" y1="180" x2="222" y2="180" stroke="#6366f1" stroke-width="2.5" marker-end="url(#apah)"/>
+
+  <!-- OTel collector -->
+  <rect x="224" y="150" width="150" height="60" rx="11" fill="url(#acol)" stroke="#4f46e5" stroke-width="2" filter="url(#apsh)"/>
+  <text x="299" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">OTel Collector</text>
+  <text x="299" y="190" text-anchor="middle" font-size="9.5" fill="#475569">logs · metrics · traces</text>
+
+  <!-- fan to three backends -->
+  <line x1="374" y1="165" x2="410" y2="92" stroke="#6366f1" stroke-width="2" marker-end="url(#apah)"/>
+  <line x1="374" y1="180" x2="410" y2="180" stroke="#6366f1" stroke-width="2" marker-end="url(#apah)"/>
+  <line x1="374" y1="195" x2="410" y2="268" stroke="#6366f1" stroke-width="2" marker-end="url(#apah)"/>
+
+  <rect x="412" y="64" width="170" height="48" rx="10" fill="url(#aback)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="497" y="92" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">Metrics (Prometheus)</text>
+
+  <rect x="412" y="156" width="170" height="48" rx="10" fill="url(#aback)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="497" y="184" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">Traces (Jaeger / Tempo)</text>
+
+  <rect x="412" y="248" width="170" height="48" rx="10" fill="url(#aback)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="497" y="276" text-anchor="middle" font-size="11" font-weight="700" fill="#334155">Logs (Elasticsearch)</text>
+
+  <!-- detection (from metrics) -->
+  <line x1="582" y1="88" x2="618" y2="120" stroke="#6366f1" stroke-width="2.5" marker-end="url(#apah)"/>
+  <rect x="620" y="100" width="156" height="64" rx="11" fill="url(#adet)" stroke="#d97706" stroke-width="2.5" filter="url(#apsh)"/>
+  <text x="698" y="126" text-anchor="middle" font-size="12" font-weight="800" fill="#b45309">Anomaly Detection</text>
+  <text x="698" y="144" text-anchor="middle" font-size="9.5" fill="#475569">isolation forest / ML svc</text>
+
+  <line x1="698" y1="164" x2="698" y2="196" stroke="#6366f1" stroke-width="2.5" marker-end="url(#apah)"/>
+  <rect x="620" y="198" width="156" height="56" rx="11" fill="url(#aalert)" stroke="#db2777" stroke-width="2" filter="url(#apsh)"/>
+  <text x="698" y="222" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Alert Manager</text>
+  <text x="698" y="240" text-anchor="middle" font-size="9.5" fill="#475569">→ PagerDuty / Slack</text>
+
+  <!-- best-practice note -->
+  <rect x="40" y="288" width="540" height="52" rx="10" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="56" y="310" font-size="10.5" fill="#334155">Separate detection from response: the detector only scores &amp; publishes events.</text>
+  <text x="56" y="327" font-size="10.5" fill="#334155">Remediation lives in a separate agent (Week 6). Start with the four golden signals.</text>
+</svg>

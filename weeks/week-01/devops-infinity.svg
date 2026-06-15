@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="340" viewBox="0 0 740 340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="loop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2563eb"/><stop offset="0.5" stop-color="#7c3aed"/><stop offset="1" stop-color="#db2777"/>
+    </linearGradient>
+    <linearGradient id="dev" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <linearGradient id="ops" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fce7f3"/><stop offset="1" stop-color="#fbcfe8"/></linearGradient>
+    <filter id="ish" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0f172a" flood-opacity="0.18"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="740" height="340" fill="#f8fafc"/>
+  <text x="370" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">The DevOps lifecycle never ends — it loops</text>
+
+  <!-- infinity ribbon -->
+  <path d="M 370 175 C 300 95 175 95 150 175 C 175 255 300 255 370 175 C 440 95 565 95 590 175 C 565 255 440 255 370 175 Z"
+        fill="none" stroke="url(#loop)" stroke-width="10" stroke-linecap="round" opacity="0.35"/>
+
+  <!-- lobe labels -->
+  <text x="200" y="178" text-anchor="middle" font-size="13" font-weight="800" fill="#2563eb" opacity="0.55">DEV</text>
+  <text x="540" y="178" text-anchor="middle" font-size="13" font-weight="800" fill="#db2777" opacity="0.55">OPS</text>
+
+  <!-- Dev stages (left lobe) -->
+  <g filter="url(#ish)">
+    <rect x="168" y="92"  width="92" height="38" rx="19" fill="url(#dev)" stroke="#2563eb" stroke-width="1.5"/>
+    <rect x="96"  y="156" width="92" height="38" rx="19" fill="url(#dev)" stroke="#2563eb" stroke-width="1.5"/>
+    <rect x="168" y="220" width="92" height="38" rx="19" fill="url(#dev)" stroke="#2563eb" stroke-width="1.5"/>
+    <rect x="262" y="156" width="92" height="38" rx="19" fill="url(#dev)" stroke="#2563eb" stroke-width="1.5"/>
+  </g>
+  <text x="214" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">1 Plan</text>
+  <text x="142" y="180" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">2 Code</text>
+  <text x="214" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">3 Build</text>
+  <text x="308" y="180" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">4 Test</text>
+
+  <!-- Ops stages (right lobe) -->
+  <g filter="url(#ish)">
+    <rect x="386" y="156" width="100" height="38" rx="19" fill="url(#ops)" stroke="#db2777" stroke-width="1.5"/>
+    <rect x="480" y="92"  width="100" height="38" rx="19" fill="url(#ops)" stroke="#db2777" stroke-width="1.5"/>
+    <rect x="552" y="156" width="100" height="38" rx="19" fill="url(#ops)" stroke="#db2777" stroke-width="1.5"/>
+    <rect x="480" y="220" width="100" height="38" rx="19" fill="url(#ops)" stroke="#db2777" stroke-width="1.5"/>
+  </g>
+  <text x="436" y="180" text-anchor="middle" font-size="12" font-weight="700" fill="#831843">5 Release</text>
+  <text x="530" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#831843">6 Deploy</text>
+  <text x="602" y="180" text-anchor="middle" font-size="12" font-weight="700" fill="#831843">7 Operate</text>
+  <text x="530" y="244" text-anchor="middle" font-size="12" font-weight="700" fill="#831843">8 Monitor</text>
+
+  <text x="370" y="320" text-anchor="middle" font-size="11.5" fill="#475569">Monitor feeds back into Plan — feedback drives continuous improvement, not big risky batches.</text>
+</svg>

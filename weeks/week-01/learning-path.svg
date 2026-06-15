@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="104" viewBox="0 0 1000 104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="hl" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#4338ca"/>
+    </linearGradient>
+    <filter id="hlShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4338ca" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <text x="500" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#94a3b8" letter-spacing="2">YOUR LEARNING PATH · CSE636</text>
+
+  <!-- chevrons between pills -->
+  <g fill="#cbd5e1" font-size="16" font-weight="700" text-anchor="middle">
+    <text x="128" y="68">›</text><text x="252" y="68">›</text><text x="376" y="68">›</text>
+    <text x="500" y="68">›</text><text x="624" y="68">›</text><text x="748" y="68">›</text><text x="872" y="68">›</text>
+  </g>
+
+  <!-- Week 0 (done) -->
+  <rect x="10" y="34" width="112" height="54" rx="10" fill="#e2e8f0"/>
+  <text x="66" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="#64748b">0</text>
+  <text x="66" y="78" text-anchor="middle" font-size="11" fill="#64748b">Setup</text>
+
+  <!-- Week 1 — CURRENT -->
+  <rect x="134" y="32" width="112" height="58" rx="10" fill="url(#hl)" stroke="#4338ca" stroke-width="2" filter="url(#hlShadow)"/>
+  <text x="190" y="60" text-anchor="middle" font-size="17" font-weight="800" fill="#ffffff">1</text>
+  <text x="190" y="79" text-anchor="middle" font-size="11" font-weight="600" fill="#e0e7ff">Basics</text>
+
+  <!-- Week 2 -->
+  <rect x="258" y="34" width="112" height="54" rx="10" fill="#e2e8f0"/>
+  <text x="314" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="#64748b">2</text>
+  <text x="314" y="78" text-anchor="middle" font-size="11" fill="#64748b">Tooling</text>
+
+  <!-- Week 3 -->
+  <rect x="382" y="34" width="112" height="54" rx="10" fill="#e2e8f0"/>
+  <text x="438" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="#64748b">3</text>
+  <text x="438" y="78" text-anchor="middle" font-size="11" fill="#64748b">CI/CD</text>
+
+  <!-- Week 4 -->
+  <rect x="506" y="34" width="112" height="54" rx="10" fill="#e2e8f0"/>
+  <text x="562" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="#64748b">4</text>
+  <text x="562" y="78" text-anchor="middle" font-size="11" fill="#64748b">Predict</text>
+
+  <!-- Week 5 -->
+  <rect x="630" y="34" width="112" height="54" rx="10" fill="#e2e8f0"/>
+  <text x="686" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="#64748b">5</text>
+  <text x="686" y="78" text-anchor="middle" font-size="11" fill="#64748b">Observe</text>
+
+  <!-- Week 6 -->
+  <rect x="754" y="34" width="112" height="54" rx="10" fill="#e2e8f0"/>
+  <text x="810" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="#64748b">6</text>
+  <text x="810" y="78" text-anchor="middle" font-size="11" fill="#64748b">Respond</text>
+
+  <!-- Week 7 -->
+  <rect x="878" y="34" width="112" height="54" rx="10" fill="#e2e8f0"/>
+  <text x="934" y="60" text-anchor="middle" font-size="16" font-weight="700" fill="#64748b">7</text>
+  <text x="934" y="78" text-anchor="middle" font-size="11" fill="#64748b">Govern</text>
+</svg>

@@ -1,5 +1,7 @@
 # Week 2: AI Agent Tooling, Protocols & Platforms
 
+![Course learning path with Week 2 (Tooling) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-02-lab.md](week-02-lab.md)**.
 
 
@@ -10,6 +12,15 @@ This week you move from understanding *what* an AI agent is to understanding *wh
 By the end of this week you will have connected a small agent to a real tool and deployed a pipeline that calls an AI for code review — the building block of every lab that follows.
 
 **Looking ahead:** [Week 3](../week-03/week-03-notes.md) puts agents *inside* the CI/CD pipeline — code review, test generation, and self-healing builds — so the pipeline and MCP plumbing you set up in this week's lab will carry forward directly.
+
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Prerequisites** | [Week 1](../week-01/week-01-notes.md) (agent anatomy, autonomy levels, tool-calling) |
+> | **Time budget** | 2 sessions: ~2 hrs + ~1.5 hrs |
+> | **By the end you can** | Compare real AI coding agents & AIOps platforms; explain MCP (host/client/server) and least-privilege; choose an orchestration framework |
+> | **What you'll build** | A Jenkins pipeline with an AI code-review stage + a working MCP server (see the [lab](week-02-lab.md)) |
 
 ---
 
@@ -126,19 +137,7 @@ VMs and containers are not mutually exclusive — many production systems run co
 
 #### The Build–Ship–Run workflow
 
-```
-Developer                   Registry              Production
-  |                            |                       |
-  | docker build -t myapp .    |                       |
-  |─────────────────────────►  |                       |
-  |                            |                       |
-  | docker push myapp          |                       |
-  |─────────────────────────►  |                       |
-  |                            |  docker pull myapp    |
-  |                            |◄──────────────────────|
-  |                            |  docker run myapp     |
-  |                            |  ─────────────────►   |
-```
+![Docker Build → Ship → Run as a sequence across three actors. Developer: 1 BUILD (docker build -t myapp .) then 2 SHIP (docker push myapp) to the Registry (Docker Hub). Production then docker pull myapp and 3 RUN (docker run myapp). The same image runs identically everywhere — no "works on my machine."](build-ship-run.svg)
 
 #### Essential Docker commands
 
@@ -271,6 +270,16 @@ Devin represents a higher autonomy tier: given a software task, it operates a fu
 
 The caveat — and this is important to teach students — is that higher autonomy does not mean higher reliability. Devin makes mistakes. It can go down wrong paths, loop, or produce plausible-looking but subtly wrong code. Human review remains essential.
 
+#### ✅ Check your understanding
+
+**Q:** A teammate says "Devin is more autonomous than Claude Code, so it's the better tool for our production refactor." What's the flaw in that reasoning?
+
+<details><summary>💡 Show answer</summary>
+
+It conflates **autonomy with reliability**. A higher autonomy tier just means less human checking *by default* — it does not mean the output is more correct. Devin still produces plausible-but-wrong code and can loop down bad paths. For a high-blast-radius production refactor you'd want *more* human review, which favors a human-in-the-loop workflow regardless of which tool is "more autonomous."
+
+</details>
+
 ---
 
 ### Concept: AIOps Platforms with Agentic Features
@@ -327,6 +336,16 @@ A useful mental checklist before deploying an agent for a new task:
 4. What data will the agent access? Is any of it sensitive?
 5. Who reviews and approves the agent's output before it reaches production?
 
+#### ✅ Check your understanding
+
+**Q:** A developer wants an agent to auto-delete cloud resources tagged "unused" to save money — with no human review. Run it through the checklist: which red flags fire?
+
+<details><summary>💡 Show answer</summary>
+
+At least three: **blast radius** (deleting the wrong resource could take down a live service), **reversibility** (deletes are often irreversible), and **verifiability** (a "unused" tag may be stale or wrong — there's no automatic test that a resource is truly safe to delete). The fix: keep a human in the loop, dry-run first, and limit the action to a reversible step (e.g. *stop* before *delete*).
+
+</details>
+
 ---
 
 ### Concept: Building Toolchains with AI/Agent Plug-ins
@@ -335,27 +354,7 @@ An **AI toolchain** is a connected set of tools where an AI agent orchestrates w
 
 Example toolchain for a code change:
 
-```
-Developer request
-       │
-       ▼
-   AI coding agent (Claude Code / Copilot)
-   ├── reads codebase (Git)
-   ├── writes/edits code (file system)
-   ├── runs tests (CI runner)
-   ├── checks style/security (linter, SAST tool)
-   └── opens pull request (GitHub API)
-       │
-       ▼
-   Human reviewer approves PR
-       │
-       ▼
-   CI/CD pipeline deploys change
-       │
-       ▼
-   AIOps platform monitors deployment health
-   └── (optionally) triggers rollback agent if anomaly detected
-```
+![A vertical toolchain orchestrated by an AI agent. A Developer request flows into an AI coding agent (Claude Code / Copilot) that reads the codebase via Git, writes and edits code, runs tests on the CI runner, checks style and security with a linter/SAST tool, and opens a pull request via the GitHub API. A human reviewer approves the PR (the approval gate), then a CI/CD pipeline deploys the change, and an AIOps platform monitors deployment health — triggering a rollback agent if an anomaly is detected, closing the loop.](ai-toolchain.svg)
 
 The glue between these tools is increasingly **MCP** (Model Context Protocol), which we cover in Session 4. Before MCP, each agent needed a custom integration per tool. MCP standardizes that connection.
 
@@ -496,21 +495,7 @@ MCP defines three parties:
 - **MCP Client:** A component inside the host that manages connections to one or more MCP servers. The client handles the protocol handshake, authentication, and message routing.
 - **MCP Server:** A lightweight process that exposes tools and data from one system (e.g., a GitHub server, a Postgres server, a Jenkins server). It declares what it can do, and the agent calls it at runtime.
 
-```
-┌─────────────────────────────────┐
-│         MCP Host (Agent)        │
-│  ┌──────────┐   ┌────────────┐  │
-│  │ LLM Core │◄──│ MCP Client │  │
-│  └──────────┘   └────┬───────┘  │
-└────────────────────────┼────────┘
-                         │  JSON-RPC over stdio / HTTP+SSE
-          ┌──────────────┼──────────────────┐
-          │              │                  │
-   ┌──────▼──────┐ ┌─────▼──────┐ ┌────────▼──────┐
-   │  MCP Server │ │ MCP Server │ │  MCP Server   │
-   │  (GitHub)   │ │ (Jenkins)  │ │  (Postgres DB)│
-   └─────────────┘ └────────────┘ └───────────────┘
-```
+![MCP architecture. An MCP Host (the agent app, e.g. Claude Code) contains an LLM Core (reasons and decides) and an MCP Client (manages connections). The client talks to MCP servers over JSON-RPC (stdio or HTTP+SSE). Three MCP servers are shown: GitHub (PRs, files, issues), Jenkins (build, status, logs), and Postgres DB (query rows). Each server wraps one system and declares its tools; the client calls them at runtime.](mcp-architecture.svg)
 
 #### The three primitives MCP exposes
 
@@ -602,6 +587,16 @@ Now when you ask Claude Code "Is the backend-api build passing?", it automatical
 
 MCP turns an AI agent from a clever text generator into a **system actor** — it can read your actual metrics, query your real issue tracker, trigger your actual build system. This is what makes agentic DevOps *real*. But it also means the agent has real power to cause real damage, which is why permissions (covered below) matter so much.
 
+#### ✅ Check your understanding
+
+**Q:** Before MCP, connecting 4 agents to 6 tools could mean writing 24 custom integrations. Why does MCP turn that "N×M" problem into "N+M"?
+
+<details><summary>💡 Show answer</summary>
+
+With MCP you write **one MCP server per tool** (M servers) and each agent just speaks the MCP protocol (N clients) — so you build M + N pieces, not M × N. Any MCP-compatible agent can use any MCP server without a bespoke connector for that exact pair. That's the USB-C idea: one standard, not one cable per device pair.
+
+</details>
+
 ---
 
 ### Concept: Agent Orchestration Frameworks
@@ -614,23 +609,7 @@ When a task is complex — "refactor this service, update the API docs, notify t
 
 LangGraph is well-suited for workflows with clear decision points, loops (retry until tests pass), and human-in-the-loop checkpoints (pause and wait for a user to approve).
 
-```
-        ┌─────────┐
-Start ──► Planner │
-        └────┬────┘
-             │
-        ┌────▼────────┐       Tests fail?
-        │  Code Editor│──────────────────┐
-        └────┬────────┘                  │
-             │ Tests pass                │
-        ┌────▼────────┐            ┌─────▼──────┐
-        │  Open PR    │            │ Debug Agent│
-        └─────────────┘            └─────┬──────┘
-                                         │
-                                    ┌────▼────────┐
-                                    │  Code Editor│
-                                    └─────────────┘
-```
+![A LangGraph workflow drawn as a graph. Start flows to a Planner node, then a Code Editor node that writes the change. A "tests pass?" decision branches two ways: on pass, a green edge goes to an Open PR node (done); on fail, a pink edge goes down to a Debug Agent node that diagnoses the failure and loops back to the Code Editor to retry until green. Conditional edges, loops, and human-in-the-loop pause points are first-class in LangGraph.](langgraph-flow.svg)
 
 #### CrewAI
 
@@ -726,6 +705,16 @@ From [Week 1](../week-01/week-01-notes.md), the three positions are:
 | **Human-out-of-the-loop** | Fully autonomous; only appropriate for well-bounded, reversible, low-blast-radius tasks with extensive audit logging and automated rollback |
 
 For most Week 2 and Week 3 tasks, **human-in-the-loop** is the right choice. Move autonomy levels up gradually, with evidence that the agent behaves correctly.
+
+#### ✅ Check your understanding
+
+**Q:** Your code-review agent is given an admin token with write access to *all* org repos "so it has what it needs." Name two least-privilege fixes.
+
+<details><summary>💡 Show answer</summary>
+
+Any two of: **scope the token** to only the repos it reviews (and read-only, since reviewing doesn't require write); use a **separate identity** per agent so a compromise of the reviewer can't deploy; use **short-lived credentials** that expire; pull the secret from an **environment variable / secrets manager** rather than hardcoding it. The principle: grant only what *this task* needs, nothing more — because agents can be prompt-injected or simply act wrongly.
+
+</details>
 
 ---
 

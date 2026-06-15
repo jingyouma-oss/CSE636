@@ -1,5 +1,7 @@
 # Week 6: Autonomous Incident Response & Agentic SRE
 
+![Course learning path with Week 6 (Respond) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-06-lab.md](week-06-lab.md)**.
 
 
@@ -12,6 +14,15 @@
 - [Week 2](../week-02/week-02-notes.md): MCP (Model Context Protocol), tool permissions, and least-privilege agent design are the safety layer around every action this week.
 
 **Prepares for:** [Week 7](../week-07/week-07-notes.md) — Agentic IaC, platform engineering, security governance, and the capstone project, which asks you to wire together everything from Weeks 1–6 end-to-end.
+
+> 🎯 **At a glance**
+>
+> | | |
+> |---|---|
+> | **Prerequisites** | [Week 5](../week-05/week-05-notes.md) (detection/RCA) + [Week 2](../week-02/week-02-notes.md) (MCP, least-privilege) |
+> | **Time budget** | 2 sessions: ~2 hrs + ~1.5 hrs |
+> | **By the end you can** | Architect a self-healing system, run a ReAct loop, choose an autonomy level, enforce blast-radius guardrails, and wire an agent to ITSM |
+> | **What you'll build** | A ReAct incident-triage agent with MCP tools and a gated rollback — the course's most hands-on lab (see [the lab](week-06-lab.md)) |
 
 ---
 
@@ -131,28 +142,7 @@ This is not science fiction — commercial platforms like PagerDuty AI, Dynatrac
 
 #### Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────┐
-│                 Observability Layer                  │
-│  Metrics (Prometheus) + Logs (Loki) + Traces (Tempo) │
-└────────────────────┬────────────────────────────────┘
-                     │  alert / anomaly signal
-                     ▼
-┌─────────────────────────────────────────────────────┐
-│              Incident Intake Layer                   │
-│  Alert manager → de-duplicate → correlate → enrich  │
-└────────────────────┬────────────────────────────────┘
-                     │  structured incident context
-                     ▼
-┌─────────────────────────────────────────────────────┐
-│              Agentic SRE Layer  (NEW this week)      │
-│  LLM agent  ←→  MCP tools (kubectl, runbooks, ITSM) │
-│  ReAct loop + guardrails + approval gate             │
-└───────────┬────────────────────┬────────────────────┘
-            │ safe action        │ needs approval
-            ▼                    ▼
-  Kubernetes / Cloud API    Human on-call (PagerDuty)
-```
+![A four-layer self-healing architecture, top to bottom. The Observability layer (Week 5) — Prometheus metrics, Loki logs, Tempo traces — emits an alert/anomaly signal to the Incident intake layer (alert manager → de-duplicate → correlate → enrich), which passes structured incident context to the Agentic SRE layer (new this week): an LLM agent wired to MCP tools (kubectl, runbooks, ITSM) running a ReAct loop with guardrails and an approval gate. From there, safe reversible actions auto-execute against the Kubernetes/Cloud API (Level 3), while irreversible actions go to the human on-call via PagerDuty for approval (Level 2). The agentic layer reasons but does not have unbounded permission to act.](self-healing-arch.svg)
 
 The key insight: the agentic layer sits *between* your observability stack and your remediation tools. It reasons, but it does not have unbounded permission to act.
 
@@ -164,26 +154,7 @@ The key insight: the agentic layer sits *between* your observability stack and y
 
 #### The Loop
 
-```
-┌──────────┐
-│  Observe │◄──────────────────────────────┐
-└────┬─────┘                               │
-     │  (what do I know so far?)            │ (what did the tool return?)
-     ▼                                      │
-┌──────────┐                        ┌───────┴──────┐
-│  Reason  │                        │  Tool result │
-│ (Thought)│                        └──────────────┘
-└────┬─────┘                               ▲
-     │  (what should I do next?)            │
-     ▼                                      │
-┌──────────┐                               │
-│   Act    │───────────────────────────────┘
-│ (Action) │  (call a tool)
-└──────────┘
-     │  (if answer found, stop)
-     ▼
-  Final Answer
-```
+![The ReAct loop drawn as a cycle of three nodes. Reason (Thought) — the agent writes out its reasoning, e.g. "errors spiked 5 min ago; a deploy landed 8 min ago…". Act (Action) — it calls a tool, e.g. "check canary status". Observe — it reads the tool result, e.g. "canary error rate 12%". The arrows cycle Reason → Act → Observe → back to Reason until the incident is resolved, then it stops or escalates. A callout explains why ReAct is safe: because the Thought is written before acting, you can log it, gate it, and threshold it before the tool call runs.](react-loop.svg)
 
 In plain language:
 - **Thought:** The agent writes out its reasoning in natural language. "The error rate on the payment service spiked 5 minutes ago. The most recent deployment was 8 minutes ago. This looks like a regression."
@@ -202,6 +173,16 @@ Because the agent writes out its reasoning *before* acting, you can:
 - Set confidence thresholds: only auto-execute if the agent's stated confidence is above a threshold.
 
 This transparency is what makes ReAct suitable for production operations work, where blind action is dangerous.
+
+#### ✅ Check your understanding
+
+**Q:** ReAct makes the agent write a natural-language "Thought" before every action. Beyond readability, what two *safety* capabilities does that explicit Thought enable?
+
+<details><summary>💡 Show answer</summary>
+
+Because the reasoning is emitted *before* the tool call, you can (1) **log it for audit** — every decision has a recorded rationale for postmortems — and (2) **insert an approval gate / confidence threshold between the thought and the action**, so a "roll back" thought doesn't execute until a human approves or the stated confidence clears a bar. Blind action (act-without-stated-reasoning) gives you neither.
+
+</details>
 
 #### Reflection and Multi-Step Agents
 
@@ -291,6 +272,16 @@ Concrete techniques to limit blast radius:
 
 7. **Working-hours-only mode.** Limit fully autonomous actions to working hours when the team is available to intervene. After hours, drop to Level 2 (confirm before acting).
 
+#### ✅ Check your understanding
+
+**Q:** Your self-healing agent restarts a flapping service, which re-alerts, so it restarts again… in a loop that takes the service down. Which two blast-radius controls would have stopped this, and which control must *every* autonomous system have regardless?
+
+<details><summary>💡 Show answer</summary>
+
+A **rate limit** (at most one remediation per service per N minutes) and **loop/flap detection** would have broken the cycle. And regardless of anything else, every autonomous system must have a **kill switch** — one simple, well-known flag that disables all autonomous remediation immediately. (An error-budget gate is also a good third layer.)
+
+</details>
+
 ---
 
 ### Concept: Orchestration with Kubernetes Operators and Agents
@@ -332,6 +323,16 @@ spec:
       autonomyLevel: 3       # act with notification
       maxReplicas: 10
 ```
+
+#### ✅ Check your understanding
+
+**Q:** For "restart a Pod that's crash-looping," is a Kubernetes Operator enough, or do you need the LLM agent? When does the LLM layer earn its place?
+
+<details><summary>💡 Show answer</summary>
+
+A plain **Operator (or even built-in Kubernetes) is enough** for "crash-loop → restart" — it's fast, deterministic, and well-defined. The **LLM agent earns its place on the *reasoning* that the Operator can't encode**: *should* we restart given current traffic, error budget, and a pending migration? which runbook matches this novel symptom? do these four alerts share a root cause? Use the Operator for known mechanics, the agent for judgement and novel situations.
+
+</details>
 
 ---
 
@@ -543,28 +544,19 @@ In this situation, all 150 alerts share a single root cause. The correct respons
 
 #### How an Agent Handles Correlation
 
-```
-Incoming alerts (last 5 minutes):
-  - payment-svc: error rate 15%
-  - cart-svc: p99 latency 3200ms
-  - checkout-svc: timeout on database calls
-  - order-history-svc: "connection refused" to postgres-primary
-
-Agent thought:
-  "Four alerts, all services that depend on postgres-primary.
-   The order-history-svc alert mentions 'connection refused' to the database.
-   High probability: postgres-primary is the root cause.
-   Creating one incident: 'postgres-primary connectivity failure'.
-   Suppressing downstream alerts for 30 minutes or until root cause resolved."
-
-Agent action:
-  - Create one PagerDuty incident (not four)
-  - Tag payment-svc, cart-svc, checkout-svc, order-history-svc as related
-  - Set suppression window for those services
-  - Begin triage runbook: postgres-primary
-```
+![An alert storm on the left — payment-svc error rate 15%, cart-svc p99 3200ms, checkout-svc db timeout, order-history connection refused, and 146 more — flows into a correlation agent in the middle, which notices all four depend on postgres-primary and one says "connection refused", inferring a shared root cause. On the right it produces a single incident, "postgres-primary connectivity failure", suppresses the downstream alerts, and begins the triage runbook. The on-call engineer gets one actionable incident instead of 150 pages.](alert-correlation.svg)
 
 This reduces 150 pages to 1, and gives the on-call engineer a clear starting point.
+
+#### ✅ Check your understanding
+
+**Q:** What's the difference between alert *correlation* and alert *suppression*, and why must correlation come first?
+
+<details><summary>💡 Show answer</summary>
+
+**Correlation** groups alerts that are likely symptoms of one root cause into a single incident; **suppression** then silences those downstream/redundant alerts while the root-cause incident is open. Correlation has to come first because you can only safely *suppress* an alert once you've established it's a symptom of an already-tracked incident — suppress before correlating and you risk muting a genuinely independent problem.
+
+</details>
 
 #### Noise Reduction Techniques
 
@@ -671,26 +663,7 @@ The agent reads this YAML as part of its prompt context, then executes each step
 
 #### The Agent-ITSM Integration Loop
 
-```
-Alert fires
-    │
-    ▼
-Agent correlates & creates PagerDuty incident
-    │
-    ▼
-Agent executes runbook diagnostics
-    │
-    ├─── auto-resolved ──► Agent resolves PagerDuty incident
-    │                      Agent posts timeline summary
-    │
-    └─── needs human ───► Agent sends detailed summary to on-call engineer
-                          (via PagerDuty notification)
-                          On-call approves or takes over
-                          │
-                          ▼
-                      If resolved: Agent files ServiceNow incident record
-                                   Agent drafts postmortem
-```
+![The agent-ITSM loop. An alert fires; the agent correlates and creates a single PagerDuty incident, then executes runbook diagnostics via tool calls. It branches on "resolved automatically?": if yes, the agent resolves the incident, posts a timeline, and drafts a postmortem; if it needs a human, the agent escalates to on-call with a rich summary and the human approves or takes over. Both branches converge into a postmortem whose action items feed runbook updates, tests, and thresholds — the feedback loop.](itsm-loop.svg)
 
 #### MCP Tool Exposure for ITSM
 
@@ -827,6 +800,16 @@ The action items from postmortems feed back into:
 - Threshold adjustments (maybe the canary smoke test should catch this).
 
 This creates a **feedback loop**: incidents improve the system, which reduces future incidents.
+
+#### ✅ Check your understanding
+
+**Q:** An agent can draft a postmortem in seconds because it observed the whole incident. Why should that draft still be marked "requires human review" before it's published?
+
+<details><summary>💡 Show answer</summary>
+
+Because the LLM can **hallucinate** timeline details or assert a confident-but-wrong root cause, and a postmortem is an organizational record that drives action items, test changes, and blame-free learning. The agent's huge advantage is *recall* (it logged every alert, tool call, and action); the human's job is to *verify* the cited evidence actually supports the conclusion before it becomes the team's official account.
+
+</details>
 
 ---
 

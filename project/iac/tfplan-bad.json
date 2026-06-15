@@ -1,0 +1,18 @@
+{
+  "format_version": "1.2",
+  "comment": "NON-COMPLIANT sample: wrong Environment tag, no ManagedBy tag, no encryption resource, no public-access block. `conftest test tfplan-bad.json` should FAIL with several deny messages — this is the guardrail blocking a bad plan before apply.",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.attacker_controlled_bucket",
+      "type": "aws_s3_bucket",
+      "name": "attacker_controlled_bucket",
+      "change": {
+        "actions": ["create"],
+        "after": {
+          "bucket": "attacker-controlled-bucket",
+          "tags": { "Environment": "staging" }
+        }
+      }
+    }
+  ]
+}

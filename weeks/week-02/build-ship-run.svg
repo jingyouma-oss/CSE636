@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="320" viewBox="0 0 820 320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="bah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <linearGradient id="bdev" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <linearGradient id="breg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient>
+    <linearGradient id="bprod" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcfce7"/><stop offset="1" stop-color="#bbf7d0"/></linearGradient>
+    <filter id="bsh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="820" height="320" fill="#f8fafc"/>
+  <text x="410" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Docker: Build → Ship → Run</text>
+
+  <!-- actor headers -->
+  <rect x="40"  y="56" width="200" height="44" rx="10" fill="url(#bdev)" stroke="#2563eb" stroke-width="2" filter="url(#bsh)"/>
+  <text x="140" y="83" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Developer</text>
+  <rect x="310" y="56" width="200" height="44" rx="10" fill="url(#breg)" stroke="#4f46e5" stroke-width="2" filter="url(#bsh)"/>
+  <text x="410" y="83" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Registry (Docker Hub)</text>
+  <rect x="580" y="56" width="200" height="44" rx="10" fill="url(#bprod)" stroke="#16a34a" stroke-width="2" filter="url(#bsh)"/>
+  <text x="680" y="83" text-anchor="middle" font-size="14" font-weight="700" fill="#0f172a">Production</text>
+
+  <!-- lifelines -->
+  <line x1="140" y1="100" x2="140" y2="300" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="410" y1="100" x2="410" y2="300" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <line x1="680" y1="100" x2="680" y2="300" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <!-- 1 BUILD (self on developer) -->
+  <path d="M 140 130 h 64 v 24 h -58" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#bah)"/>
+  <text x="150" y="124" font-size="11.5" font-weight="700" fill="#1d4ed8">1 · BUILD</text>
+  <text x="150" y="172" font-size="10.5" fill="#475569">docker build -t myapp .</text>
+
+  <!-- 2 SHIP / push dev -> registry -->
+  <line x1="140" y1="206" x2="402" y2="206" stroke="#2563eb" stroke-width="2.5" marker-end="url(#bah)"/>
+  <text x="150" y="200" font-size="11.5" font-weight="700" fill="#1d4ed8">2 · SHIP</text>
+  <text x="270" y="200" text-anchor="middle" font-size="10.5" fill="#475569">docker push myapp</text>
+
+  <!-- 3 pull registry -> production -->
+  <line x1="410" y1="240" x2="672" y2="240" stroke="#2563eb" stroke-width="2.5" marker-end="url(#bah)"/>
+  <text x="540" y="234" text-anchor="middle" font-size="10.5" fill="#475569">docker pull myapp</text>
+
+  <!-- 4 RUN self on production -->
+  <path d="M 680 264 h 64 v 24 h -58" fill="none" stroke="#16a34a" stroke-width="2.5" marker-end="url(#bah)"/>
+  <text x="690" y="258" font-size="11.5" font-weight="700" fill="#15803d">3 · RUN</text>
+  <text x="690" y="306" font-size="10.5" fill="#475569">docker run myapp</text>
+
+  <text x="410" y="306" text-anchor="middle" font-size="11" fill="#64748b">The same image runs identically everywhere — no "works on my machine."</text>
+</svg>
