@@ -1,3 +1,26 @@
 Recording
 Blurb.pages
 EvaluationReport.pdf
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+venv-*/
+
+# Local environment / secrets
+.env
+
+# OS / editor cruft
+.DS_Store
+
+# Lab/run outputs (regenerable)
+project/forecasting/cpu_metrics.csv
+project/anomaly/metrics_sample.csv
+project/iac/tfplan.binary
+project/iac/.terraform/
+project/iac/.terraform.lock.hcl
