@@ -1,0 +1,66 @@
+# CI with a build-fixer agent (Week 3).
+#
+# Job `test` runs pytest and uploads the log even on failure (continue-on-error,
+# so the agent job can still run). Job `agent-fix` runs ONLY when tests failed,
+# inside the `agent-proposed` environment — which you configure with Required
+# reviewers (Settings -> Environments) so the job pauses for human approval
+# before the agent opens its PR. That pause is the guardrail.
+#
+# NOTE: GitHub only runs workflow files at the REPO ROOT under
+# .github/workflows/. Push the *contents* of project/build-fixer/ as a new repo
+# (then this file is already at the root), or, if you forked the whole course
+# repo, move this file to the top-level .github/workflows/ and add
+# `working-directory: project/build-fixer` to each run step.
+
+name: CI with Build-Fixer Agent
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      build_failed: ${{ steps.run_tests.outcome == 'failure' && 'true' || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - id: run_tests
+        name: Run tests
+        run: pytest -q --tb=short 2>&1 | tee build_log.txt
+        continue-on-error: true # let the pipeline continue so the agent can run
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build_log.txt
+
+  agent-fix:
+    needs: test
+    if: needs.test.outputs.build_failed == 'true'
+    runs-on: ubuntu-latest
+    environment: agent-proposed # Required reviewers here = the human approval gate
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-log
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Run build-fixer agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO: ${{ github.repository }}
+          BASE_BRANCH: ${{ github.ref_name }}
+        run: python scripts/build_fixer_agent.py --open-pr

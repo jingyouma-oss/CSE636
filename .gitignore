@@ -23,4 +23,5 @@ project/forecasting/cpu_metrics.csv
 project/anomaly/metrics_sample.csv
 project/iac/tfplan.binary
 project/iac/.terraform/
+project/build-fixer/build_log.txt
 project/iac/.terraform.lock.hcl

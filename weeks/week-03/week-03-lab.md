@@ -22,6 +22,8 @@
 
 ![The lab flow, top to bottom: push code with an intentional bug → CI pipeline runs and the test stage FAILS (continue-on-error lets the agent run next) → the build-fixer agent activates (reads the build log, identifies the failing test and cause, proposes a minimal fix, and opens a PR with write-only, no-merge permission) → a human approval gate pauses the pipeline (a teammate reviews the PR then clicks Approve; it times out to abort, never auto-approves) → optional auto-merge to a feature branch, never to main → a green pipeline confirms the fix.](build-fixer-flow.svg)
 
+> 💡 **A complete, runnable version of this lab ships in [`project/build-fixer/`](../../project/build-fixer/).** It has the buggy app, the GitHub Actions workflow, and the agent already wired up. You can `make demo` to watch the agent propose a fix locally (just an Anthropic key — no GitHub), then push it as your own repo for the full gated-PR flow. Build it yourself from the steps below for the learning, or start from the starter and modify it for the assignment.
+
 ### Prerequisites
 
 - A GitHub account and a repository (can fork the course's Jenkins project or any small Python project).
@@ -194,20 +196,32 @@ def run():
     # --- 2. Call the agent ---
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
+    # Structured outputs: output_config.format constrains the response to this
+    # JSON schema, so the first text block is guaranteed-valid JSON — no
+    # "please output ONLY JSON" begging, no parse failures to handle.
+    fix_schema = {
+        "type": "object",
+        "properties": {
+            "root_cause": {"type": "string"},
+            "fix_description": {"type": "string"},
+            "fixed_file_path": {"type": "string"},
+            "fixed_file_content": {"type": "string"},
+        },
+        "required": [
+            "root_cause", "fix_description", "fixed_file_path", "fixed_file_content",
+        ],
+        "additionalProperties": False,
+    }
+
     response = client.messages.create(
-        model="claude-opus-4-5",
-        max_tokens=1024,
+        model="claude-opus-4-8",   # latest Opus; set MODEL=claude-haiku-4-5 for a cheaper run
+        max_tokens=2048,
         system="""You are a build-fixer agent. Your only job is to identify
 the root cause of a failing Python test and propose the minimal fix to the
-source file. Output ONLY valid JSON in this format:
-{
-  "root_cause": "one sentence explanation",
-  "fix_description": "what you changed and why",
-  "fixed_file_path": "src/calculator.py",
-  "fixed_file_content": "... complete corrected file content ..."
-}
-Do not add tests. Do not change any file except the one identified.
-Do not make stylistic changes unrelated to the bug.""",
+source file. Change exactly one file: the source file under test, never the
+test file. fixed_file_content must be the complete corrected file. Do not add
+tests or make stylistic changes unrelated to the bug.""",
+        output_config={"format": {"type": "json_schema", "schema": fix_schema}},
         messages=[{
             "role": "user",
             "content": (
@@ -217,7 +231,7 @@ Do not make stylistic changes unrelated to the bug.""",
         }]
     )
 
-    fix = json.loads(response.content[0].text)
+    fix = json.loads(next(b.text for b in response.content if b.type == "text"))
     print(f"Agent identified root cause: {fix['root_cause']}")
 
     # --- 3. Open a PR ---

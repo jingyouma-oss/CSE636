@@ -488,7 +488,7 @@ def handle_build_failure(build_id: str, repo: str):
 
     # 2. Ask the agent to reason and propose a fix
     message = client.messages.create(
-        model="claude-opus-4-5",
+        model="claude-opus-4-8",
         max_tokens=2048,
         system="""You are a CI triage agent. Analyze the failing build,
         identify the root cause, and propose the minimal fix.

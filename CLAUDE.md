@@ -15,6 +15,7 @@ Executable code lives under `project/`:
 
 - `project/Jenkins/` — Jenkins-in-Docker teaching setup (details below).
 - `project/starter/` — Week 0 on-ramp: a tiny Flask service with tests, Docker, and CI.
+- `project/build-fixer/` — Week 3: an agentic CI demo. A buggy `src/calculator.py` makes the build red; `scripts/build_fixer_agent.py` reads the pytest log, asks Claude for the minimal fix, and (in CI) opens a PR behind a human approval gate (`agent-proposed` GitHub environment). Pure log-parser in `scripts/logparse.py` is unit-tested (`make test`, no deps); the agent driver needs `anthropic` (+ `PyGithub` for `--open-pr`). `make demo` dry-runs the agent locally with just `ANTHROPIC_API_KEY`. Note `make test` here covers only the pure core — the calculator tests fail *by design* (that's the demo's red build).
 - `project/forecasting/` — Week 4: Prophet CPU forecast → autoscaling recommendation. Pure scaling logic in `scaling.py` is unit-tested (`make test`) and needs no heavy deps; `forecast.py` (the Prophet driver) needs `make setup`.
 - `project/anomaly/` — Week 5: Isolation-Forest anomaly detection scored against ground truth. Pure precision/recall/F1 in `evaluation.py` is unit-tested (`make test`); `detect.py` needs scikit-learn.
 - `project/iac/` — Week 7: agent-style Terraform (`s3.tf`) gated by an OPA/Rego policy. `make policy` / `make policy-fail` run `conftest` against bundled plan JSON (works offline; only `conftest` required).
