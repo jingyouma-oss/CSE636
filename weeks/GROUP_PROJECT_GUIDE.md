@@ -16,7 +16,7 @@ The 20% "Group Project" **is** the end-to-end agentic DevOps pipeline you assemb
 across the course and present in Week 7. You are not starting from scratch in
 Week 7 — each week's lab produces a component you'll integrate.
 
-![The capstone pipeline you assemble](week-07/capstone-pipeline.svg)
+![The capstone pipeline you assemble](week-07/images/capstone-pipeline.svg)
 
 ### What you deliver (Week 7)
 

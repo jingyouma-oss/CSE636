@@ -1,6 +1,6 @@
 # Week 4: Predictive Analytics & Capacity Intelligence
 
-![Course learning path with Week 4 (Predict) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+![Course learning path with Week 4 (Predict) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](images/learning-path.svg)
 
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-04-lab.md](week-04-lab.md)**.
 
@@ -226,7 +226,7 @@ The trade-off versus canary: blue-green is faster to switch but exposes all user
 | Infrastructure cost | Low (canary is small) | Higher (two full environments) |
 | Best for | High-traffic services, risk-averse | Services needing zero-downtime cutover |
 
-![Canary versus blue-green deployments side by side. Canary (gradual): users are split so the stable version serves 95% and the canary serves 5%; if healthy, traffic widens 5% to 25% to 50% to 100%, and if degraded all traffic routes back to stable — small blast radius, low extra cost, best for high traffic. Blue-green (instant flip): all users flip at once from the old blue (now standby rollback target) to the new green (live); rollback is flipping back to blue — instant cutover and rollback but all users are exposed at once and it costs more (two full environments).](canary-vs-bluegreen.svg)
+![Canary versus blue-green deployments side by side. Canary (gradual): users are split so the stable version serves 95% and the canary serves 5%; if healthy, traffic widens 5% to 25% to 50% to 100%, and if degraded all traffic routes back to stable — small blast radius, low extra cost, best for high traffic. Blue-green (instant flip): all users flip at once from the old blue (now standby rollback target) to the new green (live); rollback is flipping back to blue — instant cutover and rollback but all users are exposed at once and it costs more (two full environments).](images/canary-vs-bluegreen.svg)
 
 #### ✅ Check your understanding
 
@@ -266,7 +266,7 @@ A simple ML-based gate works like this:
    - *Human-on-the-loop* — automatically aborts unless a human overrides within 5 minutes.
    - *Autonomous* — aborts immediately, notifies on-call after the fact.
 
-![An AI gate scoring a canary. Live canary features (error-rate delta vs stable, p99 latency delta, CPU/memory increase, change volume, number of dependent services, team historical fail rate, whether security files were touched) feed a trained classifier (XGBoost or logistic regression), which outputs a probability such as "78% healthy"; if it falls below the threshold (70%) the gate recommends abort. The same score drives three autonomy policies: human-in-the-loop (post to Slack, human approves), human-on-the-loop (auto-abort unless overridden within 5 minutes), and autonomous (abort now, notify on-call after).](ai-gate.svg)
+![An AI gate scoring a canary. Live canary features (error-rate delta vs stable, p99 latency delta, CPU/memory increase, change volume, number of dependent services, team historical fail rate, whether security files were touched) feed a trained classifier (XGBoost or logistic regression), which outputs a probability such as "78% healthy"; if it falls below the threshold (70%) the gate recommends abort. The same score drives three autonomy policies: human-in-the-loop (post to Slack, human approves), human-on-the-loop (auto-abort unless overridden within 5 minutes), and autonomous (abort now, notify on-call after).](images/ai-gate.svg)
 
 #### 5. Agentic Rollback Decisions
 
@@ -602,7 +602,7 @@ Standard Kubernetes HPA is **reactive**: it adds pods *after* CPU exceeds the th
 2. A controller converts the predicted CPU into a required replica count: `desired_replicas = ceil(predicted_cpu / target_cpu_per_replica)`.
 3. Kubernetes scales to `desired_replicas` now, before the load materializes.
 
-![Reactive versus predictive HPA. Left: reactive HPA — a demand curve spikes while the capacity step lags 60–120 seconds behind, leaving a shaded gap where users feel the lag. Right: predictive HPA — capacity steps up early, before the demand spike arrives, because a forecast drove it. Bottom: forecast the next 5–15 minutes of CPU, compute desired_replicas = ceil(predicted_cpu / target_per_replica), scale now; emit the forecast as a Prometheus metric and let a KEDA ScaledObject act on it.](predictive-hpa.svg)
+![Reactive versus predictive HPA. Left: reactive HPA — a demand curve spikes while the capacity step lags 60–120 seconds behind, leaving a shaded gap where users feel the lag. Right: predictive HPA — capacity steps up early, before the demand spike arrives, because a forecast drove it. Bottom: forecast the next 5–15 minutes of CPU, compute desired_replicas = ceil(predicted_cpu / target_per_replica), scale now; emit the forecast as a Prometheus metric and let a KEDA ScaledObject act on it.](images/predictive-hpa.svg)
 
 The Kubernetes community has implemented this via custom controllers (e.g., the **Predictive Horizontal Pod Autoscaler** project) and via integration with KEDA.
 
@@ -695,7 +695,7 @@ This is a **human-in-the-loop** design — the agent gathers data, reasons about
 
 This demo shows the full loop: train a Prophet model on historical CPU data, generate a 1-hour forecast, and translate it into a scaling recommendation.
 
-![The lab pipeline in four stages: 1 CPU history (a time series of ds/y 5-minute samples) → 2 Prophet (models trend plus seasonality, forecasts the next 30 minutes) → 3 Replica calc (ceil of current replicas times predicted CPU over target, clamped to min/max) → 4 Scale action (e.g. "scale 5 → 7 pods", pre-emptive). Evaluate first by holding out the last 24 hours and checking MAE/MAPE; a MAPE under about 10% is good enough to act on. Use the upper confidence bound when under-provisioning is costlier than over-provisioning.](forecast-to-scale.svg)
+![The lab pipeline in four stages: 1 CPU history (a time series of ds/y 5-minute samples) → 2 Prophet (models trend plus seasonality, forecasts the next 30 minutes) → 3 Replica calc (ceil of current replicas times predicted CPU over target, clamped to min/max) → 4 Scale action (e.g. "scale 5 → 7 pods", pre-emptive). Evaluate first by holding out the last 24 hours and checking MAE/MAPE; a MAPE under about 10% is good enough to act on. Use the upper confidence bound when under-provisioning is costlier than over-provisioning.](images/forecast-to-scale.svg)
 
 **Setup:**
 

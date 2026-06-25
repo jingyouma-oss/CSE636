@@ -21,6 +21,7 @@ needs the `anthropic` SDK.
 | [scripts/logparse.py](scripts/logparse.py) | Pure pytest-log parser (unit-tested core) |
 | [scripts/build_fixer_agent.py](scripts/build_fixer_agent.py) | The agent: log → Claude → proposed fix → PR |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | `test` job + gated `agent-fix` job |
+| [mcp_servers/actions_status.py](mcp_servers/actions_status.py) | Week 2 MCP server (GitHub Actions variant): reports this repo's CI status to Claude Code |
 
 ## Run it locally (no GitHub needed)
 
@@ -49,6 +50,23 @@ Set `MODEL=claude-haiku-4-5` for a cheaper run (defaults to `claude-opus-4-8`).
 4. Push a commit. Watch the `test` job go red, then the `agent-fix` job **pause**
    for your approval. Approve it; the agent opens a PR with the fix. Review and
    merge the PR yourself — the agent's token opens PRs but never merges.
+
+## Week 2 bonus: ask an agent "is my build green?"
+
+[mcp_servers/actions_status.py](mcp_servers/actions_status.py) is the GitHub
+Actions counterpart to the Week 2 Jenkins MCP server. It lets Claude Code query
+*this* repo's live Actions runs. Its deps are separate from the CI path:
+
+```bash
+pip install mcp requests
+GH_TOKEN=<token-with-actions:read> REPO=<you>/build-fixer \
+  python mcp_servers/actions_status.py        # runs standalone for a smoke test
+```
+
+Register it in `~/.claude/claude.json` and ask: *"Is the latest run on main
+green?"* — full steps in [weeks/week-02/week-02-lab.md](../../weeks/week-02/week-02-lab.md)
+(Part 2, GitHub Actions variant). A fine-grained PAT scoped to this one repo is
+all it needs — much narrower than the Jenkins server's admin token.
 
 ## Why this shape is the guardrail
 

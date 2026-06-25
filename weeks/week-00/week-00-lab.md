@@ -10,7 +10,7 @@
 
 **Goal:** Prove your toolchain works by taking one small real project — the [starter service](../../project/starter/) — all the way through the DevOps loop: **run it → test it → containerize it → push it → watch CI go green → point an AI agent at it.**
 
-![The loop you run in this lab: 1 Code (edit the app), 2 Test (make test → 7 passed), 3 Run (make run → /health ok), 4 Containerize (make docker-build), 5 Push (git push to GitHub), 6 CI green (Actions runs the tests), then loop back to Code.](devops-loop.svg)
+![The loop you run in this lab: 1 Code (edit the app), 2 Test (make test → 7 passed), 3 Run (make run → /health ok), 4 Containerize (make docker-build), 5 Push (git push to GitHub), 6 CI green (Actions runs the tests), then loop back to Code.](images/devops-loop.svg)
 
 **What you submit:** a short checklist with a few screenshots (see [Step 8](#step-8-what-to-submit)).
 

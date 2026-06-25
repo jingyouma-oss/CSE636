@@ -1,6 +1,6 @@
 # Week 1: Foundations of AI-Assisted & Agentic DevOps
 
-![Course learning path with Week 1 (Basics) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+![Course learning path with Week 1 (Basics) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](images/learning-path.svg)
 
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-01-lab.md](week-01-lab.md)**.
 
@@ -65,7 +65,7 @@ DevOps is often depicted as an infinity loop (the ∞ symbol), showing that soft
 | **Operate** | Manage infrastructure, config | Terraform, Puppet, Chef |
 | **Monitor** | Track performance, errors, costs | Prometheus, Grafana, ELK, Datadog |
 
-![The DevOps lifecycle drawn as an infinity loop. The left lobe (Dev) holds stages 1 Plan, 2 Code, 3 Build, 4 Test; the right lobe (Ops) holds 5 Release, 6 Deploy, 7 Operate, 8 Monitor. Monitor feeds back into Plan, so the loop never ends.](devops-infinity.svg)
+![The DevOps lifecycle drawn as an infinity loop. The left lobe (Dev) holds stages 1 Plan, 2 Code, 3 Build, 4 Test; the right lobe (Ops) holds 5 Release, 6 Deploy, 7 Operate, 8 Monitor. Monitor feeds back into Plan, so the loop never ends.](images/devops-infinity.svg)
 
 Each stage feeds into the next, and the Monitor stage feeds back into Plan — closing the loop. This feedback-driven cycle is what allows teams to improve continuously rather than in big risky batches.
 
@@ -151,7 +151,7 @@ Think of the difference between a GPS that shows you a map (assistant) versus a 
 
 **The perceive → plan → act → observe loop:**
 
-![An AI agent runs a four-step loop, clockwise: 1 Perceive (read the task, logs, code, alerts) → 2 Plan/Reason (the LLM decides what to do next) → 3 Act (call a tool: run, edit, open a PR) → 4 Observe (read the result, then repeat). At the center: an agent is an LLM plus tools plus a goal, looping until done or a limit is hit.](agent-loop.svg)
+![An AI agent runs a four-step loop, clockwise: 1 Perceive (read the task, logs, code, alerts) → 2 Plan/Reason (the LLM decides what to do next) → 3 Act (call a tool: run, edit, open a PR) → 4 Observe (read the result, then repeat). At the center: an agent is an LLM plus tools plus a goal, looping until done or a limit is hit.](images/agent-loop.svg)
 
 1. **Perceive:** The agent receives input — a task description, an error message, a log file, the current state of a repository.
 2. **Plan/Reason:** The agent (powered by an LLM) decides what to do next. It may decompose the task into sub-steps.
@@ -172,7 +172,7 @@ Not all agents operate with the same level of independence. The course introduce
 | 3 | **Human-on-the-loop** | Agent acts autonomously; human monitors and can intervene | Agent applies routine patches; SRE watches a dashboard |
 | 4 | **Fully autonomous** | Agent acts without human involvement | Agent auto-scales, auto-heals, and auto-remediates 24/7 |
 
-![Four levels of autonomy drawn as a rising staircase. Level 1 AI assistant (AI suggests; human decides and acts). Level 2 Human-in-the-loop (agent acts but pauses for approval each step). Level 3 Human-on-the-loop (agent acts on its own; human monitors and can step in). Level 4 Fully autonomous (agent acts with no human; needs the strongest guardrails). As autonomy rises left to right, the blast radius grows; most real deployments live at levels 2–3.](autonomy-levels.svg)
+![Four levels of autonomy drawn as a rising staircase. Level 1 AI assistant (AI suggests; human decides and acts). Level 2 Human-in-the-loop (agent acts but pauses for approval each step). Level 3 Human-on-the-loop (agent acts on its own; human monitors and can step in). Level 4 Fully autonomous (agent acts with no human; needs the strongest guardrails). As autonomy rises left to right, the blast radius grows; most real deployments live at levels 2–3.](images/autonomy-levels.svg)
 
 Most enterprise deployments today operate at levels 2–3. Level 4 requires very high confidence in the agent's safety and correctness, and strong guardrails. A central theme of this course is: *choose the right level of autonomy for each task, and build appropriate guardrails*.
 
@@ -233,7 +233,7 @@ DevOps solved the silo problem between Dev and Ops. But as organizations scaled 
 
 Each wave of the practice was a response to these pressures:
 
-![A left-to-right timeline of four waves, each more autonomous than the last. DevOps (2009–): collaboration + automation + CI/CD. DevSecOps (2012–): security built into every pipeline stage. AIOps (2017–): ML reads telemetry — detects but doesn't act. Agentic DevOps (2024–): agents that plan and take action.](evolution-timeline.svg)
+![A left-to-right timeline of four waves, each more autonomous than the last. DevOps (2009–): collaboration + automation + CI/CD. DevSecOps (2012–): security built into every pipeline stage. AIOps (2017–): ML reads telemetry — detects but doesn't act. Agentic DevOps (2024–): agents that plan and take action.](images/evolution-timeline.svg)
 
 #### AIOps: intelligence before agents
 
@@ -725,7 +725,7 @@ An **MCP server** is a small service that wraps a tool (e.g., a Jenkins server) 
 
 The key benefit: instead of writing a custom integration for every tool, you write one MCP server per tool, and any MCP-compatible agent can use it. Think of it as USB for AI agents — a universal connector.
 
-![MCP as a universal connector, like USB for AI agents. A single Agent (MCP client) connects through MCP to four MCP servers: GitHub (create PR, read files, list issues), Jenkins (trigger build, get status, get logs), Datadog (query metrics, list monitors, create alert), and Kubectl (get pods, scale deployment, describe service). You write one MCP server per tool and any MCP agent can use it.](mcp-connector.svg)
+![MCP as a universal connector, like USB for AI agents. A single Agent (MCP client) connects through MCP to four MCP servers: GitHub (create PR, read files, list issues), Jenkins (trigger build, get status, get logs), Datadog (query metrics, list monitors, create alert), and Kubectl (get pods, scale deployment, describe service). You write one MCP server per tool and any MCP agent can use it.](images/mcp-connector.svg)
 
 #### ✅ Check your understanding
 

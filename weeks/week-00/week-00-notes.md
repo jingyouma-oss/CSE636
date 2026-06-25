@@ -1,6 +1,6 @@
 # Week 0: Getting Ready — A Beginner's On-Ramp
 
-![Course learning path from Week 0 (Setup, highlighted) through Week 7 (Governance): 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+![Course learning path from Week 0 (Setup, highlighted) through Week 7 (Governance): 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](images/learning-path.svg)
 
 > 📝 **Primer notes.** The hands-on setup walkthrough lives in **[week-00-lab.md](week-00-lab.md)**. Do the lab *before* Week 1's first class.
 
@@ -103,7 +103,7 @@ An **agent**. The giveaway is that it *took actions in a loop* — edited a file
 
 Here's the whole picture you'll assemble in the [lab](week-00-lab.md):
 
-![How the five tools fit together: you edit code in a Git repo on your laptop, run tests/app via Python and build a Docker container locally, then push to GitHub where GitHub Actions (CI) runs the same tests and reports a green checkmark.](five-tools-flow.svg)
+![How the five tools fit together: you edit code in a Git repo on your laptop, run tests/app via Python and build a Docker container locally, then push to GitHub where GitHub Actions (CI) runs the same tests and reports a green checkmark.](images/five-tools-flow.svg)
 
 You will do exactly this with the **starter service** in [`../../project/starter/`](../../project/starter/) — a tiny web app built for this purpose.
 

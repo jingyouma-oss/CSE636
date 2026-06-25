@@ -1,6 +1,6 @@
 # Week 2: AI Agent Tooling, Protocols & Platforms
 
-![Course learning path with Week 2 (Tooling) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+![Course learning path with Week 2 (Tooling) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](images/learning-path.svg)
 
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-02-lab.md](week-02-lab.md)**.
 
@@ -137,7 +137,7 @@ VMs and containers are not mutually exclusive — many production systems run co
 
 #### The Build–Ship–Run workflow
 
-![Docker Build → Ship → Run as a sequence across three actors. Developer: 1 BUILD (docker build -t myapp .) then 2 SHIP (docker push myapp) to the Registry (Docker Hub). Production then docker pull myapp and 3 RUN (docker run myapp). The same image runs identically everywhere — no "works on my machine."](build-ship-run.svg)
+![Docker Build → Ship → Run as a sequence across three actors. Developer: 1 BUILD (docker build -t myapp .) then 2 SHIP (docker push myapp) to the Registry (Docker Hub). Production then docker pull myapp and 3 RUN (docker run myapp). The same image runs identically everywhere — no "works on my machine."](images/build-ship-run.svg)
 
 #### Essential Docker commands
 
@@ -354,7 +354,7 @@ An **AI toolchain** is a connected set of tools where an AI agent orchestrates w
 
 Example toolchain for a code change:
 
-![A vertical toolchain orchestrated by an AI agent. A Developer request flows into an AI coding agent (Claude Code / Copilot) that reads the codebase via Git, writes and edits code, runs tests on the CI runner, checks style and security with a linter/SAST tool, and opens a pull request via the GitHub API. A human reviewer approves the PR (the approval gate), then a CI/CD pipeline deploys the change, and an AIOps platform monitors deployment health — triggering a rollback agent if an anomaly is detected, closing the loop.](ai-toolchain.svg)
+![A vertical toolchain orchestrated by an AI agent. A Developer request flows into an AI coding agent (Claude Code / Copilot) that reads the codebase via Git, writes and edits code, runs tests on the CI runner, checks style and security with a linter/SAST tool, and opens a pull request via the GitHub API. A human reviewer approves the PR (the approval gate), then a CI/CD pipeline deploys the change, and an AIOps platform monitors deployment health — triggering a rollback agent if an anomaly is detected, closing the loop.](images/ai-toolchain.svg)
 
 The glue between these tools is increasingly **MCP** (Model Context Protocol), which we cover in Session 4. Before MCP, each agent needed a custom integration per tool. MCP standardizes that connection.
 
@@ -495,7 +495,7 @@ MCP defines three parties:
 - **MCP Client:** A component inside the host that manages connections to one or more MCP servers. The client handles the protocol handshake, authentication, and message routing.
 - **MCP Server:** A lightweight process that exposes tools and data from one system (e.g., a GitHub server, a Postgres server, a Jenkins server). It declares what it can do, and the agent calls it at runtime.
 
-![MCP architecture. An MCP Host (the agent app, e.g. Claude Code) contains an LLM Core (reasons and decides) and an MCP Client (manages connections). The client talks to MCP servers over JSON-RPC (stdio or HTTP+SSE). Three MCP servers are shown: GitHub (PRs, files, issues), Jenkins (build, status, logs), and Postgres DB (query rows). Each server wraps one system and declares its tools; the client calls them at runtime.](mcp-architecture.svg)
+![MCP architecture. An MCP Host (the agent app, e.g. Claude Code) contains an LLM Core (reasons and decides) and an MCP Client (manages connections). The client talks to MCP servers over JSON-RPC (stdio or HTTP+SSE). Three MCP servers are shown: GitHub (PRs, files, issues), Jenkins (build, status, logs), and Postgres DB (query rows). Each server wraps one system and declares its tools; the client calls them at runtime.](images/mcp-architecture.svg)
 
 #### The three primitives MCP exposes
 
@@ -609,7 +609,7 @@ When a task is complex — "refactor this service, update the API docs, notify t
 
 LangGraph is well-suited for workflows with clear decision points, loops (retry until tests pass), and human-in-the-loop checkpoints (pause and wait for a user to approve).
 
-![A LangGraph workflow drawn as a graph. Start flows to a Planner node, then a Code Editor node that writes the change. A "tests pass?" decision branches two ways: on pass, a green edge goes to an Open PR node (done); on fail, a pink edge goes down to a Debug Agent node that diagnoses the failure and loops back to the Code Editor to retry until green. Conditional edges, loops, and human-in-the-loop pause points are first-class in LangGraph.](langgraph-flow.svg)
+![A LangGraph workflow drawn as a graph. Start flows to a Planner node, then a Code Editor node that writes the change. A "tests pass?" decision branches two ways: on pass, a green edge goes to an Open PR node (done); on fail, a pink edge goes down to a Debug Agent node that diagnoses the failure and loops back to the Code Editor to retry until green. Conditional edges, loops, and human-in-the-loop pause points are first-class in LangGraph.](images/langgraph-flow.svg)
 
 #### CrewAI
 

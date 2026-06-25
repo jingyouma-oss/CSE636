@@ -23,7 +23,7 @@
 
 ### What You Will Build
 
-![The lab architecture. A simulated incident event flows into a paired MCP Server (incident_tools_server.py — exposing get_metrics, get_logs, get_deployment_history, dry_run_rollback, execute_rollback, and create/resolve_pd_incident) and Python Agent (react_agent.py) that exchange tool calls and results in a ReAct loop (reason → call tool → observe → repeat). The agent's proposed remediation passes through an approval gate (a terminal input simulating a Slack confirm) before remediation is executed or escalated, ending with a console postmortem summary. The agent reasons and proposes; the gate ensures a human approves before anything irreversible runs.](incident-agent-flow.svg)
+![The lab architecture. A simulated incident event flows into a paired MCP Server (incident_tools_server.py — exposing get_metrics, get_logs, get_deployment_history, dry_run_rollback, execute_rollback, and create/resolve_pd_incident) and Python Agent (react_agent.py) that exchange tool calls and results in a ReAct loop (reason → call tool → observe → repeat). The agent's proposed remediation passes through an approval gate (a terminal input simulating a Slack confirm) before remediation is executed or escalated, ending with a console postmortem summary. The agent reasons and proposes; the gate ensures a human approves before anything irreversible runs.](images/incident-agent-flow.svg)
 
 ---
 

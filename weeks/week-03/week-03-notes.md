@@ -1,6 +1,6 @@
 # Week 3: Agentic CI/CD Pipelines
 
-![Course learning path with Week 3 (CI/CD) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+![Course learning path with Week 3 (CI/CD) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](images/learning-path.svg)
 
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-03-lab.md](week-03-lab.md)**.
 
@@ -357,7 +357,7 @@ This is why **eval harnesses** (short for *evaluation harnesses*) have become an
 
 An **eval harness** is a separate test framework — with independently written reference cases, fuzzing, formal contracts, or golden-output comparisons — whose sole job is to verify AI-generated artifacts. It is *not* written by the same agent that produced the code being evaluated.
 
-![A top-to-bottom flow showing why an agent can't grade its own homework. A developer commits a code change, which triggers Agent A (the test-generation agent) that reads the changed functions and writes tests/generated/test_payment.py. Those generated tests feed into an independently-maintained Eval Harness that runs contract tests (OpenAPI assertions), property-based fuzzing (Hypothesis), and golden-output regression tests, and detects trivially-true / always-pass tests. The eval score then feeds a human approval gate, required if the score is below threshold. The harness is not written by the agent it checks.](eval-harness.svg)
+![A top-to-bottom flow showing why an agent can't grade its own homework. A developer commits a code change, which triggers Agent A (the test-generation agent) that reads the changed functions and writes tests/generated/test_payment.py. Those generated tests feed into an independently-maintained Eval Harness that runs contract tests (OpenAPI assertions), property-based fuzzing (Hypothesis), and golden-output regression tests, and detects trivially-true / always-pass tests. The eval score then feeds a human approval gate, required if the score is below threshold. The harness is not written by the agent it checks.](images/eval-harness.svg)
 
 The key insight: **an AI agent cannot grade its own homework.** Eval harnesses provide an independent signal.
 
@@ -469,7 +469,7 @@ A **build triage agent** automates this investigation:
 5. **Open a PR:** Using the GitHub/GitLab API (or an MCP tool), the agent creates a branch, commits the fix, and opens a PR with a structured description: *"This build failed because X. I changed Y. Please review before merging."*
 6. **Wait for human approval.** It does not merge. It cannot merge. This is the guardrail.
 
-![A six-step build-triage agent flow. 1 Failure (red build signal) → 2 Collect (logs, diff, history) → 3 Reason (find root cause) → 4 Propose (minimal fix) → 5 Open PR (with a PR-scope token) → 6 Wait (human approves). A callout notes the token has pull_request:write only — it cannot push to main, delete branches, or deploy. Steps 1–4 turn "47 failing steps, find it yourself" into a reasoned diagnosis in minutes.](build-triage.svg)
+![A six-step build-triage agent flow. 1 Failure (red build signal) → 2 Collect (logs, diff, history) → 3 Reason (find root cause) → 4 Propose (minimal fix) → 5 Open PR (with a PR-scope token) → 6 Wait (human approves). A callout notes the token has pull_request:write only — it cannot push to main, delete branches, or deploy. Steps 1–4 turn "47 failing steps, find it yourself" into a reasoned diagnosis in minutes.](images/build-triage.svg)
 
 #### Worked example: a build-fixer agent in pseudocode
 
@@ -542,7 +542,7 @@ Not every build needs the same resources. A change to a README file versus a cha
 
 An ML model trained on historical build metadata (`(changed_files, resource_used, build_time)`) can predict, at the moment a pipeline is triggered, how much CPU and memory this particular run will need. The CI system then provisions that exact size of runner — no more, no less.
 
-![Two stacked ML models size a build to the change. A new commit that only touches docs/ flows into a resource-predictor model (predicted build time 2 min, CPU need 1 vCPU, provision a t3.micro runner instead of a 32-vCPU box), then into a selective-execution model that skips the frontend and backend test suites and runs only the markdown lint.](pipeline-speed.svg)
+![Two stacked ML models size a build to the change. A new commit that only touches docs/ flows into a resource-predictor model (predicted build time 2 min, CPU need 1 vCPU, provision a t3.micro runner instead of a 32-vCPU box), then into a selective-execution model that skips the frontend and backend test suites and runs only the markdown lint.](images/pipeline-speed.svg)
 
 **GitHub Actions** supports this natively with self-hosted runners; **Jenkins** supports it via the Kubernetes plugin (which can provision appropriately sized pods per job). Cloud CI services (CircleCI, Buildkite) are increasingly adding ML-driven resource recommendations.
 
@@ -654,7 +654,7 @@ These limits are implemented at multiple layers: the agent's system prompt ("you
 
 Think of guardrails as concentric fences, not a single gate:
 
-![Four concentric fences around an agent action. From outside in: ① token permissions (agent cannot push to main); ② CODEOWNERS plus branch-protection rules; ③ agent system-prompt scope restriction; ④ a human approval gate. At the very center sits the agent action (e.g. merge a proposed fix), which a human reviews before it runs. Outer fences catch mistakes even if an inner one fails — no single layer is trusted alone.](guardrail-layers.svg)
+![Four concentric fences around an agent action. From outside in: ① token permissions (agent cannot push to main); ② CODEOWNERS plus branch-protection rules; ③ agent system-prompt scope restriction; ④ a human approval gate. At the very center sits the agent action (e.g. merge a proposed fix), which a human reviews before it runs. Outer fences catch mistakes even if an inner one fails — no single layer is trusted alone.](images/guardrail-layers.svg)
 
 The outer fences catch mistakes even if the inner ones fail. No single layer is trusted alone.
 

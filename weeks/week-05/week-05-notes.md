@@ -1,6 +1,6 @@
 # Week 5: Intelligent Monitoring, Observability & Agent Telemetry
 
-![Course learning path with Week 5 (Observe) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+![Course learning path with Week 5 (Observe) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](images/learning-path.svg)
 
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-05-lab.md](week-05-lab.md)**.
 
@@ -85,7 +85,7 @@ Think of a detective story:
 
 Each pillar answers a different question. Together they give you full observability.
 
-![The three pillars of observability side by side. Metrics ("the vital signs"): numbers over time like CPU, error rate, p99 — cheap and fast — answer "Is it healthy?". Logs ("the diary"): timestamped events and error messages — forensic detail — answer "What exactly happened?". Traces ("the journey map"): one request across all hops, spans plus timing — answer "Where did it fail?". Used together as a detective story: a metric alert ("errors hit 5%") leads you to read logs (find the error text) and then pull a trace (see which call failed and how slow). OpenTelemetry instruments all three, vendor-neutral.](three-pillars.svg)
+![The three pillars of observability side by side. Metrics ("the vital signs"): numbers over time like CPU, error rate, p99 — cheap and fast — answer "Is it healthy?". Logs ("the diary"): timestamped events and error messages — forensic detail — answer "What exactly happened?". Traces ("the journey map"): one request across all hops, spans plus timing — answer "Where did it fail?". Used together as a detective story: a metric alert ("errors hit 5%") leads you to read logs (find the error text) and then pull a trace (see which call failed and how slow). OpenTelemetry instruments all three, vendor-neutral.](images/three-pillars.svg)
 
 #### ✅ Check your understanding
 
@@ -318,7 +318,7 @@ Anomaly detection should be a first-class citizen in your CI/CD and observabilit
 
 **Architecture pattern:**
 
-![Anomaly detection wired into the observability pipeline. App/Infra emits telemetry to an OpenTelemetry Collector, which fans out to three backends: Metrics (Prometheus), Traces (Jaeger/Tempo), and Logs (Elasticsearch). The metrics backend feeds an Anomaly Detection service (isolation forest / ML microservice), which feeds an Alert Manager that pages PagerDuty/Slack. Best practice: separate detection from response — the detector only scores and publishes events; remediation lives in a separate agent (Week 6) — and start with the four golden signals.](anomaly-pipeline.svg)
+![Anomaly detection wired into the observability pipeline. App/Infra emits telemetry to an OpenTelemetry Collector, which fans out to three backends: Metrics (Prometheus), Traces (Jaeger/Tempo), and Logs (Elasticsearch). The metrics backend feeds an Anomaly Detection service (isolation forest / ML microservice), which feeds an Alert Manager that pages PagerDuty/Slack. Best practice: separate detection from response — the detector only scores and publishes events; remediation lives in a separate agent (Week 6) — and start with the four golden signals.](images/anomaly-pipeline.svg)
 
 **Best practices:**
 
@@ -545,7 +545,7 @@ A **service dependency graph** (sometimes called a service map or call graph) is
 
 When `checkout-service` starts returning errors, is the problem in `checkout-service` itself, or in `payment-service` which it depends on? The dependency graph answers this by letting you trace the error back to its source.
 
-![A service dependency graph: frontend → checkout → payment → postgres-db. Frontend is healthy (0.2% errors). Checkout and payment both show 4% errors and are marked as symptoms. postgres-db is marked the ROOT CAUSE. The red error edges run from checkout to payment to the database. Both checkout and payment only started erroring when postgres-db failed; the node with a high error rate and no failing upstream is the root. Rule of thumb: high error rate plus no upstream also erroring means likely the cause, not a symptom.](dependency-graph.svg)
+![A service dependency graph: frontend → checkout → payment → postgres-db. Frontend is healthy (0.2% errors). Checkout and payment both show 4% errors and are marked as symptoms. postgres-db is marked the ROOT CAUSE. The red error edges run from checkout to payment to the database. Both checkout and payment only started erroring when postgres-db failed; the node with a high error rate and no failing upstream is the root. Rule of thumb: high error rate plus no upstream also erroring means likely the cause, not a symptom.](images/dependency-graph.svg)
 
 #### ✅ Check your understanding
 
@@ -807,7 +807,7 @@ An **agentic RCA system** automates the investigation phase, producing a draft R
 
 #### Anatomy of an Agentic RCA Pipeline
 
-![A five-step agentic RCA pipeline triggered by an anomaly alert. Step 1 Gather context (the agent uses tools to pull metrics, logs, recent deployments, and the dependency graph — perceive). Step 2 Correlate (LLM reasoning proposes candidate root causes, each citing evidence — plan). Step 3 Assess impact (SLO burn rate, affected users, severity). Step 4 Generate a structured Markdown RCA report with log excerpts and trace IDs — act. Step 5 Human review gate — the on-call engineer reviews, edits, and approves, staying on the loop. It is the perceive→plan→act→observe loop applied to incident investigation.](rca-pipeline.svg)
+![A five-step agentic RCA pipeline triggered by an anomaly alert. Step 1 Gather context (the agent uses tools to pull metrics, logs, recent deployments, and the dependency graph — perceive). Step 2 Correlate (LLM reasoning proposes candidate root causes, each citing evidence — plan). Step 3 Assess impact (SLO burn rate, affected users, severity). Step 4 Generate a structured Markdown RCA report with log excerpts and trace IDs — act. Step 5 Human review gate — the on-call engineer reviews, edits, and approves, staying on the loop. It is the perceive→plan→act→observe loop applied to incident investigation.](images/rca-pipeline.svg)
 
 #### Simple Agentic RCA in Code
 

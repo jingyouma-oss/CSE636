@@ -1,6 +1,6 @@
 # Week 6: Autonomous Incident Response & Agentic SRE
 
-![Course learning path with Week 6 (Respond) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](learning-path.svg)
+![Course learning path with Week 6 (Respond) highlighted: 0 Setup, 1 Basics, 2 Tooling, 3 CI/CD, 4 Predict, 5 Observe, 6 Respond, 7 Govern.](images/learning-path.svg)
 
 > 📝 **Lecture notes.** The hands-on lab and assignment for this week live in **[week-06-lab.md](week-06-lab.md)**.
 
@@ -142,7 +142,7 @@ This is not science fiction — commercial platforms like PagerDuty AI, Dynatrac
 
 #### Architecture Overview
 
-![A four-layer self-healing architecture, top to bottom. The Observability layer (Week 5) — Prometheus metrics, Loki logs, Tempo traces — emits an alert/anomaly signal to the Incident intake layer (alert manager → de-duplicate → correlate → enrich), which passes structured incident context to the Agentic SRE layer (new this week): an LLM agent wired to MCP tools (kubectl, runbooks, ITSM) running a ReAct loop with guardrails and an approval gate. From there, safe reversible actions auto-execute against the Kubernetes/Cloud API (Level 3), while irreversible actions go to the human on-call via PagerDuty for approval (Level 2). The agentic layer reasons but does not have unbounded permission to act.](self-healing-arch.svg)
+![A four-layer self-healing architecture, top to bottom. The Observability layer (Week 5) — Prometheus metrics, Loki logs, Tempo traces — emits an alert/anomaly signal to the Incident intake layer (alert manager → de-duplicate → correlate → enrich), which passes structured incident context to the Agentic SRE layer (new this week): an LLM agent wired to MCP tools (kubectl, runbooks, ITSM) running a ReAct loop with guardrails and an approval gate. From there, safe reversible actions auto-execute against the Kubernetes/Cloud API (Level 3), while irreversible actions go to the human on-call via PagerDuty for approval (Level 2). The agentic layer reasons but does not have unbounded permission to act.](images/self-healing-arch.svg)
 
 The key insight: the agentic layer sits *between* your observability stack and your remediation tools. It reasons, but it does not have unbounded permission to act.
 
@@ -154,7 +154,7 @@ The key insight: the agentic layer sits *between* your observability stack and y
 
 #### The Loop
 
-![The ReAct loop drawn as a cycle of three nodes. Reason (Thought) — the agent writes out its reasoning, e.g. "errors spiked 5 min ago; a deploy landed 8 min ago…". Act (Action) — it calls a tool, e.g. "check canary status". Observe — it reads the tool result, e.g. "canary error rate 12%". The arrows cycle Reason → Act → Observe → back to Reason until the incident is resolved, then it stops or escalates. A callout explains why ReAct is safe: because the Thought is written before acting, you can log it, gate it, and threshold it before the tool call runs.](react-loop.svg)
+![The ReAct loop drawn as a cycle of three nodes. Reason (Thought) — the agent writes out its reasoning, e.g. "errors spiked 5 min ago; a deploy landed 8 min ago…". Act (Action) — it calls a tool, e.g. "check canary status". Observe — it reads the tool result, e.g. "canary error rate 12%". The arrows cycle Reason → Act → Observe → back to Reason until the incident is resolved, then it stops or escalates. A callout explains why ReAct is safe: because the Thought is written before acting, you can log it, gate it, and threshold it before the tool call runs.](images/react-loop.svg)
 
 In plain language:
 - **Thought:** The agent writes out its reasoning in natural language. "The error rate on the payment service spiked 5 minutes ago. The most recent deployment was 8 minutes ago. This looks like a regression."
@@ -544,7 +544,7 @@ In this situation, all 150 alerts share a single root cause. The correct respons
 
 #### How an Agent Handles Correlation
 
-![An alert storm on the left — payment-svc error rate 15%, cart-svc p99 3200ms, checkout-svc db timeout, order-history connection refused, and 146 more — flows into a correlation agent in the middle, which notices all four depend on postgres-primary and one says "connection refused", inferring a shared root cause. On the right it produces a single incident, "postgres-primary connectivity failure", suppresses the downstream alerts, and begins the triage runbook. The on-call engineer gets one actionable incident instead of 150 pages.](alert-correlation.svg)
+![An alert storm on the left — payment-svc error rate 15%, cart-svc p99 3200ms, checkout-svc db timeout, order-history connection refused, and 146 more — flows into a correlation agent in the middle, which notices all four depend on postgres-primary and one says "connection refused", inferring a shared root cause. On the right it produces a single incident, "postgres-primary connectivity failure", suppresses the downstream alerts, and begins the triage runbook. The on-call engineer gets one actionable incident instead of 150 pages.](images/alert-correlation.svg)
 
 This reduces 150 pages to 1, and gives the on-call engineer a clear starting point.
 
@@ -663,7 +663,7 @@ The agent reads this YAML as part of its prompt context, then executes each step
 
 #### The Agent-ITSM Integration Loop
 
-![The agent-ITSM loop. An alert fires; the agent correlates and creates a single PagerDuty incident, then executes runbook diagnostics via tool calls. It branches on "resolved automatically?": if yes, the agent resolves the incident, posts a timeline, and drafts a postmortem; if it needs a human, the agent escalates to on-call with a rich summary and the human approves or takes over. Both branches converge into a postmortem whose action items feed runbook updates, tests, and thresholds — the feedback loop.](itsm-loop.svg)
+![The agent-ITSM loop. An alert fires; the agent correlates and creates a single PagerDuty incident, then executes runbook diagnostics via tool calls. It branches on "resolved automatically?": if yes, the agent resolves the incident, posts a timeline, and drafts a postmortem; if it needs a human, the agent escalates to on-call with a rich summary and the human approves or takes over. Both branches converge into a postmortem whose action items feed runbook updates, tests, and thresholds — the feedback loop.](images/itsm-loop.svg)
 
 #### MCP Tool Exposure for ITSM
 

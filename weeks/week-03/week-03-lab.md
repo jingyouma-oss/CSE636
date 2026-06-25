@@ -20,7 +20,7 @@
 
 ### What you will build
 
-![The lab flow, top to bottom: push code with an intentional bug → CI pipeline runs and the test stage FAILS (continue-on-error lets the agent run next) → the build-fixer agent activates (reads the build log, identifies the failing test and cause, proposes a minimal fix, and opens a PR with write-only, no-merge permission) → a human approval gate pauses the pipeline (a teammate reviews the PR then clicks Approve; it times out to abort, never auto-approves) → optional auto-merge to a feature branch, never to main → a green pipeline confirms the fix.](build-fixer-flow.svg)
+![The lab flow, top to bottom: push code with an intentional bug → CI pipeline runs and the test stage FAILS (continue-on-error lets the agent run next) → the build-fixer agent activates (reads the build log, identifies the failing test and cause, proposes a minimal fix, and opens a PR with write-only, no-merge permission) → a human approval gate pauses the pipeline (a teammate reviews the PR then clicks Approve; it times out to abort, never auto-approves) → optional auto-merge to a feature branch, never to main → a green pipeline confirms the fix.](images/build-fixer-flow.svg)
 
 > 💡 **A complete, runnable version of this lab ships in [`project/build-fixer/`](../../project/build-fixer/).** It has the buggy app, the GitHub Actions workflow, and the agent already wired up. You can `make demo` to watch the agent propose a fix locally (just an Anthropic key — no GitHub), then push it as your own repo for the full gated-PR flow. Build it yourself from the steps below for the learning, or start from the starter and modify it for the assignment.
 

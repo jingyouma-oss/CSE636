@@ -335,11 +335,59 @@ You've succeeded when the agent's answer reflects **live** state — the actual 
 
 ---
 
+### Part 2 (variant): GitHub Actions build status
+
+> 🔁 **Prefer managed CI?** This variant exposes **GitHub Actions** run status instead of Jenkins — same MCP concept, no self-hosted server to keep running. The two are intentionally parallel (Jenkins REST API ↔ GitHub Actions REST API); doing both is the clearest way to see that MCP is CI-agnostic. A runnable server ships in [`project/build-fixer/mcp_servers/actions_status.py`](../../project/build-fixer/mcp_servers/actions_status.py), so you can point it at the [build-fixer](../../project/build-fixer/) repo's live Actions runs.
+
+**Step 1: Get the server.** Use the bundled `mcp_servers/actions_status.py`. It exposes two tools — `list_workflows` and `get_run_status` (optionally filtered by branch) — and queries `https://api.github.com/repos/{owner}/{repo}/actions/...` with a token.
+
+**Step 2: Install dependencies and test it standalone.**
+
+```bash
+pip install mcp requests
+
+# Test it directly (press Ctrl-C to exit)
+GH_TOKEN=<your-token> \
+REPO=<your-username>/build-fixer \
+python project/build-fixer/mcp_servers/actions_status.py
+```
+
+`GH_TOKEN` needs only `actions:read` (a fine-grained PAT scoped to the one repo is ideal — least privilege). `REPO` is `owner/name`.
+
+**Step 3: Register the MCP server with Claude Code.** In `~/.claude/claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "cse636-actions": {
+      "command": "python",
+      "args": ["/absolute/path/to/project/build-fixer/mcp_servers/actions_status.py"],
+      "env": {
+        "GH_TOKEN": "your-token-here",
+        "REPO": "your-username/build-fixer"
+      }
+    }
+  }
+}
+```
+
+**Step 4: Test the integration.**
+
+```bash
+claude "List the workflows in my repo and tell me whether the latest run on main is green."
+```
+
+Claude Code should call `list_workflows` and `get_run_status` and report the **live** run number and conclusion — not a guess. Same sanity check as the Jenkins version: push a commit that fails CI, ask again, and confirm the agent reports the real red run.
+
+> **Why this matters for least privilege:** the Jenkins server held an admin-scoped API token; this one needs only read access to one repo's Actions. Note that contrast in your reflection — narrower scope, smaller blast radius.
+
+---
+
 ### What to Submit
 
 1. A **screenshot** of a successful Jenkins build showing the `ai_review_report.txt` artifact.
 2. The **`ai_review_report.txt`** file from one run.
-3. The **`jenkins_status.py` MCP server** code (with comments explaining each section).
+3. Your **MCP server** code — `jenkins_status.py` or the `actions_status.py` variant (with comments explaining each section).
 4. A **short reflection** (300–500 words): What did the AI review catch that a linter missed? What did it miss? What permissions did you grant the MCP server, and how did you scope them?
 
 ---
