@@ -27,3 +27,5 @@ project/build-fixer/build_log.txt
 project/iac/.terraform.lock.hcl
 project/k8s-demo/frontend/node_modules/
 project/k8s-demo/frontend/dist/
+project/k8s-demo/backend/certs/*.pem
+project/k8s-demo/frontend/certs/*.pem

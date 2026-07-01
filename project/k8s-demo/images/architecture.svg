@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 520" font-family="system-ui, sans-serif" role="img" aria-label="Three-tier architecture on Docker Desktop Kubernetes">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 520" font-family="system-ui, sans-serif" role="img" aria-label="Three-tier architecture on a local single-node Kubernetes (Docker Desktop or Rancher Desktop)">
   <defs>
     <linearGradient id="fe" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#e0f2fe"/><stop offset="1" stop-color="#bae6fd"/>
@@ -17,7 +17,7 @@
     </marker>
   </defs>
 
-  <text x="470" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">3-Tier App on Docker Desktop Kubernetes</text>
+  <text x="470" y="30" text-anchor="middle" font-size="20" font-weight="700" fill="#0f172a">3-Tier App on Local Kubernetes (Docker Desktop / Rancher Desktop)</text>
 
   <!-- Browser -->
   <rect x="24" y="210" width="130" height="90" rx="12" fill="#fff7ed" stroke="#fdba74" filter="url(#shadow)"/>

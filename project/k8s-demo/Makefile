@@ -6,12 +6,20 @@ FRONTEND_IMG := k8s-demo-frontend:local
 # Fall back to python3 if it isn't installed. Override with `make test PYTHON=...`.
 PYTHON := $(shell command -v python3.12 || command -v python3)
 
-.PHONY: check images deploy status open logs test clean
+.PHONY: check certs images deploy status open logs test clean
 
-check:                ## verify Docker Desktop Kubernetes is the active context
-	@kubectl config current-context | grep -qx docker-desktop || { \
-	  echo "kubectl context is '$$(kubectl config current-context)', not docker-desktop."; \
-	  echo "Enable Kubernetes in Docker Desktop, then: kubectl config use-context docker-desktop"; \
+certs:                ## (macOS) export the host CA bundle into the build contexts — run if builds fail with CERTIFICATE_VERIFY_FAILED behind a TLS-inspecting proxy (e.g. Zscaler)
+	@security find-certificate -a -p /Library/Keychains/System.keychain > backend/certs/corp-ca.pem
+	@security find-certificate -a -p /System/Library/Keychains/SystemRootCertificates.keychain >> backend/certs/corp-ca.pem
+	@cp backend/certs/corp-ca.pem frontend/certs/corp-ca.pem
+	@echo "Wrote backend/certs/corp-ca.pem and frontend/certs/corp-ca.pem ($$(grep -c 'BEGIN CERT' backend/certs/corp-ca.pem) certs). Now: make images"
+
+check:                ## verify a local single-node cluster (Docker Desktop or Rancher Desktop) is active
+	@kubectl config current-context | grep -qxE 'docker-desktop|rancher-desktop' || { \
+	  echo "kubectl context is '$$(kubectl config current-context)', not a supported local cluster."; \
+	  echo "Enable Kubernetes in Docker Desktop or Rancher Desktop, then select its context:"; \
+	  echo "  kubectl config use-context docker-desktop    # Docker Desktop"; \
+	  echo "  kubectl config use-context rancher-desktop    # Rancher Desktop"; \
 	  exit 1; }
 	@kubectl get nodes
 
