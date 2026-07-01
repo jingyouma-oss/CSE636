@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: k8s-demo
+data:
+  default.conf: |
+    server {
+      listen 80;
+      server_name _;
+      root /usr/share/nginx/html;
+      index index.html;
+
+      # The React app runs in the browser and cannot use in-cluster DNS,
+      # so Nginx proxies /api to the backend Service by its cluster name.
+      location /api/ {
+        proxy_pass http://backend:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+      }
+
+      location / {
+        try_files $uri $uri/ /index.html;
+      }
+    }
