@@ -19,6 +19,8 @@
 > | **Submit** | A transcript showing the agent's thoughts/tool calls, the approval pause, and the console postmortem |
 > | **Ties to notes** | [The ReAct loop](week-06-notes.md#concept-the-react-reasoning-loop), [approval gates & blast radius](week-06-notes.md#concept-levels-of-autonomy--blast-radius-control), and [ITSM integration](week-06-notes.md#concept-itsm-and-on-call-integration) |
 
+> 🧭 **Prefer no-code?** [**week-06-demo-n8n.md**](week-06-demo-n8n.md) builds this *same* gated triage agent visually in [n8n](https://n8n.io) — a good way to *see* the perceive → decide → act loop before writing it in Python.
+
 ---
 
 ### What You Will Build

@@ -1,0 +1,402 @@
+{
+  "name": "AI Incident-Response Agent (teaching skeleton)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "node-schedule",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-120, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:9090/api/v1/query",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "ALERTS{alertstate=\"firing\"}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-http",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [100, 300],
+      "notes": "Prometheus query API. Placeholder query for firing alerts."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "cond-1",
+              "leftValue": "={{ $json.data?.result?.length || 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-if",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [320, 300],
+      "notes": "TRUE = at least one alert is firing -> triage. FALSE = healthy."
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "get",
+        "messageId": "={{ $json.messageId }}",
+        "options": {}
+      },
+      "id": "node-gmail",
+      "name": "Get a message",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [640, 60],
+      "disabled": true,
+      "notes": "DISABLED for offline demo. Enable after adding a Gmail OAuth2 credential."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-ok-1",
+              "name": "status",
+              "value": "healthy",
+              "type": "string"
+            },
+            {
+              "id": "set-ok-2",
+              "name": "checkedAt",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-set-healthy",
+      "name": "Edit Fields1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [640, 200],
+      "notes": "FALSE branch: record a healthy poll."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "set-inc-1",
+              "name": "status",
+              "value": "anomaly_detected",
+              "type": "string"
+            },
+            {
+              "id": "set-inc-2",
+              "name": "prompt",
+              "value": "=A Prometheus alert is firing. Alerts payload: {{ JSON.stringify($json.data?.result || []) }}. Triage this incident: analyze logs, decide a remediation route, and if a Docker service is unhealthy propose (do not force) a restart. Escalate to a human for approval before any destructive action.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-set-incident",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [640, 340],
+      "notes": "TRUE branch: assemble the incident context + agent prompt."
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId || 'YOUR_CHAT_ID' }}",
+        "text": "=🚨 Incident triage started for firing alert(s): {{ JSON.stringify($json.data?.result || []) }}",
+        "additionalFields": {}
+      },
+      "id": "node-telegram",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [640, 480],
+      "disabled": true,
+      "notes": "DISABLED for offline demo. Enable after adding a Telegram Bot credential + chat ID."
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.prompt }}",
+        "options": {
+          "systemMessage": "You are an SRE incident-response agent. Use the available tools to analyze incidents and logs, route a decision, and act only within safe bounds. Any destructive action (e.g. restarting a container) MUST go through the human_review / approval tools first. Always produce a short incident report at the end."
+        }
+      },
+      "id": "node-agent",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [1040, 100]
+    },
+    {
+      "parameters": {
+        "model": "llama3.1",
+        "options": {}
+      },
+      "id": "node-ollama",
+      "name": "Ollama Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [760, 320],
+      "notes": "Needs an Ollama API credential (default http://localhost:11434)."
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "=incident-{{ $execution.id }}",
+        "contextWindowLength": 10
+      },
+      "id": "node-memory",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [900, 320],
+      "notes": "Custom session key (per execution). 'fromInput' only works behind a Chat Trigger."
+    },
+    {
+      "parameters": {
+        "name": "incident_analyzer",
+        "description": "Analyze a firing alert and classify severity, likely blast radius, and probable cause. Input: the alert JSON or a description.",
+        "language": "javaScript",
+        "jsCode": "// MOCK: replace with real correlation logic\nreturn JSON.stringify({ severity: 'SEV2', suspectedComponent: 'checkout-svc', probableCause: 'high error rate after deploy' });"
+      },
+      "id": "node-tool-incident",
+      "name": "Incident Analyzer",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [700, 560]
+    },
+    {
+      "parameters": {
+        "name": "log_analyzer",
+        "description": "Fetch and summarize recent logs for a given service to find error patterns. Input: service name.",
+        "language": "javaScript",
+        "jsCode": "// MOCK: replace with a real log query (Loki/Splunk/etc)\nreturn 'Top error: 500 from /api/pay (x142 in 5m). Stacktrace points to TimeoutError connecting to payments-db.';"
+      },
+      "id": "node-tool-log",
+      "name": "Log Analyzer",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [800, 560]
+    },
+    {
+      "parameters": {
+        "name": "reporter_tool",
+        "description": "Format a concise incident report from findings. Input: findings text.",
+        "language": "javaScript",
+        "jsCode": "// MOCK: replace with report template / ticket creation\nreturn 'INCIDENT REPORT\\n- Detected: firing alert\\n- Findings: ' + $input + '\\n- Status: under triage';"
+      },
+      "id": "node-tool-reporter",
+      "name": "Reporter Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [900, 560]
+    },
+    {
+      "parameters": {
+        "name": "decision_router",
+        "description": "Decide the remediation route (auto-remediate, escalate, or observe) based on severity and findings. Input: severity + summary.",
+        "language": "javaScript",
+        "jsCode": "// MOCK: routing policy\nreturn JSON.stringify({ route: 'escalate', reason: 'SEV2 requires human approval before restart' });"
+      },
+      "id": "node-tool-decision",
+      "name": "Decision Router",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [1000, 560]
+    },
+    {
+      "parameters": {
+        "name": "cd_analyzer",
+        "description": "Check recent CI/CD deployments correlated with the incident window. Input: service + time window.",
+        "language": "javaScript",
+        "jsCode": "// MOCK: replace with a query to your CD system\nreturn JSON.stringify({ lastDeploy: '8m ago', commit: 'a1b2c3d', risky: true });"
+      },
+      "id": "node-tool-cd",
+      "name": "CD Analyzer",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [1100, 560]
+    },
+    {
+      "parameters": {
+        "name": "docker_restart",
+        "description": "Restart an unhealthy Docker container/service. DESTRUCTIVE: only call after approval. Input: container name.",
+        "language": "javaScript",
+        "jsCode": "// MOCK: do NOT actually restart in the teaching skeleton\nreturn 'DRY-RUN: would restart container \"' + $input + '\". Wire to Docker API / SSH to make real.';"
+      },
+      "id": "node-tool-docker",
+      "name": "Docker Restart",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [1200, 560]
+    },
+    {
+      "parameters": {
+        "name": "human_review",
+        "description": "Request a human to review the proposed action. Input: the proposed action + rationale.",
+        "language": "javaScript",
+        "jsCode": "// MOCK: replace with Slack/Telegram approval + wait\nreturn 'Human review requested. (In production: post to on-call and pause for a Yes/No.)';"
+      },
+      "id": "node-tool-human",
+      "name": "Human Review",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [1300, 560]
+    },
+    {
+      "parameters": {
+        "name": "deal_action",
+        "description": "Execute an approved non-destructive remediation (scale, roll back, clear cache). Input: action name.",
+        "language": "javaScript",
+        "jsCode": "// MOCK\nreturn 'Executed remediation: ' + $input + ' (mock).';"
+      },
+      "id": "node-tool-deal",
+      "name": "Deal Action Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [1400, 560]
+    },
+    {
+      "parameters": {
+        "name": "approval",
+        "description": "Record the final approval decision (approved/denied) for audit. Input: decision + approver.",
+        "language": "javaScript",
+        "jsCode": "// MOCK\nreturn 'Approval recorded: ' + $input;"
+      },
+      "id": "node-tool-approval",
+      "name": "Approval Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.2,
+      "position": [1500, 560]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[{ "node": "HTTP Request", "type": "main", "index": 0 }]]
+    },
+    "HTTP Request": {
+      "main": [[{ "node": "If", "type": "main", "index": 0 }]]
+    },
+    "If": {
+      "main": [
+        [
+          { "node": "Get a message", "type": "main", "index": 0 },
+          { "node": "Edit Fields", "type": "main", "index": 0 },
+          { "node": "Send a text message", "type": "main", "index": 0 }
+        ],
+        [
+          { "node": "Edit Fields1", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
+    },
+    "Simple Memory": {
+      "ai_memory": [[{ "node": "AI Agent", "type": "ai_memory", "index": 0 }]]
+    },
+    "Incident Analyzer": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Log Analyzer": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Reporter Tool": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Decision Router": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "CD Analyzer": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Docker Restart": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Human Review": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Deal Action Tool": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    },
+    "Approval Tool": {
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {
+    "HTTP Request": [
+      {
+        "json": {
+          "status": "success",
+          "data": {
+            "resultType": "vector",
+            "result": [
+              {
+                "metric": {
+                  "__name__": "ALERTS",
+                  "alertname": "HighErrorRate",
+                  "alertstate": "firing",
+                  "instance": "checkout-svc:8080",
+                  "severity": "critical"
+                },
+                "value": [1719849600, "1"]
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    { "name": "CSE636" },
+    { "name": "DevOps-with-AI" }
+  ]
+}
