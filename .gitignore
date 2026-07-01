@@ -25,3 +25,5 @@ project/iac/tfplan.binary
 project/iac/.terraform/
 project/build-fixer/build_log.txt
 project/iac/.terraform.lock.hcl
+project/k8s-demo/frontend/node_modules/
+project/k8s-demo/frontend/dist/
