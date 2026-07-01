@@ -45,6 +45,8 @@ This primer covers two areas you need before diving into the sessions: **Kuberne
 
 ### Part A: Kubernetes in Plain Language
 
+> 🧪 **Runnable Kubernetes demo.** [`project/k8s-demo/`](../../project/k8s-demo/) deploys a real three-tier app (React + FastAPI + Postgres), one Deployment + Service per tier, to Docker Desktop's Kubernetes on your Mac. `make images && make deploy && make open`. It's the concrete counterpart to the concepts here — pods, Services, a PVC, readiness probes, and self-healing you can watch with `kubectl delete pod`.
+
 If you have used Docker before, you know how to run a container on your laptop. Kubernetes answers the question: *how do you run hundreds of containers, keep them healthy, and scale them up and down, across a cluster of machines — automatically?*
 
 #### The big picture: a cluster
