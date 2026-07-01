@@ -18,6 +18,10 @@ venv-*/
 # OS / editor cruft
 .DS_Store
 
+# Jupyter / Anaconda artifacts
+.ipynb_checkpoints/
+project/Jenkins/anaconda_projects/
+
 # Lab/run outputs (regenerable)
 project/forecasting/cpu_metrics.csv
 project/anomaly/metrics_sample.csv
@@ -29,3 +33,5 @@ project/k8s-demo/frontend/node_modules/
 project/k8s-demo/frontend/dist/
 project/k8s-demo/backend/certs/*.pem
 project/k8s-demo/frontend/certs/*.pem
+project/Jenkins/certs/*.pem
+project/Jenkins/certs/*.crt

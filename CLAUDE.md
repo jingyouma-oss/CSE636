@@ -27,13 +27,14 @@ Each starter mirrors the same shape (`Makefile`, `README.md`, a pure tested core
 
 A teaching setup for running Jenkins in Docker, presented in several variants. Each `Dockerfile*` is a standalone alternative, not part of one multi-stage build:
 
-- `Dockerfile_Master` — current/preferred master image: official `jenkins/jenkins:2.528-jdk21` + Docker CLI + Blue Ocean / docker-workflow plugins. This is what real pipeline work should use.
-- `Dockerfile` and `Dockerfile_Agent` — identical legacy agent ("slave") images on `ubuntu:16.04`. Both `ADD slave.py`, which is **not present in the repo** — these will not build as-is and are kept for historical/lecture reference.
+- `Dockerfile_Master` — current/preferred master image: official `jenkins/jenkins:2.528-jdk21` + Docker CLI + Blue Ocean / docker-workflow plugins. This is what real pipeline work should use. Has an **opt-in** CA-trust block: `COPY certs/` then, if a cert is present, trusts it in both the OS store (curl/apt) and the JVM truststore via `keytool` (needed because `jenkins-plugin-cli` is a Java tool) — for building behind a TLS-inspecting proxy. Empty `certs/` (only `.gitkeep`) = no-op. `certs/*.pem`/`*.crt` are gitignored.
+- `Dockerfile_Agent` — legacy agent ("slave") image on `ubuntu:16.04`. It `ADD slave.py`, which is **not present in the repo**, so it will not build as-is — kept only as a historical/lecture reference. (The former identical `Dockerfile` was removed as a duplicate.)
 - `Dockerfile_1` — minimal `jenkins/jenkins:latest` + git/curl, used for simple demos.
+- `DEMO.md` — step-by-step demonstration runbook (compose path, scripted path, first-run wizard, teardown).
 
 `docker-compose.yml` expects a locally-built image tagged `cstu-jenkins` (it does not build from a Dockerfile itself), publishes `8080`, and persists `/var/jenkins_home` in the `jenkins_data_cstu` volume.
 
-`automate.py` is the scripted alternative to compose: it uses the `docker` Python SDK (`docker.from_env()`) to build the `cstu-jenkins` image from the current directory, create the volume, run the container, and print the initial admin password. Note its build tag and compose's `image:` must match (`cstu-jenkins`).
+`automate.py` is the scripted alternative to compose: it uses the `docker` Python SDK (`docker.from_env()`) to build the `cstu-jenkins` image from `Dockerfile_Master` (passed explicitly via `dockerfile=`, so it does not fall back to the non-building default `Dockerfile`), create the volume, run the container, and print the initial admin password. Note its build tag and compose's `image:` must match (`cstu-jenkins`).
 
 ### Running it
 

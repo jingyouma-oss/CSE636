@@ -10,4 +10,4 @@ docker run \
   --volume $HOME/Docker/SharedData/Jenkins/Docker-certs:/certs/client:ro \
   --publish 2376:2376 \
   docker:dind \
-  --storage-drive overlay2
+  --storage-driver overlay2

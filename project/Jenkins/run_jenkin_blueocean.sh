@@ -10,4 +10,4 @@ docker run \
   --publish 50000:50000 \
   --volume $HOME/Docker/SharedData/Jenkins/Jenkins_Home:/var/jenkins_home \
   --volume $HOME/Docker/SharedData/Jenkins/Docker-certs:/certs/client:ro \
-  cstu-jenkins_blueocean:2.528
+  cstu-jenkins

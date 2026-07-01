@@ -6,11 +6,16 @@ client = docker.from_env()
 IMAGE_NAME = "cstu-jenkins"
 VOLUME_NAME = "jenkins_data_cstu"
 CONTAINER_NAME = "cstu-jenkins"
-DOCKERFILE_PATH = "." 
+DOCKERFILE_PATH = "."
+# Build the working master image explicitly. Without `dockerfile=`, Docker would
+# use the default ./Dockerfile — which is the non-building legacy agent image.
+DOCKERFILE = "Dockerfile_Master"
 
 # Step 2: Build the custom Jenkins image
-print(f"Building image '{IMAGE_NAME}'...")
-image, build_logs = client.images.build(path=DOCKERFILE_PATH, tag=IMAGE_NAME)
+print(f"Building image '{IMAGE_NAME}' from {DOCKERFILE}...")
+image, build_logs = client.images.build(
+    path=DOCKERFILE_PATH, dockerfile=DOCKERFILE, tag=IMAGE_NAME
+)
 print("Image built successfully.")
 
 # Step 3: Create volume

@@ -1,5 +1,31 @@
 FROM jenkins/jenkins:2.528-jdk21
 USER root
+
+# Optional: trust an extra CA for networks behind a TLS-inspecting proxy (e.g.
+# Zscaler). Drop the proxy's root CA at certs/corp-ca.pem (gitignored) — see
+# DEMO.md. jenkins-plugin-cli is a Java tool, so the CA must go into BOTH the OS
+# trust store (curl/apt) AND the JVM truststore (keytool). No cert => no-op, so
+# the image still builds unchanged on an open network.
+COPY certs/ /tmp/extra-ca/
+RUN set -eu; \
+    if ls /tmp/extra-ca/*.pem >/dev/null 2>&1 || ls /tmp/extra-ca/*.crt >/dev/null 2>&1; then \
+      apt-get update && apt-get install -y --no-install-recommends ca-certificates; \
+      i=0; \
+      for bundle in /tmp/extra-ca/*.pem /tmp/extra-ca/*.crt; do \
+        [ -e "$bundle" ] || continue; \
+        # split a bundle into one cert per file (keytool/update-ca-certs want singles)
+        awk -v d=/usr/local/share/ca-certificates -v s="$i" \
+          'BEGIN{n=s} /BEGIN CERTIFICATE/{n++} {print > (d"/extra-"n".crt")} END{print n > "/tmp/ca_n"}' "$bundle"; \
+        i=$(cat /tmp/ca_n); \
+      done; \
+      for c in /usr/local/share/ca-certificates/extra-*.crt; do \
+        keytool -importcert -noprompt -trustcacerts -alias "$(basename "$c" .crt)" \
+          -file "$c" -keystore "$JAVA_HOME/lib/security/cacerts" -storepass changeit >/dev/null 2>&1 || true; \
+      done; \
+      update-ca-certificates; \
+    fi; \
+    rm -rf /tmp/extra-ca /tmp/ca_n
+
 RUN apt-get update && apt-get install -y lsb-release ca-certificates curl && \
     install -m 0755 -d /etc/apt/keyrings && \
     curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && \

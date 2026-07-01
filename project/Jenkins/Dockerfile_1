@@ -1,3 +1,5 @@
+# Minimal Jenkins for simple demos. Behind a TLS-inspecting proxy the apt step
+# may fail with a certificate error — use Dockerfile_Master (opt-in certs/) instead.
 FROM jenkins/jenkins:latest
 
 USER root
