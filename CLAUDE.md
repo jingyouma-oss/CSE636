@@ -27,7 +27,7 @@ Each starter mirrors the same shape (`Makefile`, `README.md`, a pure tested core
 
 A teaching setup for running Jenkins in Docker, presented in several variants. Each `Dockerfile*` is a standalone alternative, not part of one multi-stage build:
 
-- `Dockerfile_Master` — current/preferred master image: official `jenkins/jenkins:2.528-jdk21` + Docker CLI + Blue Ocean / docker-workflow plugins. This is what real pipeline work should use. Has an **opt-in** CA-trust block: `COPY certs/` then, if a cert is present, trusts it in both the OS store (curl/apt) and the JVM truststore via `keytool` (needed because `jenkins-plugin-cli` is a Java tool) — for building behind a TLS-inspecting proxy. Empty `certs/` (only `.gitkeep`) = no-op. `certs/*.pem`/`*.crt` are gitignored.
+- `Dockerfile_Master` — current/preferred master image: official `jenkins/jenkins:2.571-jdk21` + Docker CLI + Blue Ocean / docker-workflow plugins. This is what real pipeline work should use. Has an **opt-in** CA-trust block: `COPY certs/` then, if a cert is present, trusts it in both the OS store (curl/apt) and the JVM truststore via `keytool` (needed because `jenkins-plugin-cli` is a Java tool) — for building behind a TLS-inspecting proxy. Empty `certs/` (only `.gitkeep`) = no-op. `certs/*.pem`/`*.crt` are gitignored.
 - `Dockerfile_Agent` — legacy agent ("slave") image on `ubuntu:16.04`. It `ADD slave.py`, which is **not present in the repo**, so it will not build as-is — kept only as a historical/lecture reference. (The former identical `Dockerfile` was removed as a duplicate.)
 - `Dockerfile_1` — minimal `jenkins/jenkins:latest` + git/curl, used for simple demos.
 - `DEMO.md` — step-by-step demonstration runbook (compose path, scripted path, first-run wizard, teardown).

@@ -1,0 +1,2 @@
+# Placeholder so the certs/ dir exists for the Dockerfile COPY.
+# Drop a corporate proxy root CA here as corp-ca.pem to trust it (gitignored).

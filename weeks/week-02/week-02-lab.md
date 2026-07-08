@@ -42,7 +42,7 @@ cd CSE636/project/Jenkins
 docker build -t cstu-jenkins -f Dockerfile_Master .
 ```
 
-This builds the image defined in `Dockerfile_Master` — Jenkins 2.528 on JDK 21, with Docker CLI and Blue Ocean plugins. It takes a few minutes the first time.
+This builds the image defined in `Dockerfile_Master` — Jenkins 2.571 on JDK 21, with Docker CLI and Blue Ocean plugins. It takes a few minutes the first time.
 
 **Step 3: Start Jenkins.**
 

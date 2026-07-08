@@ -32,7 +32,7 @@ docker version        # confirm the daemon is up
 
 ## Act 1 — Build the image
 
-`Dockerfile_Master` = official `jenkins/jenkins:2.528-jdk21` + the Docker CLI +
+`Dockerfile_Master` = official `jenkins/jenkins:2.571-jdk21` + the Docker CLI +
 `blueocean`, `docker-workflow`, `json-path-api` plugins.
 
 ```bash
