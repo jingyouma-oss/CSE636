@@ -1,5 +1,7 @@
 # CSE636 — DevOps with AI
 
+# add one line
+
 ## What this repository is
 
 Course materials for **CSE636 DevOps with AI**, a 7-week (Week 0–7) course on integrating AI agents into DevOps, written for students with no prior DevOps or AI background.
