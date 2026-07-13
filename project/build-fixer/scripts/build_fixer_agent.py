@@ -16,9 +16,11 @@ in ci.yml is the guardrail — see week-03-notes.md on blast-radius limits.
 import argparse
 import json
 import os
+import ssl
 import sys
 
 import anthropic
+import httpx
 
 # Default to the latest Opus; override with MODEL for a cheaper classroom run
 # (e.g. MODEL=claude-haiku-4-5). All current models use adaptive thinking — do
@@ -56,9 +58,28 @@ FIX_SCHEMA = {
 }
 
 
+def _make_client():
+    """Anthropic client whose TLS trusts the system / corporate CA bundle.
+
+    Modern Python (OpenSSL 3.x — e.g. Homebrew on macOS, or the cstu-jenkins CI
+    image) enables VERIFY_X509_STRICT by default, which rejects some corporate
+    TLS-inspection roots — e.g. Zscaler — whose Basic Constraints extension isn't
+    marked critical ("certificate verify failed: Basic Constraints of CA cert not
+    marked critical"). We keep full chain and hostname verification but drop that
+    one extra-strict flag, matching what curl/browsers do. Honors SSL_CERT_FILE /
+    REQUESTS_CA_BUNDLE when set; falls back to the system trust store otherwise,
+    so it's a no-op off-proxy.
+    """
+    ca = os.environ.get("SSL_CERT_FILE") or os.environ.get("REQUESTS_CA_BUNDLE")
+    ctx = ssl.create_default_context(cafile=ca)
+    ctx.verify_flags &= ~ssl.VERIFY_X509_STRICT
+    # reads ANTHROPIC_API_KEY from the environment
+    return anthropic.Anthropic(http_client=httpx.Client(verify=ctx))
+
+
 def propose_fix(build_log, source_path, source_code):
     """Ask Claude for a fix; return the validated dict from FIX_SCHEMA."""
-    client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment
+    client = _make_client()
     response = client.messages.create(
         model=MODEL,
         max_tokens=2048,
