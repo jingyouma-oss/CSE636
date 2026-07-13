@@ -58,8 +58,9 @@ FIX_SCHEMA = {
 }
 
 
-def _make_client():
-    """Anthropic client whose TLS trusts the system / corporate CA bundle.
+def _relaxed_ssl_context():
+    """SSLContext that trusts the system / corporate CA bundle but drops the
+    extra-strict VERIFY_X509_STRICT flag.
 
     Modern Python (OpenSSL 3.x — e.g. Homebrew on macOS, or the cstu-jenkins CI
     image) enables VERIFY_X509_STRICT by default, which rejects some corporate
@@ -73,8 +74,33 @@ def _make_client():
     ca = os.environ.get("SSL_CERT_FILE") or os.environ.get("REQUESTS_CA_BUNDLE")
     ctx = ssl.create_default_context(cafile=ca)
     ctx.verify_flags &= ~ssl.VERIFY_X509_STRICT
+    return ctx
+
+
+def _make_client():
+    """Anthropic client (httpx) whose TLS uses the relaxed context above."""
     # reads ANTHROPIC_API_KEY from the environment
-    return anthropic.Anthropic(http_client=httpx.Client(verify=ctx))
+    return anthropic.Anthropic(http_client=httpx.Client(verify=_relaxed_ssl_context()))
+
+
+def _patch_requests_tls():
+    """Make `requests` (used by PyGithub) verify with the relaxed context too.
+
+    PyGithub talks to api.github.com via `requests`, which builds its own SSL
+    context and would hit the same VERIFY_X509_STRICT rejection behind a proxy.
+    Mounting our context on the HTTPAdapter covers every `requests` session,
+    including the one PyGithub creates internally. No-op off-proxy.
+    """
+    import requests.adapters
+
+    ctx = _relaxed_ssl_context()
+    original = requests.adapters.HTTPAdapter.init_poolmanager
+
+    def init_poolmanager(self, *args, **kwargs):
+        kwargs.setdefault("ssl_context", ctx)
+        return original(self, *args, **kwargs)
+
+    requests.adapters.HTTPAdapter.init_poolmanager = init_poolmanager
 
 
 def propose_fix(build_log, source_path, source_code):
@@ -101,6 +127,7 @@ def propose_fix(build_log, source_path, source_code):
 
 def open_pull_request(fix):
     """Open a no-merge PR with the proposed fix. Requires GH_TOKEN + REPO."""
+    _patch_requests_tls()  # trust the corporate proxy CA before PyGithub connects
     from github import Github
 
     gh = Github(os.environ["GH_TOKEN"])
