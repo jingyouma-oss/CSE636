@@ -35,5 +35,35 @@ RUN apt-get update && apt-get install -y lsb-release ca-certificates curl && \
     | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update && apt-get install -y docker-ce-cli && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Python toolchain for pipeline stages (flake8, pytest, anthropic, mcp). The
+# base image ships only the JVM, so `pip` is absent and `agent any` builds fail
+# with "pip: not found". Install Python into a venv on PATH so `pip`/`python3`
+# resolve globally AND `pip install` works without hitting the base image's
+# PEP 668 "externally-managed-environment" block. `chown` the venv to the
+# `jenkins` user — the build runs as root but the pipeline runs as `jenkins`,
+# which otherwise can't write to the root-owned venv (pip: "Permission denied").
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv && \
+    python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
+    # Bake the pipeline's Python deps into the image so builds don't `pip install`
+    # them on every run (faster, reproducible, and avoids a runtime certifi
+    # upgrade clobbering the CA we append below). certifi arrives transitively.
+    /opt/venv/bin/pip install --no-cache-dir flake8 pytest anthropic mcp requests && \
+    # Behind a TLS-inspecting proxy, Python (httpx via the anthropic SDK, and
+    # requests in the MCP server) verifies against certifi's own bundle — NOT the
+    # OS store. If the opt-in CA block above trusted a corp root, append it to
+    # certifi so unmodified Python code trusts the proxy too. No cert => no-op.
+    if ls /usr/local/share/ca-certificates/extra-*.crt >/dev/null 2>&1; then \
+      cat /usr/local/share/ca-certificates/extra-*.crt >> "$(/opt/venv/bin/python -m certifi)"; \
+    fi && \
+    chown -R jenkins:jenkins /opt/venv && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+# Point CA-env-aware tools (requests honors REQUESTS_CA_BUNDLE) at the OS bundle,
+# which the CA block keeps updated. httpx ignores these, which is why we also
+# baked the corp CA into certifi above.
+ENV PATH="/opt/venv/bin:$PATH" \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 USER jenkins
 RUN jenkins-plugin-cli --plugins "blueocean docker-workflow json-path-api"

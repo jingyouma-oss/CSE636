@@ -56,6 +56,8 @@ Treat each lab as a capstone increment. By Week 7 you're integrating, not invent
 **Runnable starters** to build on (mirror their quality and structure):
 [`project/starter/`](../project/starter/) ·
 [`project/Jenkins/`](../project/Jenkins/) ·
+[`project/build-fixer/`](../project/build-fixer/) ·
+[`project/k8s-demo/`](../project/k8s-demo/) ·
 [`project/forecasting/`](../project/forecasting/) ·
 [`project/anomaly/`](../project/anomaly/) ·
 [`project/iac/`](../project/iac/).

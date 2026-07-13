@@ -2,6 +2,9 @@ services:
   jenkins:
     # pull jenkins LTS image from dockerhub
     image: cstu-jenkins
+    # fixed container name so `docker exec cstu-jenkins ...` works (matches the
+    # `automate.py` scripted path and the DEMO/lab runbook commands)
+    container_name: cstu-jenkins
     ports:
       - "8080:8080"
     volumes:

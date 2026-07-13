@@ -44,9 +44,9 @@ docker images | grep cstu-jenkins
 the volume all agree on. The Docker CLI is installed *inside* Jenkins so pipeline
 steps can run `docker build` / `docker run`.
 
-> The other Dockerfiles are **not** used here: `Dockerfile_Agent` is a legacy,
-> non-building reference (`ubuntu:16.04` + a missing `slave.py`); `Dockerfile_1`
-> is a minimal `jenkins + git/curl` variant for a bare-bones demo.
+> `Dockerfile_Agent_Inbound` is **not** used on this single-container path — it's
+> the agent image for the separate master/agent topology in
+> `docker-compose.agent.yml` (see `weeks/week-02/week-02-lab.md`, Part 1 variant B).
 
 ---
 

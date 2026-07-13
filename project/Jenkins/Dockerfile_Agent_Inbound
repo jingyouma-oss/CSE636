@@ -1,0 +1,52 @@
+# =============================================================================
+# Modern Jenkins inbound (JNLP/WebSocket) agent for the Week 2 lab's
+# distributed-build setup. This REPLACES the legacy, non-building Dockerfile_Agent.
+#
+# It extends the official jenkins/inbound-agent (Debian + JRE 21 + git + agent.jar)
+# with the same Python toolchain and lab deps as Dockerfile_Master, so pipeline
+# stages pinned to this agent's label run flake8/pytest/anthropic without any
+# per-build `pip install`.
+#
+# Build:   docker build -t cstu-jenkins-agent -f Dockerfile_Agent_Inbound .
+# Run:     via docker-compose.agent.yml (master + this agent) — see that file.
+# =============================================================================
+FROM jenkins/inbound-agent:latest-jdk21
+
+USER root
+
+# Optional: trust an extra CA for TLS-inspecting proxies (e.g. Zscaler) — same
+# opt-in pattern as Dockerfile_Master. Drop the root CA at certs/corp-ca.pem
+# (gitignored). Empty certs/ (only .gitkeep) => no-op.
+COPY certs/ /tmp/extra-ca/
+RUN set -eu; \
+    if ls /tmp/extra-ca/*.pem >/dev/null 2>&1 || ls /tmp/extra-ca/*.crt >/dev/null 2>&1; then \
+      apt-get update && apt-get install -y --no-install-recommends ca-certificates; \
+      mkdir -p /usr/local/share/ca-certificates; i=0; \
+      for bundle in /tmp/extra-ca/*.pem /tmp/extra-ca/*.crt; do \
+        [ -e "$bundle" ] || continue; \
+        awk -v d=/usr/local/share/ca-certificates -v s="$i" \
+          'BEGIN{n=s} /BEGIN CERTIFICATE/{n++} {print > (d"/extra-"n".crt")} END{print n > "/tmp/ca_n"}' "$bundle"; \
+        i=$(cat /tmp/ca_n); \
+      done; \
+      update-ca-certificates; \
+    fi; \
+    rm -rf /tmp/extra-ca /tmp/ca_n
+
+# Python toolchain + lab deps (mirror Dockerfile_Master). certifi arrives via
+# anthropic/requests; append the corp CA into it so httpx/requests trust the
+# proxy too (see Dockerfile_Master for the full rationale).
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv && \
+    python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir flake8 pytest anthropic mcp requests && \
+    if ls /usr/local/share/ca-certificates/extra-*.crt >/dev/null 2>&1; then \
+      cat /usr/local/share/ca-certificates/extra-*.crt >> "$(/opt/venv/bin/python -m certifi)"; \
+    fi && \
+    chown -R jenkins:jenkins /opt/venv && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+ENV PATH="/opt/venv/bin:$PATH" \
+    SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt \
+    REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+# Back to the unprivileged agent user the base image runs the agent.jar as.
+USER jenkins

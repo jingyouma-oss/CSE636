@@ -406,11 +406,88 @@ claude "Add a unit test for the url_for function in routing. Run it to verify it
 
 1. **Choosing an agent:** Your team currently uses GitHub for source control and GitHub Actions for CI. A developer proposes adding Cursor for local coding and GitHub Copilot agent mode for automated PR review. A manager suggests also trialing Devin for "autonomous" feature work. What questions would you ask before approving each of those three additions?
 
+   <details><summary>💡 Show answer</summary>
+
+   The three sit at **different autonomy tiers and integration points**, so each deserves different scrutiny.
+
+   - **Cursor (local IDE, human-in-the-loop)** — lowest risk. It's a VS Code fork, so adoption cost is low and a human approves every diff. Real questions: is it additive or a replacement, do we need paid seats for everyone, and where does our code get sent (IP / data-handling policy)?
+   - **Copilot agent mode (automated PR review)** — ask whether it *blocks* merges or just *comments*. Advisory review is low-risk; auto-approval is not. It fits our existing GitHub + Actions stack cleanly (the "fits the workflow, not the hype" point). It should **supplement** human review, not replace it — an AI reviewer misses real bugs and raises noisy false positives.
+   - **Devin (autonomous feature work)** — scrutinize hardest. Invoke the session's core lesson: **higher autonomy ≠ higher reliability.** Ask about blast radius, which tasks we'd actually trust it with (well-scoped, reversible, verifiable — not open-ended features), and what review gate sits before its output reaches a branch humans build on.
+
+   **Verdict:** approve Cursor readily; approve Copilot as an *advisory* reviewer; gate Devin behind a narrow trial on low-blast-radius tasks with mandatory human review.
+
+   </details>
+
 2. **AIOps in practice:** A medium-sized e-commerce company is evaluating Datadog Bits AI after repeated 2 AM on-call pages for alert storms. The tool promises to correlate alerts and provide AI-generated root-cause summaries. What are the benefits? What are the risks or assumptions you would verify before relying on the AI's root-cause conclusions?
+
+   <details><summary>💡 Show answer</summary>
+
+   **Benefits (targets their exact pain):**
+   - **Alert correlation** collapses an alert storm into a single incident, cutting 2 AM noise.
+   - **AI root-cause summaries** reduce MTTR by doing the dashboard-tracing a half-asleep engineer would otherwise do.
+   - Natural-language querying lets on-call ask "what changed in the last hour?" under stress.
+
+   **Risks / assumptions to verify before *relying* on the RCA:**
+   - The root cause is a **suggestion, not a verdict** — LLM summaries can be confidently wrong (the over-trusting-output pitfall). Verify against evidence before acting.
+   - **Garbage in, garbage out** — correlation quality depends on complete, well-tagged instrumentation.
+   - **Correlation ≠ causation** — confirm the dependency map reflects reality.
+   - **Over-aggressive grouping can hide a real, distinct incident** inside a storm.
+   - **Cost, data residency, lock-in** — telemetry volume drives cost and has data-governance implications.
+
+   **Adopt safely:** run advisory-first (human-on-the-loop) and measure whether MTTR and page volume actually improve before trusting it further.
+
+   </details>
 
 3. **When not to use:** Your company handles healthcare records (HIPAA regulated). A developer wants to use an AI coding agent to help refactor the patient data access layer. Walk through the "when not to use" checklist. What safeguards would you require before allowing this?
 
+   <details><summary>💡 Show answer</summary>
+
+   The scenario trips almost every red flag:
+
+   | Checklist item | Verdict |
+   |---|---|
+   | **Blast radius** | High — the access layer gates *all* patient records. |
+   | **Reversibility** | Code is revertible, but a **PHI leak is not**. |
+   | **Verifiability** | Access-control logic can look right and still leak. |
+   | **Data sensitivity** | PHI is regulated — the agent must never see real patient data or send it to the LLM vendor. |
+   | **Compliance / audit** | HIPAA requires an audit trail of changes. |
+   | **Domain specialty** | Healthcare rules are specialized; the model may hallucinate noncompliant logic. |
+
+   **Don't refuse outright — constrain.** Refactoring *code structure* is legitimate; the guardrails are:
+   - The agent works only against **synthetic/anonymized fixtures** — never real PHI.
+   - **Human-in-the-loop review** by someone who knows the compliance requirements, on every diff before merge.
+   - **Least-privilege, read-only** access to the module; no production DB credentials or data.
+   - **Tests + security review after** every AI change (access-control tests, SAST).
+   - **Full audit log**: what changed, when, who approved.
+   - Confirm the vendor terms meet the org's BAA / data-handling requirements first.
+
+   **Bottom line:** allowed as a *drafting assistant on anonymized data behind a mandatory human/compliance gate* — never autonomous, never near real PHI.
+
+   </details>
+
 4. **Toolchain design:** Sketch a toolchain for a five-person startup that wants to use AI agents to accelerate their two-week sprint cycle. What tools would you connect? Where would you keep a human in the loop?
+
+   <details><summary>💡 Show answer</summary>
+
+   Match the toolchain diagram above, scaled down for a small team that values speed but can't afford outages.
+
+   **Sketch:**
+   - **Local coding:** Cursor or Claude Code — fast inner loop, human approves every diff.
+   - **Source + CI:** GitHub + GitHub Actions (one platform, low ops overhead).
+   - **Automated PR checks:** Copilot / Claude reviewer posts comments and generates missing tests — **advisory, not blocking**.
+   - **Gate:** CI runs the test suite + linter + lightweight SAST on every PR (the automated verification layer).
+   - **Deploy:** auto-deploy to **staging**; **production promotion behind a human approval gate**.
+   - **Monitoring:** a lightweight AIOps/observability tool watching deploy health, with **reversible auto-rollback** on regression.
+
+   **Where humans stay in the loop (the important half):**
+   - Every AI-authored diff reviewed before merge.
+   - The AI reviewer *advises*; a human approves.
+   - Production promotion requires a human click.
+   - Auto-rollback is fine because it's **reversible**; auto-deploy-to-prod is not.
+
+   **Principle:** let agents accelerate the *reversible, verifiable* steps (drafting code, tests, PR summaries, rollback) and keep humans on the *irreversible, high-blast-radius* steps (merging, production deploys) — start human-in-the-loop, relax only with evidence.
+
+   </details>
 
 ---
 
@@ -563,23 +640,75 @@ async def call_tool(name: str, arguments: dict):
         # For demo, we simulate a response.
         return [TextContent(type="text", text=f"Job '{job}': LAST BUILD SUCCESS (build #42)")]
 
+async def main():
+    # stdio_server() is an async context manager that yields the
+    # (read, write) stream pair; app.run() then drives the protocol loop.
+    async with stdio_server() as (read_stream, write_stream):
+        await app.run(
+            read_stream,
+            write_stream,
+            app.create_initialization_options(),
+        )
+
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(stdio_server(app))
+    asyncio.run(main())
 ```
 
-To connect Claude Code to this server, add an entry to your MCP configuration:
+> ⚠️ A stdio MCP server speaks JSON-RPC over stdin/stdout — it is meant to be **launched by a client** (Claude Code), not run standalone. If you run `python minimal_mcp_server.py` by hand it will simply wait for input; that is expected. Register it in your MCP config (below) and let Claude Code start it.
+
+To connect Claude Code to this server, register it. There are two ways — the CLI (recommended) or editing a config file directly.
+
+**Option A — the `claude mcp add` CLI (recommended).** From your project directory:
+
+```bash
+claude mcp add demo-jenkins -- python /absolute/path/to/minimal_mcp_server.py
+```
+
+- `demo-jenkins` is the server name (what shows up in `/mcp`).
+- Everything after `--` is the command Claude Code runs to launch the server. The `--` separates Claude's own flags from your command, so any flags in the command aren't consumed by `claude`.
+- Use the **absolute path** to the script, and make sure `python` resolves to the interpreter where you installed `mcp` (or give the full path, e.g. your venv's `.venv/bin/python`).
+
+**Scope** — where the config is stored, via `-s / --scope`:
+
+| Scope | Flag | Stored in | Use for |
+|---|---|---|---|
+| **local** (default) | *(none)* | your user settings, this project only | private experiments |
+| **project** | `-s project` | `.mcp.json` in the repo root (checked into git) | sharing with the class/team |
+| **user** | `-s user` | your user settings, all projects | tools you use everywhere |
+
+For a lab you want others to reproduce, `project` scope is convenient because `.mcp.json` travels with the repo:
+
+```bash
+claude mcp add demo-jenkins -s project -- python ./minimal_mcp_server.py
+```
+
+**Option B — edit the config file directly.** For project scope, create `.mcp.json` in the repo root (this is the file the CLI writes for you):
 
 ```json
 {
   "mcpServers": {
     "demo-jenkins": {
       "command": "python",
-      "args": ["/path/to/minimal_mcp_server.py"]
+      "args": ["/absolute/path/to/minimal_mcp_server.py"]
     }
   }
 }
 ```
+
+**Verify it works:**
+
+```bash
+claude mcp list          # shows configured servers + whether they connect
+```
+
+Then inside an interactive session, run `/mcp` to list servers, their status, and exposed tools. If `demo-jenkins` shows **connected** with a `get_build_status` tool, ask Claude Code "Is the backend-api build passing?" and watch it call the tool instead of guessing.
+
+**If it fails to connect,** check these in order:
+
+1. **Wrong Python** — `command: "python"` resolves to an interpreter without `mcp` installed. Fix: use the absolute path to the interpreter where you ran `pip install mcp` (e.g. your venv's `.venv/bin/python`).
+2. **Relative script path** — Claude Code may launch the server from a different working directory. Prefer an absolute path in `args`.
+3. **The server crashes on startup** — run `python minimal_mcp_server.py` by hand; it should hang silently waiting for stdin (correct). If it throws instead, fix that error first.
 
 Now when you ask Claude Code "Is the backend-api build passing?", it automatically calls your `get_build_status` tool rather than hallucinating an answer.
 
@@ -637,6 +766,23 @@ If your organization is heavily invested in Google Cloud, ADK integrates natural
 | **CrewAI** | Team-based tasks with specialized agents | Crew of role-playing agents | Via human agent in the crew |
 | **AutoGen** | Conversational multi-agent problem solving | Agent-to-agent dialogue | Human can join as a participant |
 | **Google ADK** | Google Cloud-native agent deployment | Tool-using agents on Vertex AI | Via interrupt / approval patterns |
+
+#### Where does Claude fit?
+
+A question students often ask: *"Does Anthropic have its own orchestration framework?"* Two things are true.
+
+**1. These frameworks are model-agnostic — they already run with Claude.** LangGraph, CrewAI, AutoGen, and ADK are orchestration *layers*; the underlying LLM is a separate choice. Any of them can use Claude as the model powering each node/agent. So "which framework" and "which model" are independent decisions — picking LangGraph does not lock you into a particular vendor's model.
+
+**2. Anthropic also ships its own native agent-building surfaces** — building blocks rather than a graph/crew DSL:
+
+| Anthropic option | What it is | Closest analog above |
+|---|---|---|
+| **Claude Agent SDK** | Claude Code as a library — built-in file/shell/search tools, the full agent loop, sub-agents, hooks, sessions; you host it | The batteries-included end of CrewAI / AutoGen |
+| **Managed Agents** | Anthropic runs the loop *and* hosts a per-session sandbox; a coordinator agent can delegate to a roster of sub-agents | CrewAI's "crew of specialized agents" + a managed runtime |
+
+**The honest gap:** Anthropic does *not* ship a declarative graph DSL like LangGraph's nodes-and-conditional-edges. For that exact "if tests pass → open PR, else → debug" branching (the LangGraph diagram above), use LangGraph *with Claude as the model*, or express the control flow in plain code around the Claude Agent SDK. Anthropic's native multi-agent story is **coordinator + sub-agents** (CrewAI-shaped), not a graph.
+
+> **Don't confuse this with MCP.** MCP (Session 4 above) is how an agent connects to *tools*; orchestration frameworks are how you compose *multiple agents or steps*. They are complementary — you can run a LangGraph workflow whose Claude-powered nodes each call tools over MCP.
 
 ---
 
@@ -742,11 +888,66 @@ In the full lab (see the 🧪 Lab section below) you will do this yourself. Here
 
 1. **MCP design exercise:** You want to give an AI coding agent the ability to: (a) read GitHub issues, (b) create GitHub PRs, (c) run Jenkins builds, and (d) query Datadog metrics. Sketch the MCP server architecture. How many MCP servers would you create? How would you scope the permissions for each?
 
+   <details><summary>💡 Show answer</summary>
+
+   **Draw the boundaries around *permission scope*, not around convenience.** The "one giant MCP server for everything" pitfall is exactly what to avoid. A reasonable design is **three servers**, split along trust/permission lines:
+
+   - **GitHub server** — covers (a) read issues and (b) create PRs. Both hit the same system, so one server, but scope the token to **only the target repos**, with `issues:read` + `pull_requests:write` — *not* org-admin, not write-to-`main`. PRs go through the human review gate, so the agent never merges.
+   - **Jenkins server** — covers (c) run builds. Separate because triggering CI is a different blast radius from touching source. Scope to **trigger + read status on specific jobs only**, no admin/config rights.
+   - **Datadog server** — covers (d) query metrics. **Read-only**, scoped to the relevant dashboards/metrics. Querying observability should never carry write capability.
+
+   **Why split them:** separate servers = separate credentials = separate blast radius. If the Datadog query path is prompt-injected, it still can't open a PR or start a build. (Some would split GitHub-read from GitHub-write for the same reason — defensible if issue-reading ingests untrusted text that could carry injection.)
+
+   </details>
+
 2. **Framework choice:** Your team is building an agent that: reads a Jira ticket, writes code implementing the ticket, runs the test suite, and — if tests pass — opens a PR. Which orchestration framework (LangGraph, CrewAI, AutoGen, Google ADK) would you choose and why? What would change if your company runs entirely on Google Cloud?
+
+   <details><summary>💡 Show answer</summary>
+
+   **LangGraph** is the natural fit. The workflow is a **graph with a clear decision point and a loop**: read ticket → write code → run tests → *if pass* open PR / *if fail* debug and retry. That "tests pass?" branch and the retry-until-green loop are exactly LangGraph's conditional edges and cycles, and its first-class human-in-the-loop pause lets you gate the PR step. CrewAI and AutoGen shine for *multi-agent* collaboration (role-playing crews, agent-to-agent dialogue), which this single-pipeline task doesn't need — that's more machinery than the problem calls for.
+
+   **If the company runs entirely on Google Cloud:** **Google ADK** becomes a strong contender. The logic still suits a graph, but ADK integrates natively with Vertex AI, and — relevant to later weeks — with BigQuery and GCP monitoring. The trade-off is vendor lock-in vs. the convenience of native deployment, managed infra, and built-in tools. If avoiding lock-in matters, keep LangGraph and just deploy it on GCP.
+
+   </details>
 
 3. **Least privilege scenario:** An agent has write access to all repositories in your organization's GitHub, because a developer thought "it needs to write code, so it needs write access everywhere." What attack scenarios does this create? How would you redesign the permission model?
 
+   <details><summary>💡 Show answer</summary>
+
+   **Attack / failure scenarios:**
+   - **Prompt injection** — malicious text in an issue, PR, or file the agent reads tricks it into pushing code to a repo it should never touch (e.g., injecting a backdoor into a production service).
+   - **Compromised credential = org-wide breach** — one leaked token exposes *every* repo, not one.
+   - **Honest mistakes at scale** — a misunderstanding lets the agent write to the wrong repo or overwrite `main`, with org-wide blast radius.
+   - **No attribution** — a single shared broad identity makes it impossible to tell which agent/task did what.
+
+   **Redesign (least privilege):**
+   - **Scope the token** to only the specific repos the agent works on.
+   - **Drop to the minimum verb** — open PRs against a branch, never write directly to `main`; use branch protection + required review so a human approves merges.
+   - **Separate identity per agent** — the code agent can't deploy; a compromise of one can't become a compromise of all.
+   - **Short-lived credentials** that expire, pulled from a **secrets manager / env var**, never hardcoded.
+   - **Audit-log** every tool call for reconstruction.
+
+   The principle: grant only what *this task* needs — because agents can be injected or simply act wrongly.
+
+   </details>
+
 4. **Cloud vs. self-hosted:** A startup with five engineers is considering using Amazon Bedrock Agents vs. building their own LangGraph agents. What factors would drive the decision? Does the answer change at 50 engineers? At 500?
+
+   <details><summary>💡 Show answer</summary>
+
+   **Factors that drive the decision:**
+   - **Ops capacity** — managed services (Bedrock) mean no infra to run; self-hosted (LangGraph) needs someone to operate it.
+   - **Existing cloud** — already on AWS? Bedrock's IAM, knowledge bases, and Lambda tools integrate for free.
+   - **Control & data residency** — self-hosted gives control over where data lives and which models you use; no vendor lock-in.
+   - **Speed to prototype vs. long-term flexibility.**
+
+   **At 5 engineers:** lean **managed (Bedrock)**. Five people can't spare an engineer to babysit agent infrastructure; the value is shipping fast, and the cloud provider's built-in security/compliance is a bonus.
+
+   **At 50:** it's a genuine trade-off. There's now capacity for some platform work, and control/cost/lock-in start to matter. Likely a **hybrid** — managed where it's convenient, self-hosted where control matters.
+
+   **At 500:** the calculus tips toward **self-hosted (or at least portable) frameworks** — data-residency and compliance requirements harden, per-call managed-service costs add up at scale, avoiding lock-in has real strategic value, and there's a dedicated platform team to run it. The consistent thread: the decision follows **ops capacity, data-governance needs, and cost-at-scale**, not the tool's raw capability.
+
+   </details>
 
 ---
 

@@ -28,9 +28,8 @@ Everything outside `project/` and `weeks/` is read-only reference content.
 
 A teaching setup for running Jenkins in Docker, presented in several variants. Each `Dockerfile*` is a standalone alternative, not part of one multi-stage build:
 
-- `Dockerfile_Master` — current/preferred master image: official `jenkins/jenkins:2.571-jdk21` + Docker CLI + Blue Ocean / docker-workflow plugins. This is what real pipeline work should use. Behind a TLS-inspecting proxy, drop the proxy root CA into `certs/corp-ca.pem` (gitignored) and it's trusted at build time in both the OS store and the JVM truststore; empty `certs/` = no-op. See `DEMO.md`.
-- `Dockerfile_Agent` — legacy agent ("slave") image on `ubuntu:16.04` (an EOL base). It `ADD slave.py`, which is **not present in the repo**, so it will not build as-is — kept only as a historical/lecture reference.
-- `Dockerfile_1` — minimal `jenkins/jenkins:latest` + git/curl, used for simple demos.
+- `Dockerfile_Master` — current/preferred master image: official `jenkins/jenkins:2.571-jdk21` + Docker CLI + Blue Ocean / docker-workflow plugins + a Python toolchain with the lab deps pre-installed. This is what real pipeline work should use. Behind a TLS-inspecting proxy, drop the proxy root CA into `certs/corp-ca.pem` (gitignored) and it's trusted at build time in the OS store, the JVM truststore, and Python's certifi bundle; empty `certs/` = no-op. See `DEMO.md`.
+- `Dockerfile_Agent_Inbound` — the agent image (official `jenkins/inbound-agent:latest-jdk21` + the same Python toolchain), built as `cstu-jenkins-agent` for the master/agent distributed-build setup in `docker-compose.agent.yml`.
 
 See [`project/Jenkins/DEMO.md`](project/Jenkins/DEMO.md) for a step-by-step demonstration runbook.
 

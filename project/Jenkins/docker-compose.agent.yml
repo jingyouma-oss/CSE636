@@ -1,0 +1,67 @@
+# Distributed-build setup for the Week 2 lab: a Jenkins master (controller) plus
+# a dedicated Python build agent that connects over a WebSocket. This is an
+# ALTERNATIVE to the single-container docker-compose.yml — use it when you want to
+# see the classic master/agent (controller/node) architecture where builds run on
+# a separate node instead of on the controller.
+#
+# ── Build both images first ──────────────────────────────────────────────────
+#   docker build -t cstu-jenkins       -f Dockerfile_Master        .
+#   docker build -t cstu-jenkins-agent -f Dockerfile_Agent_Inbound .
+#
+# ── Start the master ─────────────────────────────────────────────────────────
+#   docker compose -f docker-compose.agent.yml up -d jenkins
+#
+# ── Register the agent node (one-time; JNLP needs a per-node secret) ──────────
+#   1. http://localhost:8080 → Manage Jenkins → Nodes → New Node
+#        Name: python-agent   Type: Permanent Agent
+#        Remote root directory: /home/jenkins/agent
+#        Labels: python-agent
+#        Launch method: "Launch inbound agent"
+#      (Optionally set "WebSocket" in the advanced launch options; the agent env
+#       below already requests it, so no TCP agent port needs opening.)
+#   2. Save → open the python-agent node page → copy the "secret" string.
+#   3. Put it in a .env file next to this compose file:
+#        echo "JENKINS_SECRET=<paste-secret>" > .env
+#
+# ── Start the agent ──────────────────────────────────────────────────────────
+#   docker compose -f docker-compose.agent.yml up -d agent
+#   The node should go online (Manage Jenkins → Nodes → python-agent).
+#
+# Then use `agent { label 'python-agent' }` in your Jenkinsfile so builds run
+# on this node (see week-02-lab.md, Part 1 variant B).
+
+services:
+  jenkins:
+    image: cstu-jenkins
+    container_name: cstu-jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_data_cstu:/var/jenkins_home
+    networks:
+      - jenkins
+    restart: unless-stopped
+
+  agent:
+    image: cstu-jenkins-agent
+    container_name: cstu-jenkins-agent
+    depends_on:
+      - jenkins
+    environment:
+      # The agent reaches the master by its service name on the shared network.
+      - JENKINS_URL=http://jenkins:8080
+      - JENKINS_AGENT_NAME=python-agent
+      - JENKINS_SECRET=${JENKINS_SECRET:-}     # from the node page (step 2)
+      - JENKINS_AGENT_WORKDIR=/home/jenkins/agent
+      - JENKINS_WEB_SOCKET=true                 # connect over 8080; no TCP agent port
+    networks:
+      - jenkins
+    restart: unless-stopped
+
+networks:
+  jenkins:
+
+volumes:
+  # Reuses the same named volume as docker-compose.yml so Jenkins data (jobs,
+  # credentials, the admin user) persists across either compose file.
+  jenkins_data_cstu:
