@@ -195,6 +195,11 @@ def main():
         source_code = f.read()
 
     fix = propose_fix(build_log, args.source, source_code)
+    # The PR must target the path we were told to edit (--source), not the model's
+    # guess. The build log can make the model report a shorter path (e.g.
+    # src/calculator.py) that doesn't exist at the repo root in a monorepo, which
+    # 404s on get_contents. We already know the path — don't let the LLM pick it.
+    fix["fixed_file_path"] = args.source
     print(f"Root cause: {fix['root_cause']}")
     print(f"Fix:        {fix['fix_description']}")
     print(f"File:       {fix['fixed_file_path']}\n")
