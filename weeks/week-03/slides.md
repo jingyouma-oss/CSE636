@@ -178,21 +178,24 @@ jobs:
   ai-review:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      contents: read
+      pull-requests: write        # comment only — not merge
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0            # full history for diff context
       - name: Run AI code review
-        uses: anthropics/claude-code-action@v1   # illustrative
+        uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          review_scope: "security,correctness,test-coverage"
-          post_comments: true
-          require_human_approval: true   # agent suggests; human approves
+          prompt: "Review this PR for security, correctness, and test coverage. Post inline comments; do NOT merge."
+          claude_args: >-
+            --model claude-opus-4-8
+            --allowed-tools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Read"
 ```
 
-`require_human_approval: true` is the guardrail — the agent can only comment, never merge.
+Guardrail = `pull-requests: write` only (no merge) **+** branch protection requiring a human review. The agent comments; a person approves.
 
 ---
 

@@ -118,55 +118,7 @@ jobs:
         run: python scripts/build_fixer_agent.py
 ```
 
-**Option B — Jenkinsfile** (add to the course's Jenkins Docker setup):
-
-```groovy
-pipeline {
-  agent any
-
-  environment {
-    ANTHROPIC_API_KEY = credentials('anthropic-api-key')
-    GH_TOKEN          = credentials('github-token')
-  }
-
-  stages {
-    stage('Test') {
-      steps {
-        sh 'pip install pytest'
-        script {
-          def result = sh(script: 'pytest tests/ --tb=short 2>&1 | tee build_log.txt', returnStatus: true)
-          env.TESTS_FAILED = (result != 0) ? 'true' : 'false'
-        }
-      }
-    }
-
-    stage('Agent: Propose Fix') {
-      when { expression { env.TESTS_FAILED == 'true' } }
-      steps {
-        sh 'pip install anthropic PyGithub'
-        sh 'python scripts/build_fixer_agent.py'
-      }
-    }
-
-    stage('Human Approval Gate') {
-      when { expression { env.TESTS_FAILED == 'true' } }
-      steps {
-        input(
-          message: "Build-fixer agent has opened a PR. Review it, then approve here to confirm the process completed.",
-          submitter: 'team-leads',
-          timeout: 60     // minutes — ABORT on timeout, never auto-approve
-        )
-      }
-    }
-  }
-
-  post {
-    always {
-      archiveArtifacts artifacts: 'build_log.txt', allowEmptyArchive: true
-    }
-  }
-}
-```
+**Option B — Jenkins.** Run the same flow on the course's Jenkins-in-Docker setup (`project/Jenkins/`, built in [Week 2](../week-02/week-02-lab.md)). Because the Jenkins path needs a few extra pieces the Actions path gets for free — an image with Python baked in, credentials, a job, and the built-in `input` gate — it has its own complete step-by-step at the end of this lab: **[Running the lab on Jenkins](#running-the-lab-on-jenkins-detailed-walkthrough)**. Steps 3–5 below (the agent script, the guardrail mindset, the deliverable) apply to both paths.
 
 ---
 
@@ -283,6 +235,8 @@ if __name__ == "__main__":
 
 ### Step 4: Set up the approval gate
 
+> **On Jenkins** the gate is the built-in **`input` step** (wrapped in `timeout`), not a GitHub environment — see [Running the lab on Jenkins](#running-the-lab-on-jenkins-detailed-walkthrough). The rest of this step is the GitHub Actions path.
+
 In GitHub, configure the `agent-proposed` environment (Settings → Environments → New environment):
 
 1. Name it `agent-proposed`.
@@ -320,6 +274,196 @@ A short write-up (1–2 pages or equivalent notes) covering:
 - Screenshot or log showing the test failure, the agent's PR, and the approval gate pause.
 - The agent's `root_cause` and `fix_description` output — was it accurate?
 - One thing you would change about the agent's prompt or the guardrail setup, and why.
+
+---
+
+## Running the lab on Jenkins (detailed walkthrough)
+
+Steps 2–5 use GitHub Actions. Here is the equivalent end-to-end run on the course's **Jenkins-in-Docker** setup ([`project/Jenkins/`](../../project/Jenkins/), first built in [Week 2](../week-02/week-02-lab.md)). The GitHub `agent-proposed` *environment* is replaced by Jenkins' built-in **`input` step** as the human approval gate; everything else — the buggy app, the log, the agent script — is identical.
+
+> **Why the Jenkinsfile has no `pip install`.** The `cstu-jenkins` image (`Dockerfile_Master`) bakes a Python venv onto `PATH` at `/opt/venv` with `pytest` and `anthropic` **pre-installed** — the stock `jenkins/jenkins` image is JVM-only, so a naïve `pip install` fails with `pip: not found`. Call `python` / `pytest` directly. (`PyGithub` is *not* baked in — only the optional "open a real PR" variant in J7 installs it at runtime.)
+
+### J1 · Bring up Jenkins
+
+Follow [`project/Jenkins/DEMO.md`](../../project/Jenkins/DEMO.md) (or Week 2). In short:
+
+```bash
+cd project/Jenkins
+docker build -t cstu-jenkins -f Dockerfile_Master .
+docker compose up -d
+docker exec cstu-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+Open **http://localhost:8080**, unlock with that password, install suggested plugins, and create the admin user. (Behind a Zscaler-type TLS-inspecting proxy? Do DEMO.md's **opt-in CA step** first, or the image build fails to download plugins.)
+
+### J2 · Add the API key as a credential
+
+**Manage Jenkins → Credentials → System → Global credentials → Add Credentials:**
+
+| Field | Value |
+|---|---|
+| Kind | **Secret text** |
+| Secret | your `sk-ant-…` key |
+| ID | `ANTHROPIC_API_KEY` |
+
+`credentials('ANTHROPIC_API_KEY')` in the Jenkinsfile then exposes it as the `ANTHROPIC_API_KEY` env var — the credential ID and the env var share the same name, which is fine. (For J7's real-PR variant, add a second **Secret text** credential with ID `github-token` = a PAT with `repo` scope.)
+
+### J3 · Give Jenkins the code to build
+
+This walkthrough clones your **private course repo** (`CSE636`) **in full**. The build-fixer starter lives under [`project/build-fixer/`](../../project/build-fixer/), so the pipeline `cd`s into that subfolder with `dir('project/build-fixer')` (already wired into the J5 script below) and archives `project/build-fixer/build_log.txt`.
+
+Because the repo is private, the `git` checkout needs a credential — and the Git plugin **can't** use the *Secret text* credential from J2 for cloning; it needs a **Username with password** one:
+
+**Manage Jenkins → Credentials → System → Global credentials → Add Credentials:**
+
+| Field | Value |
+|---|---|
+| Kind | **Username with password** |
+| Username | your GitHub username |
+| Password | a **PAT** — classic with `repo` scope, or fine-grained with **Contents: Read** |
+| ID | `github-https` |
+
+The J5 Jenkinsfile passes `credentialsId: 'github-https'` to the `git` step. If you see `No credentials specified` followed by `Authentication failed` in the log, this credential is missing or its **ID** doesn't match.
+
+### J4 · Create the pipeline job
+
+**New Item → Pipeline**, name it `build-fixer-demo`, **OK**. Scroll to **Pipeline**, choose **Pipeline script**, and paste the script from J5 (replace `<you>` with your GitHub username so the clone URL points at your `CSE636` fork). **Save**.
+
+*(Alternative: choose **Pipeline script from SCM**, point it at your `CSE636` repo with the `github-https` credential, set **Script Path** to the committed `Jenkinsfile`. Then swap the `git …` step for `checkout scm` — but keep the `dir('project/build-fixer')` wrappers.)*
+
+### J5 · The Jenkinsfile (dry-run — clones the private course repo)
+
+This mirrors `make demo`: clone your private `CSE636` repo, produce the red build inside `project/build-fixer/`, let the agent propose a fix, print it, and pause for a human. It opens **no** PR, so it needs the `ANTHROPIC_API_KEY` secret (J2) and the `github-https` checkout credential (J3) — but no GitHub *token* for the agent itself.
+
+```groovy
+pipeline {
+  agent any                    // single-container cstu-jenkins.
+                               // For the Week 2 master/agent topology use: agent { label 'python-agent' }
+
+  environment {
+    ANTHROPIC_API_KEY = credentials('ANTHROPIC_API_KEY')  // the "Secret text" credential from J2
+    MODEL = 'claude-haiku-4-5'                             // cheaper classroom run; omit for the default claude-opus-4-8
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        // private repo → the Username/password credential from J3 (replace <you>)
+        git branch: 'main',
+            url: 'https://github.com/<you>/CSE636.git',
+            credentialsId: 'github-https'
+      }
+    }
+
+    stage('Test (expect red)') {
+      steps {
+        dir('project/build-fixer') {             // the starter lives in this subfolder of the course repo
+          script {
+            // returnStatus lets the red build continue so the agent stage can run.
+            // Redirect (don't pipe): `pytest … | tee` would report tee's exit code
+            // (always 0) and hide the failure, so the gated stages would be skipped.
+            def rc = sh(script: 'pytest tests/test_calculator.py --tb=short > build_log.txt 2>&1',
+                        returnStatus: true)
+            sh 'cat build_log.txt'               // still show the log in the console
+            env.TESTS_FAILED = (rc != 0) ? 'true' : 'false'
+          }
+          echo "Tests failed? ${env.TESTS_FAILED}"
+        }
+      }
+    }
+
+    stage('Agent: propose fix') {
+      when { expression { env.TESTS_FAILED == 'true' } }
+      steps {
+        dir('project/build-fixer') {             // same subfolder as the test stage
+          // --dry-run prints the root cause + corrected file and opens NO PR
+          sh 'python scripts/build_fixer_agent.py --dry-run'
+        }
+      }
+    }
+
+    stage('Human approval gate') {
+      when { expression { env.TESTS_FAILED == 'true' } }
+      steps {
+        // input pauses the build until a person clicks Proceed. Wrapping it in
+        // timeout means an unattended build ABORTS — it never auto-approves.
+        timeout(time: 60, unit: 'MINUTES') {
+          input message: 'Agent proposed a fix (see the log above). Review it, then Proceed to confirm — or Abort.'
+        }
+      }
+    }
+  }
+
+  post {
+    // build_log.txt is written inside the subfolder, so archive that path
+    always { archiveArtifacts artifacts: 'project/build-fixer/build_log.txt', allowEmptyArchive: true }
+  }
+}
+```
+
+### J6 · Run it and watch the gate
+
+1. **Build Now**, then open the run in **Blue Ocean** (http://localhost:8080/blue) or the classic **Stage View**.
+2. **Test (expect red)** goes red — but the pipeline keeps going (that's the `returnStatus` trick; a normal `sh` failure would abort the build here).
+3. **Agent: propose fix** prints the agent's `root_cause`, `fix_description`, and the full corrected `calculator.py` in the console log.
+4. **Human approval gate** turns **paused/blue** with a prompt. This is the guardrail: nothing proceeds on its own.
+5. Read the proposed fix in the log, then click **Proceed** to finish green — or **Abort** to reject it. Leave it untouched for 60 minutes and the `timeout` aborts the build.
+
+`build_log.txt` is archived on every run (**Build → Artifacts**) — a convenient source for your deliverable screenshots.
+
+### J7 · Optional: open a real PR from Jenkins
+
+To mirror the Actions gated-PR flow (agent opens a no-merge PR; a human merges it), add a `github-token` credential (J2), then use these `environment` and stage edits:
+
+```groovy
+  environment {
+    ANTHROPIC_API_KEY = credentials('ANTHROPIC_API_KEY')
+    GH_TOKEN          = credentials('github-token')   // "Secret text" — perms below
+    REPO              = '<you>/CSE636'                 // the agent opens the PR here
+    BASE_BRANCH       = 'main'
+  }
+  // …
+    stage('Agent: open PR') {
+      when { expression { env.TESTS_FAILED == 'true' } }
+      steps {
+        // Run from the repo root and pass FULL --source/--log paths so the commit
+        // lands on the right file inside the monorepo (project/build-fixer/src/...).
+        sh 'pip install --quiet PyGithub'   // anthropic is baked into the image; PyGithub is not
+        sh '''python project/build-fixer/scripts/build_fixer_agent.py --open-pr \
+                --log    project/build-fixer/build_log.txt \
+                --source project/build-fixer/src/calculator.py'''
+      }
+    }
+```
+
+**Token permissions** — `github-token` needs *write* access to your fork, and the exact settings matter (a read-only or PRs-only token 403s):
+- **Fine-grained PAT:** Repository access = your `CSE636` fork; **Contents: Read and write** *and* **Pull requests: Read and write**. (Contents-write is what commits the fix — the most common miss.)
+- **Classic PAT:** the top-level **`repo`** scope.
+
+**How the agent writes the fix:** it commits the corrected file on a `bot/fix-build-<n>` branch and **`git push`**es it, then uses the REST API only to *open* the PR (a call with no source payload). It does **not** use the REST contents API to write files — see the proxy note below for why. The token opens the PR but can't merge; merging stays a human action, exactly as in the Actions path.
+
+Keep the **Human approval gate** stage *after* this one, and read "Proceed" as *"I reviewed the agent's PR on GitHub and merged it myself."*
+
+<details><summary>🌐 Behind a TLS-inspecting corporate proxy (e.g. Zscaler)?</summary>
+
+Two failures you may hit — both come from the proxy, not your code or token:
+
+1. **`certificate verify failed: Basic Constraints of CA cert not marked critical`.** Modern Python / OpenSSL 3.x enables `VERIFY_X509_STRICT`, which rejects the proxy's root CA even though it's trusted. `build_fixer_agent.py` handles this for **both** of its HTTP clients — httpx (Anthropic) and `requests` (PyGithub) — by clearing that one flag while keeping full chain + hostname verification.
+2. **A 403 on the GitHub REST *contents* API for source files.** A proxy DLP rule can block `.py` payloads — `GET /repos/.../contents/x.py` returns 403 while `.md` returns 200, at any path depth. A token can't filter by file extension, so this is the proxy, not GitHub auth. The agent sidesteps it by moving the fix over **git** (the pack protocol isn't inspected — your `git clone` / `git push` work) and calling REST only to open the PR.
+
+If even `git push` is blocked, no source can leave the network to GitHub by any channel — run the **dry-run** J5 pipeline in Jenkins and open real PRs from **GitHub Actions** (Option A, outside the proxy) instead.
+
+</details>
+
+<details><summary>✅ Check your understanding — is the Jenkins gate actually a gate?</summary>
+
+- The `input` step **blocks** on a real person — there is no "approve after N minutes." The surrounding `timeout` **aborts**; it never proceeds. Prove it: start a build and walk away — it should end **ABORTED**, not **SUCCESS**.
+- The `github-token` can *open* a PR (commit + push a branch) but **cannot merge** — grant it no admin/merge rights and rely on branch protection. The merge is a human click on GitHub.
+- Want to restrict *who* may approve? Add `submitter: 'your-username'` to the `input` step — then only that user's Proceed counts.
+
+Remove the human and nothing dangerous can still happen — that is the test of a real gate.
+
+</details>
 
 ---
 

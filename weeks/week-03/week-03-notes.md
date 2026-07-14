@@ -186,22 +186,28 @@ jobs:
   ai-review:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      contents: read            # read the code under review
+      pull-requests: write      # post comments — but NOT merge
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0            # need full history for diff context
+          fetch-depth: 0            # full history so the agent can diff against base
 
       - name: Run AI code review
-        uses: anthropics/claude-code-action@v1   # illustrative
+        uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # via env, not `with:`
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          review_scope: "security,correctness,test-coverage"
-          post_comments: true
-          require_human_approval: true   # agent suggests; human approves
+          prompt: |
+            Review this PR for security, correctness, and test coverage. Post inline
+            comments on specific lines with concrete suggestions, plus one summary
+            comment. Do NOT approve or merge — a human does that.
+          claude_args: >-
+            --model claude-opus-4-8
+            --allowed-tools "mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Read"
 ```
 
-The `require_human_approval: true` flag is the **guardrail**: the agent cannot merge or close the PR. It can only write comments. A human reviewer must still click "Approve."
+The guardrail is **not** a magic input (there is no `require_human_approval` flag). It comes from two places: the `permissions:` block grants only `pull-requests: write`, so the agent can comment but cannot merge; and **branch protection** on `main` (require a review before merging) forces a human to click "Approve." The agent *proposes*; a human decides. (A complete, runnable version lives at [`.github/workflows/pr-review.yml`](../../.github/workflows/pr-review.yml).)
 
 #### ✅ Check your understanding
 
