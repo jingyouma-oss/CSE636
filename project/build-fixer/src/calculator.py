@@ -9,7 +9,7 @@ agent targets only the failing code, not everything.
 
 def add(a, b):
     # Bug: subtraction instead of addition (the failing test catches this).
-    return a - b
+    return a + b
 
 
 def multiply(a, b):
