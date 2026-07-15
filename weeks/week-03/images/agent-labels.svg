@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="320" viewBox="0 0 860 320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="lah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+    </marker>
+    <marker id="lahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+    </marker>
+    <filter id="lsh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="860" height="320" fill="#f8fafc"/>
+  <text x="430" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Label-based selection: the pipeline asks for a capability, Jenkins finds a match</text>
+
+  <!-- pipeline code block -->
+  <rect x="34" y="70" width="300" height="180" rx="10" fill="#0f172a" filter="url(#lsh)"/>
+  <text x="52" y="96" font-size="11" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#94a3b8">// Jenkinsfile</text>
+  <text x="52" y="122" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#e2e8f0">pipeline {</text>
+  <text x="68" y="146" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#7dd3fc">agent { label </text>
+  <text x="196" y="146" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#fca5a5">'docker'</text>
+  <text x="268" y="146" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#7dd3fc"> }</text>
+  <text x="68" y="170" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#e2e8f0">stages {</text>
+  <text x="84" y="194" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#e2e8f0">stage('Build') {</text>
+  <text x="100" y="216" font-size="11" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#86efac">sh 'docker build -t app .'</text>
+  <text x="68" y="238" font-size="12" font-family="'SF Mono', Menlo, Consolas, monospace" fill="#e2e8f0">} } }</text>
+
+  <text x="184" y="272" text-anchor="middle" font-size="11" fill="#475569">"I need an agent that can do Docker builds"</text>
+
+  <!-- controller matcher -->
+  <rect x="380" y="128" width="110" height="64" rx="11" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#lsh)"/>
+  <text x="435" y="155" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0f172a">Controller</text>
+  <text x="435" y="174" text-anchor="middle" font-size="9.5" fill="#475569">matches label</text>
+
+  <line x1="334" y1="146" x2="376" y2="150" stroke="#6366f1" stroke-width="2.5" marker-end="url(#lah)"/>
+
+  <!-- agent pool -->
+  <rect x="560" y="66" width="270" height="60" rx="11" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5" filter="url(#lsh)"/>
+  <text x="580" y="92" font-size="12" font-weight="700" fill="#0f172a">Agent A</text>
+  <text x="580" y="110" font-size="10" fill="#166534">labels: linux · docker · python-agent</text>
+  <text x="795" y="101" text-anchor="middle" font-size="16">✅</text>
+
+  <rect x="560" y="136" width="270" height="52" rx="11" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" filter="url(#lsh)"/>
+  <text x="580" y="160" font-size="12" font-weight="700" fill="#475569">Agent B</text>
+  <text x="580" y="177" font-size="10" fill="#64748b">labels: windows · dotnet</text>
+  <text x="795" y="168" text-anchor="middle" font-size="15">⤫</text>
+
+  <rect x="560" y="198" width="270" height="52" rx="11" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5" filter="url(#lsh)"/>
+  <text x="580" y="222" font-size="12" font-weight="700" fill="#475569">Agent C</text>
+  <text x="580" y="239" font-size="10" fill="#64748b">labels: mac · ios</text>
+  <text x="795" y="230" text-anchor="middle" font-size="15">⤫</text>
+
+  <line x1="490" y1="150" x2="556" y2="100" stroke="#16a34a" stroke-width="2.5" marker-end="url(#lahg)"/>
+
+  <text x="430" y="300" text-anchor="middle" font-size="11" fill="#475569">Only Agent A carries the <tspan font-weight="700" font-family="'SF Mono', Menlo, monospace">docker</tspan> label, so the job runs there. No hard-coded machine names.</text>
+</svg>

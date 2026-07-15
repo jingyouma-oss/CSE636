@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="330" viewBox="0 0 860 330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="cah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4f46e5"/>
+    </marker>
+    <filter id="csh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="860" height="330" fill="#f8fafc"/>
+  <text x="430" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Three ways an agent connects to the controller — who dials whom matters</text>
+
+  <!-- Row 1: WebSocket -->
+  <rect x="40" y="58" width="150" height="58" rx="11" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#csh)"/>
+  <text x="115" y="84" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Controller</text>
+  <text x="115" y="102" text-anchor="middle" font-size="9.5" fill="#475569">public URL / :8080</text>
+
+  <rect x="480" y="58" width="150" height="58" rx="11" fill="#dcfce7" stroke="#16a34a" stroke-width="2" filter="url(#csh)"/>
+  <text x="555" y="84" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Inbound Agent</text>
+  <text x="555" y="102" text-anchor="middle" font-size="9.5" fill="#475569">behind firewall</text>
+
+  <line x1="478" y1="87" x2="192" y2="87" stroke="#16a34a" stroke-width="2.5" marker-end="url(#cah)" style="marker-end:url(#cah)"/>
+  <polygon points="192,87 202,82 202,92" fill="#16a34a"/>
+  <text x="335" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">WebSocket — agent dials out</text>
+  <rect x="648" y="62" width="200" height="50" rx="9" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.3"/>
+  <text x="748" y="82" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">✅ Recommended</text>
+  <text x="748" y="99" text-anchor="middle" font-size="9.5" fill="#166534">firewall-friendly, no open ports</text>
+
+  <!-- Row 2: SSH -->
+  <rect x="40" y="150" width="150" height="58" rx="11" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#csh)"/>
+  <text x="115" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Controller</text>
+  <text x="115" y="194" text-anchor="middle" font-size="9.5" fill="#475569">holds SSH key</text>
+
+  <rect x="480" y="150" width="150" height="58" rx="11" fill="#e0e7ff" stroke="#4f46e5" stroke-width="2" filter="url(#csh)"/>
+  <text x="555" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Static VM</text>
+  <text x="555" y="194" text-anchor="middle" font-size="9.5" fill="#475569">sshd on :22</text>
+
+  <line x1="192" y1="179" x2="478" y2="179" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#cah)"/>
+  <text x="335" y="172" text-anchor="middle" font-size="11" font-weight="700" fill="#3730a3">SSH — controller dials in</text>
+  <rect x="648" y="154" width="200" height="50" rx="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.3"/>
+  <text x="748" y="174" text-anchor="middle" font-size="10" font-weight="700" fill="#3730a3">Traditional VMs</text>
+  <text x="748" y="191" text-anchor="middle" font-size="9.5" fill="#3730a3">needs reachable agent + open :22</text>
+
+  <!-- Row 3: Kubernetes -->
+  <rect x="40" y="242" width="150" height="58" rx="11" fill="#dbeafe" stroke="#2563eb" stroke-width="2" filter="url(#csh)"/>
+  <text x="115" y="268" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Controller</text>
+  <text x="115" y="286" text-anchor="middle" font-size="9.5" fill="#475569">k8s plugin</text>
+
+  <rect x="480" y="242" width="150" height="58" rx="11" fill="#dcfce7" stroke="#16a34a" stroke-width="2" filter="url(#csh)"/>
+  <text x="555" y="266" text-anchor="middle" font-size="12" font-weight="700" fill="#0f172a">Pod (ephemeral)</text>
+  <text x="555" y="284" text-anchor="middle" font-size="9.5" fill="#475569">created per job</text>
+
+  <line x1="192" y1="263" x2="478" y2="263" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#cah)"/>
+  <text x="335" y="256" text-anchor="middle" font-size="11" font-weight="700" fill="#3730a3">launches pod → pod registers back</text>
+  <rect x="648" y="246" width="200" height="50" rx="9" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.3"/>
+  <text x="748" y="266" text-anchor="middle" font-size="10" font-weight="700" fill="#166534">Cloud-native</text>
+  <text x="748" y="283" text-anchor="middle" font-size="9.5" fill="#166534">scales to zero, fully ephemeral</text>
+
+  <text x="335" y="322" text-anchor="middle" font-size="10.5" font-style="italic" fill="#64748b">This repo's lab uses the WebSocket inbound agent (top row).</text>
+</svg>

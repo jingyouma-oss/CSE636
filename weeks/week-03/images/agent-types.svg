@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="320" viewBox="0 0 860 320" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="ty1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fee2e2"/><stop offset="1" stop-color="#fecaca"/></linearGradient>
+    <linearGradient id="ty2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dbeafe"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient>
+    <linearGradient id="ty3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e0e7ff"/><stop offset="1" stop-color="#c7d2fe"/></linearGradient>
+    <linearGradient id="ty4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcfce7"/><stop offset="1" stop-color="#bbf7d0"/></linearGradient>
+    <filter id="tysh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.16"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="860" height="320" fill="#f8fafc"/>
+  <text x="430" y="30" text-anchor="middle" font-size="16" font-weight="800" fill="#0f172a">Four kinds of Jenkins agent — the trend runs from permanent to ephemeral</text>
+
+  <!-- arrow bar -->
+  <rect x="60" y="270" width="740" height="8" rx="4" fill="#e2e8f0"/>
+  <text x="80" y="300" text-anchor="start" font-size="11" font-weight="700" fill="#dc2626">◀ always-on (heavy, stateful)</text>
+  <text x="780" y="300" text-anchor="end" font-size="11" font-weight="700" fill="#16a34a">ephemeral, per-job (modern standard) ▶</text>
+
+  <!-- static VM -->
+  <rect x="40" y="62" width="180" height="180" rx="13" fill="url(#ty1)" stroke="#dc2626" stroke-width="2" filter="url(#tysh)"/>
+  <text x="130" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#0f172a">1 · Static VM</text>
+  <text x="130" y="112" text-anchor="middle" font-size="10.5" fill="#334155">long-running server</text>
+  <text x="130" y="130" text-anchor="middle" font-size="10.5" fill="#334155">connects over SSH</text>
+  <text x="130" y="148" text-anchor="middle" font-size="10.5" fill="#334155">state can drift</text>
+  <text x="130" y="176" text-anchor="middle" font-size="10" font-style="italic" fill="#7f1d1d">lifecycle:</text>
+  <text x="130" y="193" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7f1d1d">always running</text>
+
+  <!-- docker -->
+  <rect x="240" y="62" width="180" height="180" rx="13" fill="url(#ty2)" stroke="#2563eb" stroke-width="2" filter="url(#tysh)"/>
+  <text x="330" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#0f172a">2 · Docker</text>
+  <text x="330" y="112" text-anchor="middle" font-size="10.5" fill="#334155">container per job</text>
+  <text x="330" y="130" text-anchor="middle" font-size="10.5" fill="#334155">clean each build</text>
+  <text x="330" y="148" text-anchor="middle" font-size="10.5" fill="#334155">destroyed after use</text>
+  <text x="330" y="176" text-anchor="middle" font-size="10" font-style="italic" fill="#1e3a8a">lifecycle:</text>
+  <text x="330" y="193" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e3a8a">per-job</text>
+
+  <!-- cloud VM -->
+  <rect x="440" y="62" width="180" height="180" rx="13" fill="url(#ty3)" stroke="#4f46e5" stroke-width="2" filter="url(#tysh)"/>
+  <text x="530" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#0f172a">3 · Cloud VM</text>
+  <text x="530" y="112" text-anchor="middle" font-size="10.5" fill="#334155">EC2 / GCE / Azure</text>
+  <text x="530" y="130" text-anchor="middle" font-size="10.5" fill="#334155">auto-scale on demand</text>
+  <text x="530" y="148" text-anchor="middle" font-size="10.5" fill="#334155">spin up, tear down</text>
+  <text x="530" y="176" text-anchor="middle" font-size="10" font-style="italic" fill="#3730a3">lifecycle:</text>
+  <text x="530" y="193" text-anchor="middle" font-size="10.5" font-weight="700" fill="#3730a3">auto-scaled</text>
+
+  <!-- kubernetes -->
+  <rect x="640" y="62" width="180" height="180" rx="13" fill="url(#ty4)" stroke="#16a34a" stroke-width="2" filter="url(#tysh)"/>
+  <text x="730" y="90" text-anchor="middle" font-size="13" font-weight="800" fill="#0f172a">4 · Kubernetes</text>
+  <text x="730" y="112" text-anchor="middle" font-size="10.5" fill="#334155">pod per job</text>
+  <text x="730" y="130" text-anchor="middle" font-size="10.5" fill="#334155">fully ephemeral</text>
+  <text x="730" y="148" text-anchor="middle" font-size="10.5" fill="#334155">scales to zero</text>
+  <text x="730" y="176" text-anchor="middle" font-size="10" font-style="italic" fill="#166534">lifecycle:</text>
+  <text x="730" y="193" text-anchor="middle" font-size="10.5" font-weight="700" fill="#166534">per-job pod</text>
+</svg>
