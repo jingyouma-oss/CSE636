@@ -24,7 +24,7 @@ from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
 JENKINS_URL = os.environ.get("JENKINS_URL", "http://localhost:8080").rstrip("/")
-JENKINS_USER = os.environ.get("JENKINS_USER", "")
+JENKINS_USER = os.environ.get("JENKINS_USER", "admin")
 JENKINS_TOKEN = os.environ.get("JENKINS_TOKEN", "")
 
 app = Server("cse636-jenkins-mcp")

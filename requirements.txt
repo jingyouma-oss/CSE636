@@ -1,0 +1,20 @@
+# Consolidated dev environment for the CSE636 starters.
+# One root .venv serves the light-dependency projects that previously
+# each had their own venv (starter, mcp_servers, build-fixer, ci-agent-demo).
+#
+#   python3.14 -m venv .venv
+#   .venv/bin/pip install -r requirements.txt
+
+# --- test runner (shared by every project) ---
+pytest>=8.0
+
+# --- starter (Flask service) ---
+flask>=3.0,<4.0
+
+# --- mcp_servers (Jenkins / GitHub Actions MCP servers) ---
+mcp>=1.28
+requests>=2.32
+
+# --- build-fixer (agentic CI driver) ---
+anthropic>=0.69
+PyGithub>=2.5
