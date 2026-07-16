@@ -496,29 +496,39 @@ Variant B is the most true-to-production (controller orchestrates, agents execut
 
 ### Part 2: Stand Up a Minimal MCP Server
 
-**Step 1: Create the MCP server file.**
+**Step 1: Get the MCP server.**
 
-In your local environment (not inside Jenkins), create `mcp_servers/jenkins_status.py`:
+The repo ships a runnable server at [`project/build-fixer/mcp_servers/jenkins_status.py`](../../project/build-fixer/mcp_servers/jenkins_status.py) — use it directly rather than hand-copying. It exposes two tools — `list_jobs` and `get_build_status` — and queries your **local** Jenkins REST API (`http://localhost:8080/...`) with a user + API token. Here it is in full:
 
 ```python
 #!/usr/bin/env python3
 """
-Minimal MCP server that exposes Jenkins build status to an AI agent.
-CSE636 Week 2 Lab — Part 2.
+Minimal MCP server that exposes local Jenkins build status to an AI agent.
+CSE636 Week 2 Lab — Part 2, Jenkins variant (parallel to actions_status.py).
 
 Install: pip install mcp requests
+Env:
+  JENKINS_URL    Base URL, e.g. "http://localhost:8080".
+  JENKINS_USER   Jenkins username, e.g. "admin".
+  JENKINS_TOKEN  API token (Manage Jenkins -> your user -> Security -> API Token).
 """
 import os
+
 import requests
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
-JENKINS_URL = os.environ.get("JENKINS_URL", "http://localhost:8080")
-JENKINS_USER = os.environ.get("JENKINS_USER", "admin")
+JENKINS_URL = os.environ.get("JENKINS_URL", "http://localhost:8080").rstrip("/")
+JENKINS_USER = os.environ.get("JENKINS_USER", "")
 JENKINS_TOKEN = os.environ.get("JENKINS_TOKEN", "")
 
 app = Server("cse636-jenkins-mcp")
+
+
+def _auth():
+    return (JENKINS_USER, JENKINS_TOKEN) if JENKINS_TOKEN else None
+
 
 @app.list_tools()
 async def list_tools():
@@ -535,65 +545,84 @@ async def list_tools():
                 "properties": {
                     "job_name": {
                         "type": "string",
-                        "description": "The Jenkins job name, e.g. 'ai-review-demo'"
+                        "description": "The Jenkins job name, e.g. 'ai-review-demo'",
                     }
                 },
-                "required": ["job_name"]
-            }
+                "required": ["job_name"],
+            },
         ),
         Tool(
             name="list_jobs",
             description="Returns a list of all Jenkins job names.",
-            inputSchema={"type": "object", "properties": {}}
-        )
+            inputSchema={"type": "object", "properties": {}},
+        ),
     ]
+
 
 @app.call_tool()
 async def call_tool(name: str, arguments: dict):
-    auth = (JENKINS_USER, JENKINS_TOKEN) if JENKINS_TOKEN else None
-
     if name == "list_jobs":
         resp = requests.get(
-            f"{JENKINS_URL}/api/json?tree=jobs[name]",
-            auth=auth, timeout=10
+            f"{JENKINS_URL}/api/json?tree=jobs[name]", auth=_auth(), timeout=10
         )
+        if resp.status_code != 200:
+            return [TextContent(type="text", text=f"Jenkins API error {resp.status_code}.")]
         jobs = [j["name"] for j in resp.json().get("jobs", [])]
-        return [TextContent(type="text", text=f"Jenkins jobs: {', '.join(jobs)}")]
+        return [TextContent(type="text", text=f"Jenkins jobs: {', '.join(jobs) or '(none)'}")]
 
     if name == "get_build_status":
         job = arguments["job_name"]
         resp = requests.get(
-            f"{JENKINS_URL}/job/{job}/lastBuild/api/json",
-            auth=auth, timeout=10
+            f"{JENKINS_URL}/job/{job}/lastBuild/api/json", auth=_auth(), timeout=10
         )
         if resp.status_code == 404:
-            return [TextContent(type="text", text=f"Job '{job}' not found.")]
+            return [TextContent(type="text", text=f"Job '{job}' not found (or it has no builds yet).")]
+        if resp.status_code != 200:
+            return [TextContent(type="text", text=f"Jenkins API error {resp.status_code}.")]
         data = resp.json()
-        result = data.get("result", "IN_PROGRESS")
+        # result is null while a build is still running.
+        result = data.get("result") or "IN_PROGRESS"
         number = data.get("number", "?")
-        return [TextContent(
-            type="text",
-            text=f"Job '{job}': build #{number} — {result}"
-        )]
+        return [TextContent(type="text", text=f"Job '{job}': build #{number} — {result}")]
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
 
+
+async def _serve():
+    async with stdio_server() as (read, write):
+        await app.run(read, write, app.create_initialization_options())
+
+
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(stdio_server(app))
+
+    asyncio.run(_serve())
 ```
+
+> ⚠️ **Note the entry point.** `stdio_server()` takes no arguments and *yields* a `(read, write)` stream pair — you drive the server with `await app.run(read, write, app.create_initialization_options())`. `asyncio.run(stdio_server(app))` does **not** work (it raises `TypeError: ... an awaitable is required`), because `stdio_server` is an async *context manager*, not a coroutine.
 
 **Step 2: Install dependencies and test the server standalone.**
 
 ```bash
 pip install mcp requests
 
-# Test it directly (press Ctrl-C to exit)
+# Test it directly (press Ctrl-C to exit) — it just blocks waiting for MCP
+# JSON-RPC on stdin, confirming it launches with no import errors.
 JENKINS_URL=http://localhost:8080 \
 JENKINS_USER=admin \
 JENKINS_TOKEN=<your-token> \
-python mcp_servers/jenkins_status.py
+python project/build-fixer/mcp_servers/jenkins_status.py
 ```
+
+> 🧪 **Prefer an automated check?** A bundled MCP client, [`test_jenkins_status.py`](../../project/build-fixer/mcp_servers/test_jenkins_status.py), spawns the server, does the handshake, and calls both tools — verifying it end-to-end without touching `claude.json`. It auto-loads `JENKINS_*` from `project/build-fixer/.env`:
+>
+> ```bash
+> python project/build-fixer/mcp_servers/test_jenkins_status.py
+> # Expected:
+> #   Tools advertised: get_build_status, list_jobs
+> #   Jenkins jobs: ai-review-demo, ...
+> #   Job 'ai-review-demo': build #24 — SUCCESS
+> ```
 
 **Step 3: Register the MCP server with Claude Code.**
 
@@ -604,7 +633,7 @@ Create or edit `~/.claude/claude.json`:
   "mcpServers": {
     "cse636-jenkins": {
       "command": "python",
-      "args": ["/absolute/path/to/mcp_servers/jenkins_status.py"],
+      "args": ["/absolute/path/to/project/build-fixer/mcp_servers/jenkins_status.py"],
       "env": {
         "JENKINS_URL": "http://localhost:8080",
         "JENKINS_USER": "admin",

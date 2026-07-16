@@ -112,7 +112,12 @@ async def call_tool(name: str, arguments: dict):
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
 
 
+async def _serve():
+    async with stdio_server() as (read, write):
+        await app.run(read, write, app.create_initialization_options())
+
+
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(stdio_server(app))
+    asyncio.run(_serve())
