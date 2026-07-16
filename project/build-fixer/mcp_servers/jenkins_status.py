@@ -15,6 +15,7 @@ Env:
   JENKINS_USER   Jenkins username, e.g. "admin".
   JENKINS_TOKEN  API token (Manage Jenkins -> your user -> Security -> API Token).
 """
+import html
 import os
 
 import requests
@@ -31,6 +32,22 @@ app = Server("cse636-jenkins-mcp")
 
 def _auth():
     return (JENKINS_USER, JENKINS_TOKEN) if JENKINS_TOKEN else None
+
+
+def _flow_definition_xml(pipeline_script):
+    """Build config.xml for a Pipeline job with an inline (CPS) script."""
+    escaped = html.escape(pipeline_script)
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<flow-definition plugin="workflow-job">\n'
+        '  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition"'
+        ' plugin="workflow-cps">\n'
+        f"    <script>{escaped}</script>\n"
+        "    <sandbox>true</sandbox>\n"
+        "  </definition>\n"
+        "  <triggers/>\n"
+        "</flow-definition>\n"
+    )
 
 
 @app.list_tools()
