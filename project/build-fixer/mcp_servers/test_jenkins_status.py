@@ -76,6 +76,17 @@ async def main():
             print(f"\n--- get_build_status (job={job}) ---")
             print(_text(await session.call_tool("get_build_status", {"job_name": job})))
 
+            if os.environ.get("MCP_WRITE_TEST") == "1":
+                print("\n--- create_job (self-test) ---")
+                script = (
+                    "pipeline { agent any stages { stage('Hello') "
+                    "{ steps { echo 'hello-from-mcp' } } } }"
+                )
+                print(_text(await session.call_tool(
+                    "create_job",
+                    {"name": "mcp-selftest", "pipeline_script": script},
+                )))
+
     return 0
 
 

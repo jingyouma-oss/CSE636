@@ -34,6 +34,20 @@ def _auth():
     return (JENKINS_USER, JENKINS_TOKEN) if JENKINS_TOKEN else None
 
 
+def _crumb():
+    """Return a CSRF crumb header dict for POSTs ({} if crumbs are disabled)."""
+    try:
+        resp = requests.get(
+            f"{JENKINS_URL}/crumbIssuer/api/json", auth=_auth(), timeout=10
+        )
+    except requests.RequestException:
+        return {}
+    if resp.status_code != 200:
+        return {}
+    data = resp.json()
+    return {data["crumbRequestField"]: data["crumb"]}
+
+
 def _flow_definition_xml(pipeline_script):
     """Build config.xml for a Pipeline job with an inline (CPS) script."""
     escaped = html.escape(pipeline_script)
@@ -53,6 +67,28 @@ def _flow_definition_xml(pipeline_script):
 @app.list_tools()
 async def list_tools():
     return [
+        Tool(
+            name="create_job",
+            description=(
+                "Creates (or updates) a Jenkins Pipeline job from an inline "
+                "pipeline script. Use this to stand up a CI pipeline. If the job "
+                "already exists, its configuration is updated."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Job name, e.g. 'ci-agent-demo'.",
+                    },
+                    "pipeline_script": {
+                        "type": "string",
+                        "description": "The declarative Jenkinsfile text to run.",
+                    },
+                },
+                "required": ["name", "pipeline_script"],
+            },
+        ),
         Tool(
             name="get_build_status",
             description=(
@@ -81,6 +117,32 @@ async def list_tools():
 
 @app.call_tool()
 async def call_tool(name: str, arguments: dict):
+    if name == "create_job":
+        job = arguments["name"]
+        xml = _flow_definition_xml(arguments["pipeline_script"]).encode("utf-8")
+        headers = {"Content-Type": "application/xml", **_crumb()}
+        exists = (
+            requests.get(
+                f"{JENKINS_URL}/job/{job}/api/json", auth=_auth(), timeout=10
+            ).status_code
+            == 200
+        )
+        if exists:
+            resp = requests.post(
+                f"{JENKINS_URL}/job/{job}/config.xml",
+                data=xml, headers=headers, auth=_auth(), timeout=10,
+            )
+            verb = "updated"
+        else:
+            resp = requests.post(
+                f"{JENKINS_URL}/createItem", params={"name": job},
+                data=xml, headers=headers, auth=_auth(), timeout=10,
+            )
+            verb = "created"
+        if resp.status_code not in (200, 201):
+            return [TextContent(type="text", text=f"Jenkins API error {resp.status_code} on create_job.")]
+        return [TextContent(type="text", text=f"Job '{job}' {verb}.")]
+
     if name == "list_jobs":
         resp = requests.get(
             f"{JENKINS_URL}/api/json?tree=jobs[name]", auth=_auth(), timeout=10
