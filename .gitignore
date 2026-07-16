@@ -37,3 +37,6 @@ project/Jenkins/certs/*.pem
 project/Jenkins/certs/*.crt
 weeks/week-01/lab-env/certs/*.pem
 weeks/week-01/lab-env/certs/*.crt
+
+# Week 3 ci-agent-demo generated run reports (keep the dir via .gitkeep)
+project/ci-agent-demo/reports/run-*.md

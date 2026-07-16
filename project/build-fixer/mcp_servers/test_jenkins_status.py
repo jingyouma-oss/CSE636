@@ -105,7 +105,7 @@ async def main():
                     await asyncio.sleep(2)
                     status = _text(await session.call_tool(
                         "get_build_status", {"job_name": "mcp-selftest"}))
-                    if "IN_PROGRESS" not in status:
+                    if "IN_PROGRESS" not in status and "not found" not in status:
                         break
                 print("status:", status)
 

@@ -32,7 +32,7 @@ restore the buggy line and push:
 
 ```bash
 cd project/ci-agent-demo/app
-python3 -c "import pathlib,re; p=pathlib.Path('pricing.py'); \
+python3 -c "import pathlib; p=pathlib.Path('pricing.py'); \
 p.write_text(p.read_text().replace('return price * quantity','return price + quantity  # BUG: should be price * quantity'))"
 python3 -m pytest -q          # expect: 1 failed, 1 passed
 git commit -am "chore(ci-agent-demo): re-arm planted bug" && git push origin main

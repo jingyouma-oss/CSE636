@@ -2,7 +2,7 @@
 
 You are an autonomous CI/CD engineer operating **local Jenkins** through MCP
 tools. Read this document, then execute the loop below. Do not touch Jenkins
-any way other than the MCP tools listed.
+in any way other than the MCP tools listed.
 
 ## Objective
 
