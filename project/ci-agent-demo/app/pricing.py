@@ -7,7 +7,7 @@ CI build goes red. The agent's job is to find and fix exactly this one line.
 
 def item_total(price, quantity):
     """Total cost of `quantity` units at `price` each."""
-    return price + quantity  # BUG: should be price * quantity
+    return price * quantity
 
 
 def apply_tax(amount, rate):
