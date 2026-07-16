@@ -79,13 +79,40 @@ async def main():
             if os.environ.get("MCP_WRITE_TEST") == "1":
                 print("\n--- create_job (self-test) ---")
                 script = (
-                    "pipeline { agent any stages { stage('Hello') "
-                    "{ steps { echo 'hello-from-mcp' } } } }"
+                    "pipeline {\n"
+                    "  agent any\n"
+                    "  stages {\n"
+                    "    stage('Hello') {\n"
+                    "      steps {\n"
+                    "        echo 'hello-from-mcp'\n"
+                    "      }\n"
+                    "    }\n"
+                    "  }\n"
+                    "}\n"
                 )
                 print(_text(await session.call_tool(
                     "create_job",
                     {"name": "mcp-selftest", "pipeline_script": script},
                 )))
+
+                print("\n--- trigger_build (self-test) ---")
+                print(_text(await session.call_tool(
+                    "trigger_build", {"job_name": "mcp-selftest"})))
+
+                # Poll until the build leaves IN_PROGRESS (bounded).
+                status = ""
+                for _ in range(15):
+                    await asyncio.sleep(2)
+                    status = _text(await session.call_tool(
+                        "get_build_status", {"job_name": "mcp-selftest"}))
+                    if "IN_PROGRESS" not in status:
+                        break
+                print("status:", status)
+
+                print("\n--- get_build_log (self-test) ---")
+                log = _text(await session.call_tool(
+                    "get_build_log", {"job_name": "mcp-selftest"}))
+                print("contains 'hello-from-mcp':", "hello-from-mcp" in log)
 
     return 0
 

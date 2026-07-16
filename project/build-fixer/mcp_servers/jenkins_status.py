@@ -112,6 +112,34 @@ async def list_tools():
             description="Returns a list of all Jenkins job names.",
             inputSchema={"type": "object", "properties": {}},
         ),
+        Tool(
+            name="trigger_build",
+            description=(
+                "Triggers a build of a Jenkins job. Returns immediately; poll "
+                "get_build_status for the result."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "job_name": {"type": "string", "description": "The job to build."}
+                },
+                "required": ["job_name"],
+            },
+        ),
+        Tool(
+            name="get_build_log",
+            description=(
+                "Returns the console log of the most recent build of a job. Use "
+                "this to diagnose why a build failed."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "job_name": {"type": "string", "description": "The job name."}
+                },
+                "required": ["job_name"],
+            },
+        ),
     ]
 
 
@@ -166,6 +194,32 @@ async def call_tool(name: str, arguments: dict):
         result = data.get("result") or "IN_PROGRESS"
         number = data.get("number", "?")
         return [TextContent(type="text", text=f"Job '{job}': build #{number} — {result}")]
+
+    if name == "trigger_build":
+        job = arguments["job_name"]
+        resp = requests.post(
+            f"{JENKINS_URL}/job/{job}/build", headers=_crumb(), auth=_auth(), timeout=10
+        )
+        if resp.status_code not in (200, 201, 302):
+            return [TextContent(type="text", text=f"Jenkins API error {resp.status_code} on trigger_build.")]
+        return [TextContent(
+            type="text",
+            text=f"Build triggered for '{job}'. Poll get_build_status for the result.",
+        )]
+
+    if name == "get_build_log":
+        job = arguments["job_name"]
+        resp = requests.get(
+            f"{JENKINS_URL}/job/{job}/lastBuild/consoleText", auth=_auth(), timeout=10
+        )
+        if resp.status_code == 404:
+            return [TextContent(type="text", text=f"No builds found for '{job}'.")]
+        if resp.status_code != 200:
+            return [TextContent(type="text", text=f"Jenkins API error {resp.status_code}.")]
+        log = resp.text
+        if len(log) > 8000:
+            log = "...(truncated)...\n" + log[-8000:]
+        return [TextContent(type="text", text=log)]
 
     return [TextContent(type="text", text=f"Unknown tool: {name}")]
 
