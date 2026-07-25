@@ -16,7 +16,7 @@ pipeline {
   environment {
     ANTHROPIC_API_KEY = credentials('ANTHROPIC_API_KEY')   // "Secret text" credential
     GH_TOKEN          = credentials('github-token')         // "Secret text": PAT with repo scope
-    REPO              = 'qingsong-cstu/CSE636'              // the agent opens the PR here
+    REPO              = 'jingyouma-oss/CSE636'              // the agent opens the PR here
     BASE_BRANCH       = 'main'
     GITHUB_RUN_ID     = "${BUILD_NUMBER}"                    // unique bot/fix-build-<n> branch per run
     MODEL             = 'claude-haiku-4-5'                   // cheaper run; omit for the default claude-opus-4-8
@@ -26,7 +26,7 @@ pipeline {
     stage('Checkout') {
       steps {
         git branch: 'main',
-            url: 'https://github.com/qingsong-cstu/CSE636.git',
+            url: 'https://github.com/jingyouma-oss/CSE636.git',
             credentialsId: 'github-https'                   // Username/password credential (private repo)
       }
     }
